@@ -25,3 +25,4 @@ Version 0.0.2: Updated REAMDE file and added documentation.
 (Latest) Version 0.0.4: Fixed bugs and errors
 
 Version 0.0.4: Added a function to add/remove biomes and added parameter pos to determine where to place the terrain.
+
