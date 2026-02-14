@@ -160,7 +160,7 @@ def _point_in_circle(pos, center, radius):
 def _height_to_color(h, biome="default"):
     for b in _BIOMES:
         if biome == b.name:
-            b.height_to_color(h)
+            return b.height_to_color(h)
 
 def generate_terrain(roughness, biome, scale, size):
     terrain = _Terrain(biome=biome, size=size, scale=scale)
