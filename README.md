@@ -2,7 +2,7 @@
 
 Implementation of the diamond-square. Can draw terrain on pgzero and pygame. Also can set up interactive mode.
 
-![Sample Default Terrain](https://gootyboy.github.io/project_details/diamond-square/Terrain.png)
+![Sample Default Terrain](https://gootyboy.github.io/project_details/diamond-square/default_terrain.png) ![Sample Desert Terrain](https://gootyboy.github.io/project_details/diamond-square/desert_terrain.png) ![Sample Tundra Terrain](https://gootyboy.github.io/project_details/diamond-square/tundra_terrain.png) ![Sample Tropical Terrain](https://gootyboy.github.io/project_details/diamond-square/tropical_terrain.png) ![Sample Volcanic Terrain](https://gootyboy.github.io/project_details/diamond-square/volcanic_terrain.png) ![Sample Swamp Terrain](https://gootyboy.github.io/project_details/diamond-square/swamp_terrain.png) ![Sample Ocean Terrain](https://gootyboy.github.io/project_details/diamond-square/ocean_terrain.png) ![Sample Mars Terrain](https://gootyboy.github.io/project_details/diamond-square/mars_terrain.png)
 
 **Drawing Terrain:**
 
