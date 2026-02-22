@@ -2,8 +2,6 @@
 
 Implementation of the [Diamond–Square Algorithm](https://en.wikipedia.org/wiki/Diamond-square_algorithm). This package can draw terrain on pgzero and pygame, and can also set up interactive mode.
 
-Interactive mode is only supported by pgzero. If you are using this package in pygame, you cannot use the interactive mode, but you can still use terrain generation.
-
 Visit the documentation page for more details:  
 [Diamond Square Description](https://gootyboy.github.io/diamond_square.html)
 
