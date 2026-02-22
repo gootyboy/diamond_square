@@ -1,5 +1,6 @@
 import random
 from pgzero.rect import Rect
+from typing import overload
 
 class Biome:
     def __init__(self, name, height_to_color_func):
@@ -8,6 +9,50 @@ class Biome:
 
     def __str__(self):
         return self.name
+
+    def __eq__(self, other):
+        if isinstance(other, str):
+            other = Biome(other, None)
+
+        return self.name == other.name and self.height_to_color == other.height_to_color
+
+    def __ne__(self, other):
+        return not self == other
+
+    def __repr__(self):
+        return f"Biome({repr(self.name)}, {repr(self.height_to_color)})"
+
+class _InteractiveMode:
+    def __init__(self, draw_func, on_mouse_down_func, on_mouse_up_func, on_mouse_move_func) -> None:
+        """
+        Class for setting up an interactive mode of generating terrain. Not meant for user use. Use generate_interactive_terrain(...) to generate the terrain.
+
+        :param draw_func: The function that should be called in the draw() function.
+        :param on_mouse_down_func: The function that should be called in the on_mouse_down() function.
+        :param on_mouse_up_func: The function that should be called in the on_mouse_up() function.
+        :param on_mouse_move_func: The function that should be called in the on_mouse_move() function.
+        """
+        self.for_draw = draw_func
+        self.for_on_mouse_down = on_mouse_down_func
+        self.for_on_mouse_up = on_mouse_up_func
+        self.for_on_mouse_move = on_mouse_move_func
+
+class _Terrain:
+    def __init__(self, height_map = None, biome = None, size = None, scale = None, height_to_color_func = None):
+        self.heights = height_map
+        self.biome = biome
+        self.height_to_color = height_to_color_func
+        self.size = size
+        self.scale = scale
+
+    def draw(self, screen):
+        for y in range(self.size):
+            for x in range(self.size):
+                color = self.height_to_color(self.heights[y][x], self.biome)
+                screen.draw.filled_rect(
+                    Rect(x * self.scale, y * self.scale, self.scale, self.scale),
+                    color
+                )
 
 _BIOMES = []
 
@@ -120,37 +165,27 @@ _BIOMES.append(Biome("swamp", _swamp_func))
 _BIOMES.append(Biome("ocean", _ocean_func))
 _BIOMES.append(Biome("mars", _mars_func))
 
-class _InteractiveMode:
-    def __init__(self, draw_func, on_mouse_down_func, on_mouse_up_func, on_mouse_move_func) -> None:
-        """
-        Class for setting up an interactive mode of generating terrain. Not meant for user use. Use generate_interactive_terrain(...) to generate the terrain.
+def add_biome(biome: Biome):
+    if biome.name in [b.name for b in _BIOMES]:
+        raise TypeError(f"\"{biome}\" biome is already in the added biomes list: {list(map(str, _BIOMES))}.")
 
-        :param draw_func: The function that should be called in the draw() function.
-        :param on_mouse_down_func: The function that should be called in the on_mouse_down() function.
-        :param on_mouse_up_func: The function that should be called in the on_mouse_up() function.
-        :param on_mouse_move_func: The function that should be called in the on_mouse_move() function.
-        """
-        self.for_draw = draw_func
-        self.for_on_mouse_down = on_mouse_down_func
-        self.for_on_mouse_up = on_mouse_up_func
-        self.for_on_mouse_move = on_mouse_move_func
+    _BIOMES.append(biome)
 
-class _Terrain:
-    def __init__(self, height_map = None, biome = None, size = None, scale = None, height_to_color_func = None):
-        self.heights = height_map
-        self.biome = biome
-        self.height_to_color = height_to_color_func
-        self.size = size
-        self.scale = scale
+@overload
+def remove_biome(biome_name: str):
+    ...
 
-    def draw(self, screen):
-        for y in range(self.size):
-            for x in range(self.size):
-                color = self.height_to_color(self.heights[y][x], self.biome)
-                screen.draw.filled_rect(
-                    Rect(x * self.scale, y * self.scale, self.scale, self.scale),
-                    color
-                )
+@overload
+def remove_biome(biome: Biome):
+    ...
+
+def remove_biome(arg):
+    name = arg if isinstance(arg, str) else arg.name
+    for b in _BIOMES:
+        if b.name == name:
+            _BIOMES.remove(b)
+            return
+    raise TypeError(f'"{name}" biome is not in the list.')
 
 def _point_in_circle(pos, center, radius):
     dx = pos[0] - center[0]
@@ -164,9 +199,8 @@ def _height_to_color(h, biome="default"):
 
 def generate_terrain(roughness, biome, scale, size):
     terrain = _Terrain(biome=biome, size=size, scale=scale)
-    if biome not in _BIOMES:
-        val = ", ".join(_BIOMES[:-1])
-        raise TypeError(f"Biome must be {val}, or {_BIOMES[-1]}")
+    if biome not in [b.name for b in _BIOMES]:
+        raise TypeError(f"Biome must be in {list(map(str, _BIOMES))}")
 
     height_map = [[0.0 for i in range(size)] for i in range(size)]
     height_map[0][0] = random.uniform(0, 1)

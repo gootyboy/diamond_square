@@ -4,6 +4,8 @@ Implementation of the [Diamond Square Algorithm](https://en.wikipedia.org/wiki/D
 
 Interactive mode is only supported by pgzero. If you are using this package in pygame, you cannot use the interactive mode, but you can use the terrain generation.
 
+Visit [Diamond Square Description](https://gootyboy.github.io/diamond_square.html) for a more detailed explanation of what this package can do.
+
 # Sample Generations:
 
 ![Sample Default Terrain](https://gootyboy.github.io/project_details/diamond-square/default_terrain.png) ![Sample Desert Terrain](https://gootyboy.github.io/project_details/diamond-square/desert_terrain.png) ![Sample Tundra Terrain](https://gootyboy.github.io/project_details/diamond-square/tundra_terrain.png) ![Sample Tropical Terrain](https://gootyboy.github.io/project_details/diamond-square/tropical_terrain.png) ![Sample Volcanic Terrain](https://gootyboy.github.io/project_details/diamond-square/volcanic_terrain.png) ![Sample Swamp Terrain](https://gootyboy.github.io/project_details/diamond-square/swamp_terrain.png) ![Sample Ocean Terrain](https://gootyboy.github.io/project_details/diamond-square/ocean_terrain.png) ![Sample Mars Terrain](https://gootyboy.github.io/project_details/diamond-square/mars_terrain.png) ![Sample Extreme Mars Terrain](https://gootyboy.github.io/project_details/diamond-square/mars_crazy.png)
@@ -34,8 +36,10 @@ Version 0.0.3: Fixed bugs and errors
 
 Version 0.0.4: Added sample terrain.
 
-(Latest) Version 0.0.5: Added sample terrains.
+Version 0.0.5: Added sample terrains.
+
+(Latest) Version 0.0.6: Added a function to add/remove biomes and external website for more detailed documentation.
 
 # Coming Soon:
 
-Version 0.0.6: Added a function to add/remove biomes and added parameter pos to determine where to place the terrain.
+Version 0.0.7: Added parameter pos to determine where to place the terrain and add function to save the terrain as an image.
