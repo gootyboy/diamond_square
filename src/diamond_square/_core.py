@@ -1,9 +1,11 @@
 import random
 from pgzero.rect import Rect
 from typing import overload
+from PIL import Image
+import pygame
 
 class Biome:
-    def __init__(self, name, height_to_color_func):
+    def __init__(self, name: str, height_to_color_func: function):
         self.name = name
         self.height_to_color = height_to_color_func
 
@@ -22,20 +24,16 @@ class Biome:
     def __repr__(self):
         return f"Biome({repr(self.name)}, {repr(self.height_to_color)})"
 
-class _InteractiveMode:
+class _PGZeroInteractive:
     def __init__(self, draw_func, on_mouse_down_func, on_mouse_up_func, on_mouse_move_func) -> None:
-        """
-        Class for setting up an interactive mode of generating terrain. Not meant for user use. Use generate_interactive_terrain(...) to generate the terrain.
-
-        :param draw_func: The function that should be called in the draw() function.
-        :param on_mouse_down_func: The function that should be called in the on_mouse_down() function.
-        :param on_mouse_up_func: The function that should be called in the on_mouse_up() function.
-        :param on_mouse_move_func: The function that should be called in the on_mouse_move() function.
-        """
         self.for_draw = draw_func
         self.for_on_mouse_down = on_mouse_down_func
         self.for_on_mouse_up = on_mouse_up_func
         self.for_on_mouse_move = on_mouse_move_func
+
+class _PygameInteractive:
+    def __init__(self, main_function) -> None:
+        self.draw = main_function
 
 class _Terrain:
     def __init__(self, height_map = None, biome = None, size = None, scale = None, height_to_color_func = None):
@@ -45,16 +43,52 @@ class _Terrain:
         self.size = size
         self.scale = scale
 
-    def draw(self, screen):
+    def draw(self, screen, pos = (0, 0)):
+        ox, oy = pos
         for y in range(self.size):
             for x in range(self.size):
                 color = self.height_to_color(self.heights[y][x], self.biome)
                 screen.draw.filled_rect(
-                    Rect(x * self.scale, y * self.scale, self.scale, self.scale),
+                    Rect(ox + x * self.scale, oy + y * self.scale, self.scale, self.scale),
                     color
                 )
 
 _BIOMES = []
+
+def _diamond_square(sz, rough):
+    h_map = [[0.0 for _ in range(sz)] for _ in range(sz)]
+    h_map[0][0] = h_map[0][sz-1] = h_map[sz-1][0] = h_map[sz-1][sz-1] = random.random()
+    step = sz - 1
+    s = rough
+    while step > 1:
+        half = step // 2
+        for y in range(half, sz - 1, step):
+            for x in range(half, sz - 1, step):
+                avg = (h_map[y-half][x-half] + h_map[y-half][x+half] + h_map[y+half][x-half] + h_map[y+half][x+half]) / 4
+                h_map[y][x] = avg + random.uniform(-s, s)
+        for y in range(0, sz, half):
+            for x in range((y + half) % step, sz, step):
+                total, count = 0, 0
+                for dy, dx in [(-half, 0), (half, 0), (0, -half), (0, half)]:
+                    if 0 <= y+dy < sz and 0 <= x+dx < sz:
+                        total += h_map[y+dy][x+dx]
+                        count += 1
+                h_map[y][x] = (total / count) + random.uniform(-s, s)
+        step //= 2
+        s *= rough
+    flat = [item for sublist in h_map for item in sublist]
+    mi, ma = min(flat), max(flat)
+    return [[(h_map[y][x] - mi) / (ma - mi + 0.0001) for x in range(sz)] for y in range(sz)]
+
+def _point_in_circle(pos, center, radius):
+    dx = pos[0] - center[0]
+    dy = pos[1] - center[1]
+    return dx ** 2 + dy ** 2 < radius ** 2
+
+def _height_to_color(h, biome = "default"):
+    for b in _BIOMES:
+        if biome == b.name:
+            return b.height_to_color(h)
 
 def _default_func(h):
     if h < 0.2:
@@ -187,75 +221,19 @@ def remove_biome(arg):
             return
     raise TypeError(f'"{name}" biome is not in the list.')
 
-def _point_in_circle(pos, center, radius):
-    dx = pos[0] - center[0]
-    dy = pos[1] - center[1]
-    return dx ** 2 + dy ** 2 < radius ** 2
-
-def _height_to_color(h, biome="default"):
-    for b in _BIOMES:
-        if biome == b.name:
-            return b.height_to_color(h)
-
-def generate_terrain(roughness, biome, scale, size):
-    terrain = _Terrain(biome=biome, size=size, scale=scale)
+def generate_terrain(size, biome = "default", roughness = 0.6, scale = 4):
+    terrain = _Terrain(biome = biome, size = size, scale = scale)
     if biome not in [b.name for b in _BIOMES]:
         raise TypeError(f"Biome must be in {list(map(str, _BIOMES))}")
 
-    height_map = [[0.0 for i in range(size)] for i in range(size)]
-    height_map[0][0] = random.uniform(0, 1)
-    height_map[0][size - 1] = random.uniform(0, 1)
-    height_map[size - 1][0] = random.uniform(0, 1)
-    height_map[size - 1][size - 1] = random.uniform(0, 1)
-    step_size = size - 1
-    scale = roughness
-    while step_size > 1:
-        half_step = step_size // 2
-        for y in range(half_step, size - 1, step_size):
-            for x in range(half_step, size - 1, step_size):
-                avg = (
-                    height_map[y - half_step][x - half_step] +
-                    height_map[y - half_step][x + half_step] +
-                    height_map[y + half_step][x - half_step] +
-                    height_map[y + half_step][x + half_step]
-                ) / 4
-                height_map[y][x] = avg + random.uniform(-scale, scale)
-        for y in range(0, size, half_step):
-            for x in range((y + half_step) % step_size, size, step_size):
-                total = 0
-                count = 0
-                if y - half_step >= 0:
-                    total += height_map[y - half_step][x]
-                    count += 1
-                if y + half_step < size:
-                    total += height_map[y + half_step][x]
-                    count += 1
-                if x - half_step >= 0:
-                    total += height_map[y][x - half_step]
-                    count += 1
-                if x + half_step < size:
-                    total += height_map[y][x + half_step]
-                    count += 1
-                avg = total / count
-                height_map[y][x] = avg + random.uniform(-scale, scale)
-        step_size //= 2
-        scale *= roughness
-
-    min_val = min(min(row) for row in height_map)
-    max_val = max(max(row) for row in height_map)
-    for y in range(size):
-        for x in range(size):
-            height_map[y][x] = (height_map[y][x] - min_val) / (max_val - min_val)
-
-    terrain.heights = height_map
-
+    terrain.heights = _diamond_square(size, roughness)
     terrain.height_to_color = _height_to_color
 
     return terrain
 
-def generate_interactive_mode(size, start_biome="default", max_roughness=1.0, scale=4, start_roughness=0):
+def generate_pgzero_interactive(size, start_biome = "default", max_roughness = 1.0,  min_roughness = 0, start_roughness = 0, scale = 4, pos = (0, 0)):
     state = {
-        'roughness': start_roughness,
+        'roughness': max(min_roughness, min(start_roughness, max_roughness)),
         'biome': start_biome,
         'drag': False,
         'height_map': [],
@@ -277,35 +255,7 @@ def generate_interactive_mode(size, start_biome="default", max_roughness=1.0, sc
         ["mars", (150, 60, 40), "white"]
     ]
 
-    def diamond_square(sz, rough):
-        h_map = [[0.0 for _ in range(sz)] for _ in range(sz)]
-        h_map[0][0] = h_map[0][sz-1] = h_map[sz-1][0] = h_map[sz-1][sz-1] = random.random()
-        
-        step = sz - 1
-        s = rough
-        while step > 1:
-            half = step // 2
-            for y in range(half, sz - 1, step):
-                for x in range(half, sz - 1, step):
-                    avg = (h_map[y-half][x-half] + h_map[y-half][x+half] + 
-                           h_map[y+half][x-half] + h_map[y+half][x+half]) / 4
-                    h_map[y][x] = avg + random.uniform(-s, s)
-            for y in range(0, sz, half):
-                for x in range((y + half) % step, sz, step):
-                    total, count = 0, 0
-                    for dy, dx in [(-half, 0), (half, 0), (0, -half), (0, half)]:
-                        if 0 <= y+dy < sz and 0 <= x+dx < sz:
-                            total += h_map[y+dy][x+dx]
-                            count += 1
-                    h_map[y][x] = (total / count) + random.uniform(-s, s)
-            step //= 2
-            s *= rough
-
-        flat = [item for sublist in h_map for item in sublist]
-        mi, ma = min(flat), max(flat)
-        return [[(h_map[y][x] - mi) / (ma - mi + 0.0001) for x in range(sz)] for y in range(sz)]
-
-    state['height_map'] = diamond_square(size, state['roughness'])
+    state['height_map'] = _diamond_square(size, state['roughness'])
     
     biome_step = width // len(biomes)
     biome_rects = []
@@ -316,51 +266,167 @@ def generate_interactive_mode(size, start_biome="default", max_roughness=1.0, sc
     base_slider = Rect(0, height - 50, width, 25)
     
     def update_slider_pos():
-        x = base_slider.left + (state['roughness'] / max_roughness) * base_slider.width
+        ratio = (state['roughness'] - min_roughness) / (max_roughness - min_roughness)
+        x = base_slider.left + ratio * base_slider.width
         state['slider_circle_pos'] = (int(x), base_slider.centery)
 
     update_slider_pos()
 
     def draw_func(screen):
+        ox, oy = pos
         for y in range(size):
             for x in range(size):
                 color = _height_to_color(state['height_map'][y][x], state['biome'])
-                screen.draw.filled_rect(Rect(x * scale, y * scale, scale, scale), color)
-        
+                screen.draw.filled_rect(Rect(ox + x * scale, oy + y * scale, scale, scale), color)
         screen.draw.filled_rect(base_slider, "gray")
         screen.draw.filled_circle(state['slider_circle_pos'], state['slider_circle_radius'], "red")
-
-        active_width = (state['roughness'] / max_roughness) * base_slider.width
+        active_width = (state['roughness'] - min_roughness) / (max_roughness - min_roughness) * base_slider.width
         active_rect = Rect(base_slider.topleft, (active_width, base_slider.height))
         screen.draw.filled_rect(active_rect, "red")
-        
         screen.draw.filled_circle(state['slider_circle_pos'], state['slider_circle_radius'], "white")
         screen.draw.text(f"Roughness: {state['roughness']:.2f}", (10, height - 45), color="white", shadow=(1,1))
-        
         for b in biome_rects:
             screen.draw.filled_rect(b['rect'], b['color'])
             screen.draw.text(b['name'], center=b['rect'].center, color=b['txt'], fontsize=20)
             if b['name'] == state['biome']:
                 screen.draw.rect(b['rect'], "yellow")
 
-    def on_mouse_down_func(pos):
+    def on_mouse_down_func(p):
         for b in biome_rects:
-            if b['rect'].collidepoint(pos):
+            if b['rect'].collidepoint(p):
                 state['biome'] = b['name']
-                state['height_map'] = diamond_square(size, state['roughness'])
+                state['height_map'] = _diamond_square(size, state['roughness'])
                 return
-
-        if _point_in_circle(pos, state['slider_circle_pos'], state['slider_circle_radius']):
+        if _point_in_circle(p, state['slider_circle_pos'], state['slider_circle_radius']):
             state['drag'] = True
 
-    def on_mouse_move_func(pos):
+    def on_mouse_move_func(p):
         if state['drag']:
-            val = max(base_slider.left, min(pos[0], base_slider.right))
-            state['roughness'] = ((val - base_slider.left) / base_slider.width) * max_roughness
+            val = max(base_slider.left, min(p[0], base_slider.right))
+            ratio = (val - base_slider.left) / base_slider.width
+            state['roughness'] = min_roughness + ratio * (max_roughness - min_roughness)
             update_slider_pos()
-            state['height_map'] = diamond_square(size, state['roughness'])
+            state['height_map'] = _diamond_square(size, state['roughness'])
 
     def on_mouse_up_func():
         state['drag'] = False
 
-    return _InteractiveMode(draw_func, on_mouse_down_func, on_mouse_up_func, on_mouse_move_func)
+    return _PGZeroInteractive(draw_func, on_mouse_down_func, on_mouse_up_func, on_mouse_move_func)
+
+def generate_pygame_interactive(size, start_biome = "default", max_roughness = 1.0,  min_roughness = 0, start_roughness = 0, scale = 4, pos = (0, 0)):
+    pygame.init()
+    pygame.font.init()
+    state = {
+        'roughness': max(min_roughness, min(start_roughness, max_roughness)),
+        'biome': start_biome,
+        'drag': False,
+        'height_map': [],
+        'slider_circle_pos': (0, 0),
+        'slider_circle_radius': 15
+    }
+
+    width = size * scale
+    height = size * scale + 50
+    
+    biomes = [
+        ["default", (50, 150, 50), "white"], 
+        ["desert", (210, 180, 140), "black"], 
+        ["tundra", (200, 200, 255), "black"], 
+        ["tropical", (0, 150, 0), "white"], 
+        ["volcanic", (60, 0, 0), "white"], 
+        ["swamp", (40, 60, 30), "white"], 
+        ["ocean", (0, 70, 140), "white"], 
+        ["mars", (150, 60, 40), "white"]
+    ]
+
+    state['height_map'] = _diamond_square(size, state['roughness'])
+    
+    biome_step = width // len(biomes)
+    biome_rects = []
+    for i, b in enumerate(biomes):
+        r = Rect(i * biome_step, height - 25, biome_step, 25)
+        biome_rects.append({'rect': r, 'color': b[1], 'name': b[0], 'txt': b[2]})
+
+    base_slider = Rect(0, height - 50, width, 25)
+    
+    def update_slider_pos():
+        ratio = (state['roughness'] - min_roughness) / (max_roughness - min_roughness)
+        x = base_slider.left + ratio * base_slider.width
+        state['slider_circle_pos'] = (int(x), base_slider.centery)
+
+    update_slider_pos()
+
+    def main_function(surface, events):
+        for event in events:
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                for b in biome_rects:
+                    if b['rect'].collidepoint(event.pos):
+                        state['biome'] = b['name']
+                        state['height_map'] = _diamond_square(size, state['roughness'])
+                        return
+                if _point_in_circle(event.pos, state['slider_circle_pos'], state['slider_circle_radius']):
+                    state['drag'] = True
+
+            if event.type == pygame.MOUSEMOTION:
+                if state['drag']:
+                    val = max(base_slider.left, min(event.pos[0], base_slider.right))
+                    ratio = (val - base_slider.left) / base_slider.width
+                    state['roughness'] = min_roughness + ratio * (max_roughness - min_roughness)
+                    update_slider_pos()
+                    state['height_map'] = _diamond_square(size, state['roughness'])
+
+            if event.type == pygame.MOUSEBUTTONUP:
+                state['drag'] = False
+
+        ox, oy = pos
+        for y in range(size):
+            for x in range(size):
+                color = _height_to_color(state['height_map'][y][x], state['biome'])
+                pygame.draw.rect(surface, color, Rect(ox + x * scale, oy + y * scale, scale, scale), width = 0)
+
+        font24 = pygame.font.SysFont(None, 24)
+        font20 = pygame.font.SysFont(None, 20)
+        text = f"Roughness: {state['roughness']:.2f}"
+        roughness_text = font24.render(text, True, "white")
+        shadow = font24.render(text, True, "black")
+
+        pygame.draw.rect(surface, "gray", base_slider, width = 0)
+        pygame.draw.circle(surface, "red", state['slider_circle_pos'], state['slider_circle_radius'])
+        active_width = (state['roughness'] - min_roughness) / (max_roughness - min_roughness) * base_slider.width
+        active_rect = Rect(base_slider.topleft, (active_width, base_slider.height))
+        pygame.draw.rect(surface, "red", active_rect, width = 0)
+        pygame.draw.circle(surface, "white", state['slider_circle_pos'], state['slider_circle_radius'])
+        surface.blit(roughness_text, (10, height - 45))
+        surface.blit(shadow, (11, height - 44))
+
+        for b in biome_rects:
+            biome_text = font20.render(b['name'], True, b['txt'])
+            rect = biome_text.get_rect(center = b['rect'].center)
+            pygame.draw.rect(surface, b["color"], b["rect"], width = 0)
+            surface.blit(biome_text, rect)
+            if b['name'] == state['biome']:
+                pygame.draw.rect(surface, "yellow", b["rect"], width = 1)
+
+    return _PygameInteractive(main_function)
+
+def save_terrain(terrain, save_path, file_extension = ".png"):
+    if not save_path.endswith(file_extension.lower()):
+        save_path += file_extension.lower()
+
+    img_width = terrain.size * terrain.scale
+    img_height = terrain.size * terrain.scale
+    img = Image.new("RGB", (img_width, img_height))
+    pixels = img.load()
+
+    for y in range(terrain.size):
+        for x in range(terrain.size):
+            color = terrain.height_to_color(terrain.heights[y][x], terrain.biome)
+
+            color = tuple(max(0, min(255, int(c))) for c in color)
+
+            for dy in range(terrain.scale):
+                for dx in range(terrain.scale):
+                    pixels[x * terrain.scale + dx, y * terrain.scale + dy] = color
+
+    img.save(save_path, file_extension.removeprefix(".").upper())
+    print(f"Image saved as {save_path}")

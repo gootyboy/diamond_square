@@ -21,10 +21,7 @@ Visit the documentation page for more details:
 
 ---
 
-> ### ⚠️ ***Interactive mode only works in pgzero***
-> pygame cannot use interactive mode — only terrain generation.
-
-> ### ⚠️ ***You MUST include all four interactive functions***
+> ### ⚠️ ***You MUST include all four interactive functions for pgzero interactive***
 > Missing even one will cause failures or unpredictable behavior.
 
 > ### ⚠️ ***You must pass the pgzero screen into draw functions***
@@ -33,16 +30,18 @@ Visit the documentation page for more details:
 ---
 
 ## Table of Contents
-- [Quick Start](#quick-start)
-- [Why Use Diamond Square?](#why-use-diamond-square)
-- [Usage](#usage)
-- [Drawing Terrain](#drawing-terrain)
-  - [pgzero Example](#pgzero-example)
-  - [pygame Example](#pygame-example)
-- [Important Requirements for Interactive Mode](#important-requirements-for-interactive-mode)
-- [Interactive Mode](#interactive-mode)
-- [Versions](#versions)
-- [Coming Soon](#coming-soon)
+- Quick Start
+- Why Use Diamond Square?
+- Usage
+- Drawing Terrain
+  - Pgzero Example
+  - Pygame Example
+- Requirements for Pgzero Interactive
+- Interactive Mode
+  - Pgzero Example
+  - Pygame Example
+- Versions
+- Coming Soon
 
 ---
 
@@ -57,10 +56,10 @@ pip install diamond-square
 ```python
 from diamond_square import generate_terrain
 
-terrain = generate_terrain(roughness=1.0, biome="default", scale=1, size=257)
+terrain = generate_terrain(roughness = 1.0, biome = "default", scale = 1, size = 257)
 
 def draw():
-    terrain.draw(screen)
+    terrain.draw(screen, pos = (100, 100))
 ```
 
 ---
@@ -159,9 +158,9 @@ pygame.quit()
 
 ---
 
-## Important Requirements for Interactive Mode
+## Requirements for Pgzero Interactive
 
-Interactive mode **only works in pgzero**, and it requires **all four** of the following functions to be placed in their corresponding pgzero event handlers:
+For Pgzero Interative Mode, it requires **all four** of the following functions to be placed in their corresponding pgzero event handlers:
 
 ```
 terrain.for_draw(screen)
@@ -172,9 +171,9 @@ terrain.for_on_mouse_move(pos)
 
 If **any one** of these is missing, the interactive mode will:
 
-- fail to update correctly  
-- behave unpredictably  
-- or stop working entirely  
+- fail to update correctly
+- behave unpredictably
+- or stop working entirely
 
 These must be placed in:
 
@@ -187,21 +186,65 @@ These must be placed in:
 
 ## Interactive Mode
 
-Use:
+This creates an interactive scene where the user can change the biome and roughness in real time.
 
-```
-terrain = generate_interactive_mode(
+### Pgzero Example
+
+```python
+from diamond_square import generate_interactive_mode
+
+interactive_terrain = generate_interactive_mode(
     size=...,
     start_biome=...,
     max_roughness=...,
     scale=...,
     start_roughness=...
 )
+
+def draw():
+    interactive_terrain.for_draw(screen)
+
+def update():
+    interactive_terrain.for_update()
+
+def on_mouse_down(pos):
+    interactive_terrain.for_on_mouse_down(pos)
+
+def on_mouse_up():
+    interactive_terrain.for_on_mouse_up()
 ```
 
-This creates an interactive scene where the user can change the biome and roughness in real time.
+Run with:
 
-Interactive mode is **not supported in pygame** — only pgzero.
+```
+pgzrun yourfile.py
+```
+
+```python
+import pygame
+from diamond_square import generate_interactive_terrain
+
+pygame.init()
+screen = pygame.display.set_mode((800, 600))
+
+interactive_terrain = generate_interactive_terrain(
+    roughness=1.0,
+    scale=1,
+    size=257
+)
+
+running = True
+while running:
+    events = pygame.event.get()
+    for event in events:
+        if event.type == pygame.QUIT:
+            running = False
+
+    interactive_terrain.draw(screen, events)
+    pygame.display.flip()
+
+pygame.quit()
+```
 
 ---
 
@@ -213,7 +256,7 @@ Version 0.0.3: Fixed bugs and errors.
 Version 0.0.4: Added sample terrain.  
 Version 0.0.5: Added sample terrains.  
 Version 0.0.6: Added functions to add/remove biomes and added external documentation website.  
-**(Latest) Version 0.0.7:** Added `pos` parameter to determine where to place the terrain and added function to save terrain as an image.
+**(Latest) Version 0.0.7:** Added `pos` parameter to determine where to place the terrain and added function to save terrain as an image. Also made interative mode avaliable to pgzero.
 
 ---
 
