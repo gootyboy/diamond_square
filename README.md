@@ -256,10 +256,12 @@ Version 0.0.3: Fixed bugs and errors.
 Version 0.0.4: Added sample terrain.  
 Version 0.0.5: Added sample terrains.  
 Version 0.0.6: Added functions to add/remove biomes and added external documentation website.  
-**(Latest) Version 0.0.7:** Added `pos` parameter to determine where to place the terrain and added function to save terrain as an image. Also made interative mode avaliable to pgzero.
+Version 0.0.7: Added `pos` parameter to determine where to place the terrain and added function to save terrain as an image. Also made interative mode avaliable to pgzero.
+
+**(Latest) Version 0.0.8:** Added C file for fast rendering of the [Diamond–Square Algorithm](https://en.wikipedia.org/wiki/Diamond-square_algorithm)
 
 ---
 
 ## Coming Soon
 
-Version 0.0.8: Updates
+Version 0.0.9: Added `pos` parameter to determine where to place the interactive terrain and added re-generate button for interactive mode.
