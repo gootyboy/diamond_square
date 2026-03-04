@@ -7,7 +7,7 @@ typedef struct {
     double **data;
 } Array2D;
 
-double random() {
+double random_custom() {
     return rand() / (double) RAND_MAX;
 }
 
@@ -18,7 +18,7 @@ double random_uniform(double min, double max) {
         max = temp;
     }
 
-    double scale = random();
+    double scale = random_custom();
     return min + scale * (max - min);
 }
 
@@ -63,10 +63,10 @@ Array2D _diamond_square(int size, float rough) {
         for (int x = 0; x < size; x++)
             h_map.data[y][x] = 0.0;
 
-    h_map.data[0][0] = random();
-    h_map.data[0][size - 1] = random();
-    h_map.data[size - 1][0] = random();
-    h_map.data[size - 1][size - 1] = random();
+    h_map.data[0][0] = random_custom();
+    h_map.data[0][size - 1] = random_custom();
+    h_map.data[size - 1][0] = random_custom();
+    h_map.data[size - 1][size - 1] = random_custom();
 
     int step = size - 1;
     float s = rough;

@@ -55,31 +55,6 @@ class _Terrain:
 
 _BIOMES = []
 
-def _diamond_square(sz, rough):
-    h_map = [[0.0 for _ in range(sz)] for _ in range(sz)]
-    h_map[0][0] = h_map[0][sz-1] = h_map[sz-1][0] = h_map[sz-1][sz-1] = random.random()
-    step = sz - 1
-    s = rough
-    while step > 1:
-        half = step // 2
-        for y in range(half, sz - 1, step):
-            for x in range(half, sz - 1, step):
-                avg = (h_map[y-half][x-half] + h_map[y-half][x+half] + h_map[y+half][x-half] + h_map[y+half][x+half]) / 4
-                h_map[y][x] = avg + random.uniform(-s, s)
-        for y in range(0, sz, half):
-            for x in range((y + half) % step, sz, step):
-                total, count = 0, 0
-                for dy, dx in [(-half, 0), (half, 0), (0, -half), (0, half)]:
-                    if 0 <= y+dy < sz and 0 <= x+dx < sz:
-                        total += h_map[y+dy][x+dx]
-                        count += 1
-                h_map[y][x] = (total / count) + random.uniform(-s, s)
-        step //= 2
-        s *= rough
-    flat = [item for sublist in h_map for item in sublist]
-    mi, ma = min(flat), max(flat)
-    return [[(h_map[y][x] - mi) / (ma - mi + 0.0001) for x in range(sz)] for y in range(sz)]
-
 def _point_in_circle(pos, center, radius):
     dx = pos[0] - center[0]
     dy = pos[1] - center[1]
