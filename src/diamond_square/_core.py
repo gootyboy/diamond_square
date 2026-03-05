@@ -1,8 +1,8 @@
-import random
 from pgzero.rect import Rect
 from typing import overload
 from PIL import Image
 import pygame
+from .diamond import diamond_square
 
 class Biome:
     def __init__(self, name: str, height_to_color_func: function):
@@ -201,7 +201,7 @@ def generate_terrain(size, biome = "default", roughness = 0.6, scale = 4):
     if biome not in [b.name for b in _BIOMES]:
         raise TypeError(f"Biome must be in {list(map(str, _BIOMES))}")
 
-    terrain.heights = _diamond_square(size, roughness)
+    terrain.heights = diamond_square(size, roughness)
     terrain.height_to_color = _height_to_color
 
     return terrain
@@ -230,7 +230,7 @@ def generate_pgzero_interactive(size, start_biome = "default", max_roughness = 1
         ["mars", (150, 60, 40), "white"]
     ]
 
-    state['height_map'] = _diamond_square(size, state['roughness'])
+    state['height_map'] = diamond_square(size, state['roughness'])
     
     biome_step = width // len(biomes)
     biome_rects = []
@@ -270,7 +270,7 @@ def generate_pgzero_interactive(size, start_biome = "default", max_roughness = 1
         for b in biome_rects:
             if b['rect'].collidepoint(p):
                 state['biome'] = b['name']
-                state['height_map'] = _diamond_square(size, state['roughness'])
+                state['height_map'] = diamond_square(size, state['roughness'])
                 return
         if _point_in_circle(p, state['slider_circle_pos'], state['slider_circle_radius']):
             state['drag'] = True
@@ -281,7 +281,7 @@ def generate_pgzero_interactive(size, start_biome = "default", max_roughness = 1
             ratio = (val - base_slider.left) / base_slider.width
             state['roughness'] = min_roughness + ratio * (max_roughness - min_roughness)
             update_slider_pos()
-            state['height_map'] = _diamond_square(size, state['roughness'])
+            state['height_map'] = diamond_square(size, state['roughness'])
 
     def on_mouse_up_func():
         state['drag'] = False
@@ -314,7 +314,7 @@ def generate_pygame_interactive(size, start_biome = "default", max_roughness = 1
         ["mars", (150, 60, 40), "white"]
     ]
 
-    state['height_map'] = _diamond_square(size, state['roughness'])
+    state['height_map'] = diamond_square(size, state['roughness'])
     
     biome_step = width // len(biomes)
     biome_rects = []
@@ -337,7 +337,7 @@ def generate_pygame_interactive(size, start_biome = "default", max_roughness = 1
                 for b in biome_rects:
                     if b['rect'].collidepoint(event.pos):
                         state['biome'] = b['name']
-                        state['height_map'] = _diamond_square(size, state['roughness'])
+                        state['height_map'] = diamond_square(size, state['roughness'])
                         return
                 if _point_in_circle(event.pos, state['slider_circle_pos'], state['slider_circle_radius']):
                     state['drag'] = True
@@ -348,7 +348,7 @@ def generate_pygame_interactive(size, start_biome = "default", max_roughness = 1
                     ratio = (val - base_slider.left) / base_slider.width
                     state['roughness'] = min_roughness + ratio * (max_roughness - min_roughness)
                     update_slider_pos()
-                    state['height_map'] = _diamond_square(size, state['roughness'])
+                    state['height_map'] = diamond_square(size, state['roughness'])
 
             if event.type == pygame.MOUSEBUTTONUP:
                 state['drag'] = False
