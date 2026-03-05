@@ -1,6 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct {
     size_t rows;
     size_t cols;
@@ -129,3 +133,7 @@ Array2D diamond_square(int size, float rough) {
 
     return h_map;
 }
+
+#ifdef __cplusplus
+}
+#endif

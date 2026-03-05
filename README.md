@@ -2,9 +2,6 @@
 
 Implementation of the [Diamond–Square Algorithm](https://en.wikipedia.org/wiki/Diamond-square_algorithm). This package can draw terrain on pgzero and pygame, and can also set up interactive mode.
 
-Visit the documentation page for more details:  
-[Diamond Square Description](https://gootyboy.github.io/diamond_square.html)
-
 ---
 
 ## Sample Generations
@@ -64,16 +61,17 @@ def draw():
 
 ---
 
-## Why Use Diamond Square?
+## Why Use diamond-square?
 
 This package provides a complete implementation of the Diamond–Square algorithm with:
 
-- multiple built‑in biomes  
-- adjustable roughness and scale  
-- support for pgzero and pygame  
-- optional interactive mode (pgzero only)  
-- the ability to save generated terrain as an image  
-- functions to add or remove biomes dynamically  
+- Fast rendering of the Diamond-Square algorithm written in C
+- Multiple built‑in biomes  
+- Adjustable roughness and scale  
+- Support for pgzero and pygame  
+- Optional interactive mode (pgzero only)  
+- The ability to save generated terrain as an image  
+- Functions to add or remove biomes dynamically  
 
 It is designed for both experimentation and game development, making terrain generation simple and customizable.
 
@@ -83,25 +81,7 @@ It is designed for both experimentation and game development, making terrain gen
 
 ### Drawing Terrain
 
-Use:
-
-```
-terrain = generate_terrain(roughness=..., biome=..., scale=..., size=...)
-```
-
-Then draw it with:
-
-```
-terrain.draw(screen)
-```
-
-The `screen` parameter must be the pgzero screen or the pygame display surface. In pgzero, simply pass `screen`. Your editor may underline this, but it is correct.
-
----
-
-## Drawing Terrain
-
-### pgzero Example
+#### pgzero Example
 
 ```python
 from diamond_square import generate_terrain
@@ -126,9 +106,11 @@ Run with:
 pgzrun yourfile.py
 ```
 
+The `screen` parameter must be the pgzero screen. Simply pass `screen`. Your editor may underline this with yellow, but it is correct.
+
 ---
 
-### pygame Example
+#### pygame Example
 
 ```python
 import pygame
@@ -151,6 +133,72 @@ while running:
             running = False
 
     terrain.draw(screen)
+    pygame.display.flip()
+
+pygame.quit()
+```
+
+The `screen` parameter must be the pygame display surface.
+
+### Interactive Mode
+
+This creates an interactive scene where the user can change the biome and roughness in real time.
+
+#### Pgzero Example
+
+```python
+from diamond_square import generate_interactive_mode
+
+interactive_terrain = generate_interactive_mode(
+    size=...,
+    start_biome=...,
+    max_roughness=...,
+    scale=...,
+    start_roughness=...
+)
+
+def draw():
+    interactive_terrain.for_draw(screen)
+
+def update():
+    interactive_terrain.for_update()
+
+def on_mouse_down(pos):
+    interactive_terrain.for_on_mouse_down(pos)
+
+def on_mouse_up():
+    interactive_terrain.for_on_mouse_up()
+```
+
+Run with:
+
+```
+pgzrun yourfile.py
+```
+
+#### Pygame example
+
+```python
+import pygame
+from diamond_square import generate_interactive_terrain
+
+pygame.init()
+screen = pygame.display.set_mode((800, 600))
+
+interactive_terrain = generate_interactive_terrain(
+    roughness=1.0,
+    scale=1,
+    size=257
+)
+
+running = True
+while running:
+    events = pygame.event.get()
+    for event in events:
+        if event.type == pygame.QUIT:
+            running = False
+
+    interactive_terrain.draw(screen, events)
     pygame.display.flip()
 
 pygame.quit()
@@ -184,70 +232,6 @@ These must be placed in:
 
 ---
 
-## Interactive Mode
-
-This creates an interactive scene where the user can change the biome and roughness in real time.
-
-### Pgzero Example
-
-```python
-from diamond_square import generate_interactive_mode
-
-interactive_terrain = generate_interactive_mode(
-    size=...,
-    start_biome=...,
-    max_roughness=...,
-    scale=...,
-    start_roughness=...
-)
-
-def draw():
-    interactive_terrain.for_draw(screen)
-
-def update():
-    interactive_terrain.for_update()
-
-def on_mouse_down(pos):
-    interactive_terrain.for_on_mouse_down(pos)
-
-def on_mouse_up():
-    interactive_terrain.for_on_mouse_up()
-```
-
-Run with:
-
-```
-pgzrun yourfile.py
-```
-
-```python
-import pygame
-from diamond_square import generate_interactive_terrain
-
-pygame.init()
-screen = pygame.display.set_mode((800, 600))
-
-interactive_terrain = generate_interactive_terrain(
-    roughness=1.0,
-    scale=1,
-    size=257
-)
-
-running = True
-while running:
-    events = pygame.event.get()
-    for event in events:
-        if event.type == pygame.QUIT:
-            running = False
-
-    interactive_terrain.draw(screen, events)
-    pygame.display.flip()
-
-pygame.quit()
-```
-
----
-
 ## Versions
 
 Version 0.0.1: Main code for diamond-square added.  
@@ -257,7 +241,6 @@ Version 0.0.4: Added sample terrain.
 Version 0.0.5: Added sample terrains.  
 Version 0.0.6: Added functions to add/remove biomes and added external documentation website.  
 Version 0.0.7: Added `pos` parameter to determine where to place the terrain and added function to save terrain as an image. Also made interative mode avaliable to pgzero.
-
 **(Latest) Version 0.0.8:** Added C file for fast rendering of the [Diamond–Square Algorithm](https://en.wikipedia.org/wiki/Diamond-square_algorithm)
 
 ---

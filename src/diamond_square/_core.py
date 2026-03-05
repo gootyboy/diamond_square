@@ -1,3 +1,4 @@
+from __future__ import annotations
 from pgzero.rect import Rect
 from typing import overload
 from PIL import Image
