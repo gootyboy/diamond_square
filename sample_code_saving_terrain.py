@@ -1,8 +1,9 @@
 # Sample code of saving terrain images
 
-from src.diamond_square import *
+from diamond_square import *
 
 # mybiome is the function which takes in a height and return a color mapping
+# The color mapping must be a RGB tuple. Strings are not accepted
 def mybiome(h):
     if h < 5:
         return (255, 255, 0)
@@ -13,11 +14,11 @@ def mybiome(h):
 add_biome(Biome("mybiome", mybiome))
 
 # "default" is a biome which is included in the library
-save_terrain(generate_terrain(2 ** 5 + 1, "default", 0.5, 4), "test_terrain.png")
+# Use generate_pgzero_terrain or generate_pygame_terrain if you want to save a terrain as an image
+save_terrain(generate_pgzero_terrain(2 ** 5 + 1, "default", 0.5, 4), "test_terrain.png")
 
 # "mybiome" is a custom biome I added at line 9
-save_terrain(generate_terrain(2 ** 5 + 1, "mybiome", 0.5, 4), "mybiome.png")
+save_terrain(generate_pgzero_terrain(2 ** 5 + 1, "mybiome", 0.5, 4), "mybiome.png")
 
 # "desert" is a biome which is included in the library
-save_terrain(generate_terrain(2 ** 5 + 1, "desert", 0.5, 4), "desert.png") 
-
+save_terrain(generate_pgzero_terrain(2 ** 5 + 1, "desert", 0.5, 4), "desert.png") 

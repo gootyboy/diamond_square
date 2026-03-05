@@ -1,13 +1,13 @@
-# Sample code for drawing terrain
+# Sample code for drawing terrain in pgzero
 # This sample code file displays both interactive mode and a terrain in the same screen
 
-from src.diamond_square import generate_terrain, generate_pgzero_interactive
+from diamond_square import generate_pgzero_terrain, generate_pgzero_interactive
 import pgzrun
 
 WIDTH = 900
 HEIGHT = 900
 
-terrain = generate_terrain(
+terrain = generate_pgzero_terrain(
     roughness=1.0,
     biome="default",
     scale=1,

@@ -81,62 +81,15 @@ It is designed for both experimentation and game development, making terrain gen
 
 ### Drawing Terrain
 
-#### pgzero Example
+#### Pgzero Example
 
-```python
-from diamond_square import generate_terrain
-
-terrain = generate_terrain(
-    roughness=1.0,
-    biome="default",
-    scale=1,
-    size=257
-)
-
-def draw():
-    terrain.draw(screen)
-
-def update():
-    pass
-```
-
-Run with:
-
-```
-pgzrun yourfile.py
-```
-
-The `screen` parameter must be the pgzero screen. Simply pass `screen`. Your editor may underline this with yellow, but it is correct.
+Look at sample_code_pgzero_drawing_terrain.py for pgzero examples.
 
 ---
 
-#### pygame Example
+#### Pygame Example
 
-```python
-import pygame
-from diamond_square import generate_terrain
-
-pygame.init()
-screen = pygame.display.set_mode((800, 600))
-
-terrain = generate_terrain(
-    roughness=1.0,
-    biome="default",
-    scale=1,
-    size=257
-)
-
-running = True
-while running:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-
-    terrain.draw(screen)
-    pygame.display.flip()
-
-pygame.quit()
-```
+Look at sample_code_pygame_drawing_terrain.py for pygame examples.
 
 The `screen` parameter must be the pygame display surface.
 
@@ -144,65 +97,13 @@ The `screen` parameter must be the pygame display surface.
 
 This creates an interactive scene where the user can change the biome and roughness in real time.
 
-#### Pgzero Example
+#### Pgzero example
 
-```python
-from diamond_square import generate_interactive_mode
-
-interactive_terrain = generate_interactive_mode(
-    size=...,
-    start_biome=...,
-    max_roughness=...,
-    scale=...,
-    start_roughness=...
-)
-
-def draw():
-    interactive_terrain.for_draw(screen)
-
-def update():
-    interactive_terrain.for_update()
-
-def on_mouse_down(pos):
-    interactive_terrain.for_on_mouse_down(pos)
-
-def on_mouse_up():
-    interactive_terrain.for_on_mouse_up()
-```
-
-Run with:
-
-```
-pgzrun yourfile.py
-```
+Look at sample_code_pgzero_drawing_terrain.py for pgzero examples.
 
 #### Pygame example
 
-```python
-import pygame
-from diamond_square import generate_interactive_terrain
-
-pygame.init()
-screen = pygame.display.set_mode((800, 600))
-
-interactive_terrain = generate_interactive_terrain(
-    roughness=1.0,
-    scale=1,
-    size=257
-)
-
-running = True
-while running:
-    events = pygame.event.get()
-    for event in events:
-        if event.type == pygame.QUIT:
-            running = False
-
-    interactive_terrain.draw(screen, events)
-    pygame.display.flip()
-
-pygame.quit()
-```
+Look at sample_code_pygame_drawing_terrain.py for pygame examples.
 
 ---
 

@@ -1,4 +1,3 @@
-from __future__ import annotations
 from pgzero.rect import Rect
 from typing import overload
 from PIL import Image
@@ -6,7 +5,7 @@ import pygame
 from .diamond import diamond_square
 
 class Biome:
-    def __init__(self, name: str, height_to_color_func: function):
+    def __init__(self, name: str, height_to_color_func):
         self.name = name
         self.height_to_color = height_to_color_func
 
@@ -26,17 +25,17 @@ class Biome:
         return f"Biome({repr(self.name)}, {repr(self.height_to_color)})"
 
 class _PGZeroInteractive:
-    def __init__(self, draw_func, on_mouse_down_func, on_mouse_up_func, on_mouse_move_func) -> None:
+    def __init__(self, draw_func, on_mouse_down_func, on_mouse_up_func, on_mouse_move_func):
         self.for_draw = draw_func
         self.for_on_mouse_down = on_mouse_down_func
         self.for_on_mouse_up = on_mouse_up_func
         self.for_on_mouse_move = on_mouse_move_func
 
 class _PygameInteractive:
-    def __init__(self, main_function) -> None:
+    def __init__(self, main_function):
         self.draw = main_function
 
-class _Terrain:
+class _PygameTerrain:
     def __init__(self, height_map = None, biome = None, size = None, scale = None, height_to_color_func = None):
         self.heights = height_map
         self.biome = biome
@@ -49,10 +48,22 @@ class _Terrain:
         for y in range(self.size):
             for x in range(self.size):
                 color = self.height_to_color(self.heights[y][x], self.biome)
-                screen.draw.filled_rect(
-                    Rect(ox + x * self.scale, oy + y * self.scale, self.scale, self.scale),
-                    color
-                )
+                pygame.draw.rect(screen, color, Rect(ox + x * self.scale, oy + y * self.scale, self.scale, self.scale))
+
+class _PgzeroTerrain:
+    def __init__(self, height_map = None, biome = None, size = None, scale = None, height_to_color_func = None):
+        self.heights = height_map
+        self.biome = biome
+        self.height_to_color = height_to_color_func
+        self.size = size
+        self.scale = scale
+
+    def draw(self, screen, pos = (0, 0)):
+        ox, oy = pos
+        for y in range(self.size):
+            for x in range(self.size):
+                color = self.height_to_color(self.heights[y][x], self.biome)
+                screen.draw.rect(Rect(ox + x * self.scale, oy + y * self.scale, self.scale, self.scale), color=color)
 
 _BIOMES = []
 
@@ -197,8 +208,18 @@ def remove_biome(arg):
             return
     raise TypeError(f'"{name}" biome is not in the list.')
 
-def generate_terrain(size, biome = "default", roughness = 0.6, scale = 4):
-    terrain = _Terrain(biome = biome, size = size, scale = scale)
+def generate_pgzero_terrain(size, biome = "default", roughness = 0.6, scale = 4):
+    terrain = _PgzeroTerrain(biome = biome, size = size, scale = scale)
+    if biome not in [b.name for b in _BIOMES]:
+        raise TypeError(f"Biome must be in {list(map(str, _BIOMES))}")
+
+    terrain.heights = diamond_square(size, roughness)
+    terrain.height_to_color = _height_to_color
+
+    return terrain
+
+def generate_pygame_terrain(size, biome = "default", roughness = 0.6, scale = 4):
+    terrain = _PygameTerrain(biome = biome, size = size, scale = scale)
     if biome not in [b.name for b in _BIOMES]:
         raise TypeError(f"Biome must be in {list(map(str, _BIOMES))}")
 
@@ -385,10 +406,7 @@ def generate_pygame_interactive(size, start_biome = "default", max_roughness = 1
 
     return _PygameInteractive(main_function)
 
-def save_terrain(terrain, save_path, file_extension = ".png"):
-    if not save_path.endswith(file_extension.lower()):
-        save_path += file_extension.lower()
-
+def save_terrain(terrain, save_path):
     img_width = terrain.size * terrain.scale
     img_height = terrain.size * terrain.scale
     img = Image.new("RGB", (img_width, img_height))
@@ -404,5 +422,5 @@ def save_terrain(terrain, save_path, file_extension = ".png"):
                 for dx in range(terrain.scale):
                     pixels[x * terrain.scale + dx, y * terrain.scale + dy] = color
 
-    img.save(save_path, file_extension.removeprefix(".").upper())
+    img.save(save_path)
     print(f"Image saved as {save_path}")
