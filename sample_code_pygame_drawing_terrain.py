@@ -3,14 +3,14 @@
 
 # Imports
 import pygame
-from diamond_square import generate_pygame_terrain, generate_pygame_interactive
+from diamond_square import generate_terrain, generate_pygame_interactive
 
 # Initilizing pygame and setting the display size
 pygame.init()
 screen = pygame.display.set_mode((800, 600))
 
 # Creating the terrain
-terrain = generate_pygame_terrain(
+terrain = generate_terrain(
     roughness=1.0,
     biome="default",
     scale=1,
