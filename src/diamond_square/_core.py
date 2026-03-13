@@ -1,3 +1,4 @@
+from __future__ import annotations
 from pgzero.rect import Rect
 from typing import overload
 from PIL import Image
@@ -5,23 +6,51 @@ import pygame
 from .diamond import diamond_square
 
 class Biome:
-    def __init__(self, name: str, height_to_color_func):
-        self.name = name
-        self.height_to_color = height_to_color_func
+    """Class to create new biomes."""
+    def __init__(self: Biome, name: str, height_to_color_func: function) -> None:
+        """
+        Create a new biome.
 
-    def __str__(self):
+        :param name:
+            The name of the biome.
+
+        :param height_to_color_func:
+            A function that maps a height value to a color. The function must have
+            the following form::
+
+                def height_to_color(h):
+                    if h < 0.1:
+                        ...
+                    elif h < 0.4:
+                        ...
+                    else:
+                        ...
+
+            The function should return a RGB Tuple. Strings or Hex codes will not work.
+
+        """
+
+       
+        self.name = name
+        """The name of the Biome"""
+
+        self.height_to_color = height_to_color_func
+        """The height to color function"""
+
+    def __str__(self: Biome) -> str:
+        """
+        String representation of the Biome. Returns the name of the Biome.
+
+        :return str: Name of the biome
+        """
         return self.name
 
-    def __eq__(self, other):
-        if isinstance(other, str):
-            other = Biome(other, None)
+    def __repr__(self: Biome) -> str:
+        """
+        Returns the representation of the Biome. biome = exec(repr(biome))
 
-        return self.name == other.name and self.height_to_color == other.height_to_color
-
-    def __ne__(self, other):
-        return not self == other
-
-    def __repr__(self):
+        :return str: The representation.
+        """
         return f"Biome({repr(self.name)}, {repr(self.height_to_color)})"
 
 class _PGZeroInteractive:

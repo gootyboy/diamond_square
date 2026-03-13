@@ -1,5 +1,6 @@
 # Sample code of saving terrain images
 
+# Import diamond_square
 from diamond_square import *
 
 # mybiome is the function which takes in a height and return a color mapping

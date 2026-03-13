@@ -14,7 +14,7 @@ Implementation of the [Diamond–Square Algorithm](https://en.wikipedia.org/wiki
 ![Sample Swamp Terrain](https://gootyboy.github.io/project_details/diamond-square/swamp_terrain.png)
 ![Sample Ocean Terrain](https://gootyboy.github.io/project_details/diamond-square/ocean_terrain.png)
 ![Sample Mars Terrain](https://gootyboy.github.io/project_details/diamond-square/mars_terrain.png)
-![Sample Extreme Mars Terrain](https://gootyboy.github.io/project_details/diamond-square/mars_crazy.png)
+![Sample Crazy Mars Terrain](https://gootyboy.github.io/project_details/diamond-square/mars_crazy.png)
 
 ---
 
@@ -28,15 +28,16 @@ Implementation of the [Diamond–Square Algorithm](https://en.wikipedia.org/wiki
 
 ## Table of Contents
 - Quick Start
+  - Installation
 - Why Use Diamond Square?
 - Usage
-- Drawing Terrain
-  - Pgzero Example
-  - Pygame Example
+  - Drawing Terrain
+    - Pgzero Example
+    - Pygame Example
+  - Interactive Mode
+    - Pgzero Example
+    - Pygame Example
 - Requirements for Pgzero Interactive
-- Interactive Mode
-  - Pgzero Example
-  - Pygame Example
 - Versions
 - Coming Soon
 
@@ -47,16 +48,6 @@ Implementation of the [Diamond–Square Algorithm](https://en.wikipedia.org/wiki
 ### Installation
 ```
 pip install diamond-square
-```
-
-### Minimal Example
-```python
-from diamond_square import generate_terrain
-
-terrain = generate_terrain(roughness = 1.0, biome = "default", scale = 1, size = 257)
-
-def draw():
-    terrain.draw(screen, pos = (100, 100))
 ```
 
 ---
@@ -142,10 +133,12 @@ Version 0.0.4: Added sample terrain.
 Version 0.0.5: Added sample terrains.  
 Version 0.0.6: Added functions to add/remove biomes and added external documentation website.  
 Version 0.0.7: Added `pos` parameter to determine where to place the terrain and added function to save terrain as an image. Also made interative mode avaliable to pgzero.
-**(Latest) Version 0.0.8:** Added C file for fast rendering of the [Diamond–Square Algorithm](https://en.wikipedia.org/wiki/Diamond-square_algorithm)
+Version 0.0.8:  Added C file for fast rendering of the [Diamond–Square Algorithm](https://en.wikipedia.org/wiki/Diamond-square_algorithm)
+
+**(Latest) Version 0.0.9:** Added `pos` parameter to determine where to place the interactive terrain and added re-generate button for interactive mode.
 
 ---
 
 ## Coming Soon
 
-Version 0.0.9: Added `pos` parameter to determine where to place the interactive terrain and added re-generate button for interactive mode.
+Version 0.0.10:
