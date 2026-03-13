@@ -1,7 +1,7 @@
 from __future__ import annotations
 from pgzero.rect import Rect
 from pgzero.screen import Screen as _pgzero_screen
-from typing import overload, Union, Optional
+from typing import overload, Optional
 from PIL import Image
 import pygame
 from .diamond import diamond_square
