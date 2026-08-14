@@ -144,11 +144,12 @@ Version 0.0.8:  Added C file for fast rendering of the [Diamond–Square Algorit
 
 Version 0.0.9: Made pgzero and pygame interactive mode into one function and added documentation
 
-**(Latest) Version 0.1.0**: Fix bugs in C file and save_terrain function
+Version 0.1.0: Fix bugs in C file and save_terrain function
+
+**(Latest) Version 0.1.1**: Refactor Code for more OOP
 
 ---
 
 ## Coming Soon
 
-Version 0.1.1: Refactor Code for OOP
 Version 0.1.2: Complete documentation
