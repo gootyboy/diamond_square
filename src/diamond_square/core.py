@@ -53,10 +53,27 @@ def height_to_color(h: float, biome: Union[str, Biome]) -> tuple[int, int, int]:
         if biome == b.name:
             return b.height_to_color(h)
 
-def _point_in_circle(pos: tuple[int, int], center: tuple[int, int], radius: float):
+def _point_in_circle(pos: tuple[int, int], center: tuple[int, int], radius: float) -> bool:
+    """
+    Checks if a point is in a circle. Not meant for user use.
+
+    Parameters
+    ----------
+    **pos**: tuple[int, int]
+        The point to check if it is inside a circle.
+    **center**: tuple[int, int]
+        The center of the circle.
+    **radius**: float
+        The radius of the circle.
+
+    Returns
+    -------
+    **is in circle**: bool
+        Returns True if the point is inside or on the circle, and returns False if the point is outside the circle.
+    """
     dx = pos[0] - center[0]
     dy = pos[1] - center[1]
-    return dx ** 2 + dy ** 2 < radius ** 2
+    return dx ** 2 + dy ** 2 <= radius ** 2
 
 class Terrain:
     """Class for pgzero and pygame terrains."""
@@ -169,34 +186,51 @@ class Terrain:
 class PGZeroInteractive:
     """Class for pgzero interactive mode."""
     @overload
-    def __init__(self, size, start_biome: str = "default", max_roughness = 1.0,  min_roughness = 0, start_roughness = 0, scale = 4, pos = (0, 0)):
+    def __init__(self: PGZeroInteractive, size: int, start_biome: str = "default", max_roughness: float = 1.0,  min_roughness: float = 0, start_roughness: float = 0, scale: int = 4, pos: tuple[int, int] = (0, 0)) -> None:
         """
         Creates a interactive mode for pgzero.
 
-        :param size: The size. Must be in the form 2 ** n + 1.
-        :param start_biome: The biome name to start on.
-        :param max_roughness: The maximum roughness allowed on the roughness slider. Roughness controls the amount of randomness is added to each pixel.
-        :param min_roughness: The maximum roughness allowed on the roughness slider. Roughness controls the amount of randomness is added to each pixel.
-        :param start_roughness: The starting roughness on the roughness slider. Roughness controls the amount of randomness is added to each pixel.
-        :param scale: This determines how large the pixels are. Must be an integer greater than 1.
-        :param pos: The topleft position of the interactive terrain.
+        Parameters
+        ----------
+        **size**: int
+            The size. Must be in the form 2 ** n + 1.
+        **start_biome**: str
+            The biome name to start on.
+        **max_roughness**: float
+            The maximum roughness allowed on the roughness slider. Roughness controls the amount of randomness is added to each pixel.
+        **min_roughness**: float
+            The maximum roughness allowed on the roughness slider. Roughness controls the amount of randomness is added to each pixel.
+        **start_roughness**: float
+            The starting roughness on the roughness slider. Roughness controls the amount of randomness is added to each pixel.
+        **scale**: int
+            This determines how large the pixels are. Must be an integer greater than 1.
+        **pos**: tuple[float, float]
+            The topleft position of the interactive terrain.
         """
-
     @overload
-    def __init__(self, size, start_biome: Biome = DEFAULT_BIOME, max_roughness = 1.0,  min_roughness = 0, start_roughness = 0, scale = 4, pos = (0, 0)):
+    def __init__(self: PGZeroInteractive, size: int, start_biome: Biome = DEFAULT_BIOME, max_roughness: float = 1.0, min_roughness: float = 0, start_roughness: float = 0, scale: int = 4, pos: tuple[int, int] = (0, 0)) -> None:
         """
         Creates a interactive mode for pgzero.
 
-        :param size: The size. Must be in the form 2 ** n + 1.
-        :param start_biome: The Biome object to start on.
-        :param max_roughness: The maximum roughness allowed on the roughness slider. Roughness controls the amount of randomness is added to each pixel.
-        :param min_roughness: The maximum roughness allowed on the roughness slider. Roughness controls the amount of randomness is added to each pixel.
-        :param start_roughness: The starting roughness on the roughness slider. Roughness controls the amount of randomness is added to each pixel.
-        :param scale: This determines how large the pixels are. Must be an integer greater than 1.
-        :param pos: The topleft position of the interactive terrain.
+        Parameters
+        ----------
+        **size**: int
+            The size. Must be in the form 2 ** n + 1.
+        **start_biome**: Biome
+            The Biome object to start on.
+        **max_roughness**: float
+            The maximum roughness allowed on the roughness slider. Roughness controls the amount of randomness is added to each pixel.
+        **min_roughness**: float
+            The maximum roughness allowed on the roughness slider. Roughness controls the amount of randomness is added to each pixel.
+        **start_roughness**: float
+            The starting roughness on the roughness slider. Roughness controls the amount of randomness is added to each pixel.
+        **scale**: int
+            This determines how large the pixels are. Must be an integer greater than 1.
+        **pos**: tuple[float, float]
+            The topleft position of the interactive terrain.
         """
 
-    def __init__(self, size, start_biome: Union[str, Biome], max_roughness = 1.0,  min_roughness = 0, start_roughness = 0, scale = 4, pos = (0, 0)):
+    def __init__(self: PGZeroInteractive, size: int, start_biome: Union[str, Biome], max_roughness: float = 1.0, min_roughness: float = 0, start_roughness: float = 0, scale: int = 4, pos: tuple[int, int] = (0, 0)) -> None:
         if isinstance(start_biome, Biome):
             start_biome = start_biome.name
 
@@ -294,33 +328,51 @@ class PGZeroInteractive:
 class PyGameInteractive:
     """Class for pygame interactive mode."""
     @overload
-    def __init__(self, size, start_biome: str = "default", max_roughness = 1.0,  min_roughness = 0, start_roughness = 0, scale = 4, pos = (0, 0)):
+    def __init__(self: PyGameInteractive, size: int, start_biome: str = "default", max_roughness: float = 1.0,  min_roughness: float = 0, start_roughness: float = 0, scale: int = 4, pos: tuple[int, int] = (0, 0)) -> None:
         """
         Creates a interactive mode for pygame.
 
-        :param size: The size. Must be in the form 2 ** n + 1.
-        :param start_biome: The Biome object to start on.
-        :param max_roughness: The maximum roughness allowed on the roughness slider. Roughness controls the amount of randomness is added to each pixel.
-        :param min_roughness: The maximum roughness allowed on the roughness slider. Roughness controls the amount of randomness is added to each pixel.
-        :param start_roughness: The starting roughness on the roughness slider. Roughness controls the amount of randomness is added to each pixel.
-        :param scale: This determines how large the pixels are. Must be an integer greater than 1.
-        :param pos: The topleft position of the interactive terrain.
+        Parameters
+        ----------
+        **size**: int
+            The size. Must be in the form 2 ** n + 1.
+        **start_biome**: str
+            The biome name to start on.
+        **max_roughness**: float
+            The maximum roughness allowed on the roughness slider. Roughness controls the amount of randomness is added to each pixel.
+        **min_roughness**: float
+            The maximum roughness allowed on the roughness slider. Roughness controls the amount of randomness is added to each pixel.
+        **start_roughness**: float
+            The starting roughness on the roughness slider. Roughness controls the amount of randomness is added to each pixel.
+        **scale**: int
+            This determines how large the pixels are. Must be an integer greater than 1.
+        **pos**: tuple[int, int]
+            The topleft position of the interactive terrain.
         """
     @overload
-    def __init__(self, size, start_biome: Biome = DEFAULT_BIOME, max_roughness = 1.0,  min_roughness = 0, start_roughness = 0, scale = 4, pos = (0, 0)):
+    def __init__(self: PyGameInteractive, size: int, start_biome: Biome = DEFAULT_BIOME, max_roughness: float = 1.0,  min_roughness: float = 0, start_roughness: float = 0, scale: int = 4, pos: tuple[int, int] = (0, 0)) -> None:
         """
         Creates a interactive mode for pygame.
 
-        :param size: The size. Must be in the form 2 ** n + 1.
-        :param start_biome: The Biome object to start on.
-        :param max_roughness: The maximum roughness allowed on the roughness slider. Roughness controls the amount of randomness is added to each pixel.
-        :param min_roughness: The maximum roughness allowed on the roughness slider. Roughness controls the amount of randomness is added to each pixel.
-        :param start_roughness: The starting roughness on the roughness slider. Roughness controls the amount of randomness is added to each pixel.
-        :param scale: This determines how large the pixels are. Must be an integer greater than 1.
-        :param pos: The topleft position of the interactive terrain.
+        Parameters
+        ----------
+        **size**: int
+            The size. Must be in the form 2 ** n + 1.
+        **start_biome**: Biome
+            The biome object to start on.
+        **max_roughness**: float
+            The maximum roughness allowed on the roughness slider. Roughness controls the amount of randomness is added to each pixel.
+        **min_roughness**: float
+            The maximum roughness allowed on the roughness slider. Roughness controls the amount of randomness is added to each pixel.
+        **start_roughness**: float
+            The starting roughness on the roughness slider. Roughness controls the amount of randomness is added to each pixel.
+        **scale**: int
+            This determines how large the pixels are. Must be an integer greater than 1.
+        **pos**: tuple[int, int]
+            The topleft position of the interactive terrain.
         """
 
-    def __init__(self, size, start_biome: Union[str, Biome], max_roughness = 1.0,  min_roughness = 0, start_roughness = 0, scale = 4, pos = (0, 0)):
+    def __init__(self: PyGameInteractive, size: int, start_biome: Union[str, Biome], max_roughness: float = 1.0,  min_roughness: float = 0, start_roughness: float = 0, scale: int = 4, pos: tuple[int, int] = (0, 0)) -> None:
         if isinstance(start_biome, Biome):
             start_biome = start_biome.name
         pygame.init()

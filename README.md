@@ -144,7 +144,7 @@ Version 0.0.6: Added functions to add/remove biomes.
 
 Version 0.0.7: Added pos parameter to determine where to place the terrain and added function to save terrain as an image. Also made interative mode avaliable to pgzero.
 
-Version 0.0.8:  Added C file for fast rendering of the Diamond–Square Algorithm.
+Version 0.0.8: Added C file for fast rendering of the Diamond–Square Algorithm.
 
 Version 0.0.9: Made pgzero and pygame interactive mode into one function and added documentation.
 
@@ -152,9 +152,9 @@ Version 0.1.0: Fix bugs in C file and save_terrain function.
 
 Version 0.1.1: Refactor Code for more OOP.
 
-Version 0.1.2: Add more documentation.
+Version 0.1.2: Add documentation.
 
-**(Latest) Version 0.1.3**: Complete documentation.
+**(Latest) Version 0.1.3**: Complete documentation, fix bugs, and remove duplicate functions.
 
 ---
 

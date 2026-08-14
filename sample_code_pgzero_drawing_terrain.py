@@ -2,7 +2,7 @@
 # This sample code file displays both interactive mode and a terrain in the same screen
 
 # Imports
-from diamond_square import generate_terrain, generate_pgzero_interactive
+from diamond_square import Terrain, PGZeroInteractive
 import pgzrun
 
 # Setting the WIDTH and HEIGHT of the window
@@ -10,7 +10,7 @@ WIDTH = 900
 HEIGHT = 900
 
 # Creating the terrain
-terrain = generate_terrain(
+terrain = Terrain(
     roughness=1.0,
     biome="default",
     scale=1,
@@ -18,7 +18,7 @@ terrain = generate_terrain(
 )
 
 # Creating the interactive terrain
-interactive_terrain = generate_pgzero_interactive(
+interactive_terrain = PGZeroInteractive(
     size=257,
     start_biome="default",
     max_roughness=1.0,
