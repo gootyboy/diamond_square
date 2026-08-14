@@ -4,4 +4,4 @@ Interactive terrain generation also available.
 Uses C for fast rendering.
 """
 
-from .core import *
+from ._core import *

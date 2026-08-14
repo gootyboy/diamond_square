@@ -152,11 +152,12 @@ Version 0.1.0: Fix bugs in C file and save_terrain function.
 
 Version 0.1.1: Refactor Code for more OOP.
 
-**(Latest) Version 0.1.2**: Add more documentation.
+Version 0.1.2: Add more documentation.
+
+**(Latest) Version 0.1.3**: Complete documentation.
 
 ---
 
 ## Coming Soon
 
-Version 0.1.3: Complete documentation.
 Version 0.1.4: Add re-generate button for interactive mode pgzero and pygame.
