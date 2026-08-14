@@ -1,6 +1,29 @@
+from __future__ import annotations
+from pgzero.rect import Rect
+from pgzero.screen import Screen as PGZeroScreen
+from PIL import Image
+import pygame
+from pygame.surface import Surface as PyGameSurface
 from biomes import *
 from .diamond import diamond_square
 from biomes import _BIOMES as _BIOMES
+
+@overload
+def height_to_color(h, biome: str = "default"): ...
+@overload
+def height_to_color(h, biome: Biome = DEFAULT_BIOME): ...
+
+def height_to_color(h, biome: Union[str, Biome]):
+    if isinstance(biome, Biome):
+        biome = biome.name
+    for b in _BIOMES:
+        if biome == b.name:
+            return b.height_to_color(h)
+
+def _point_in_circle(pos, center, radius):
+    dx = pos[0] - center[0]
+    dy = pos[1] - center[1]
+    return dx ** 2 + dy ** 2 < radius ** 2
 
 class Terrain:
     """Class for pgzero and pygame terrains."""
