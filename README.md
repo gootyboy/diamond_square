@@ -60,7 +60,7 @@ This package provides a complete implementation of the Diamond–Square algorith
 - Multiple built‑in biomes  
 - Adjustable roughness and scale  
 - Support for pgzero and pygame  
-- Optional interactive mode (pgzero only)  
+- Optional interactive mode  
 - The ability to save generated terrain as an image  
 - Functions to add or remove biomes dynamically  
 
@@ -126,18 +126,29 @@ These must be placed in:
 
 ## Versions
 
-Version 0.0.1: Main code for diamond-square added.  
-Version 0.0.2: Updated README file and added documentation.  
-Version 0.0.3: Fixed bugs and errors.  
-Version 0.0.4: Added sample terrain.  
-Version 0.0.5: Added sample terrains.  
-Version 0.0.6: Added functions to add/remove biomes and added external documentation website.  
+Version 0.0.1: Main code for diamond-square added.
+
+Version 0.0.2: Updated README file and added documentation.
+
+Version 0.0.3: Fixed bugs and errors.
+
+Version 0.0.4: Added sample terrain.
+
+Version 0.0.5: Added sample terrains.
+
+Version 0.0.6: Added functions to add/remove biomes and added external documentation website.
+
 Version 0.0.7: Added `pos` parameter to determine where to place the terrain and added function to save terrain as an image. Also made interative mode avaliable to pgzero.
+
 Version 0.0.8:  Added C file for fast rendering of the [Diamond–Square Algorithm](https://en.wikipedia.org/wiki/Diamond-square_algorithm)
-**(Latest) Version 0.0.9:** Made pgzero and pygame interactive mode into one function and added documentation
+
+Version 0.0.9: Made pgzero and pygame interactive mode into one function and added documentation
+
+**(Latest) Version 0.1.0**: Fix bugs in C file and save_terrain function
 
 ---
 
 ## Coming Soon
 
-Version 0.1.0: Complete documentation
+Version 0.1.1: Refactor Code for OOP
+Version 0.1.2: Complete documentation

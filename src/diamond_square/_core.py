@@ -1,62 +1,12 @@
+from .biomes import *
+from .biomes import _BIOMES as _BIOMES
 from __future__ import annotations
 from pgzero.rect import Rect
 from pgzero.screen import Screen as _pgzero_screen
-from typing import overload, Optional
+from typing import overload, Optional, Union
 from PIL import Image
 import pygame
 from .diamond import diamond_square
-
-class Biome:
-    """Class to create new biomes."""
-    def __init__(self: Biome, name: str, height_to_color_func: function) -> None:
-        """
-        Create a new biome.
-
-        :param name:
-            The name of the biome.
-
-        :param height_to_color_func:
-            A function that maps a height value to a color. The function must have
-            the following form::
-
-                def height_to_color(h):
-                    if h < 0.1:
-                        ...
-                    elif h < 0.4:
-                        ...
-                    else:
-                        ...
-
-            The function should return a RGB Tuple. Strings or Hex codes will not work.
-
-        """
-
-
-        self.name = name
-        """The name of the Biome"""
-
-        self.height_to_color = height_to_color_func
-        """The height to color function"""
-
-    def __str__(self: Biome) -> str:
-        """
-        String representation of the Biome. Returns the name of the Biome.
-
-        :return str: Name of the biome
-        """
-        return self.name
-
-    def __repr__(self: Biome) -> str:
-        """
-        Returns the representation of the Biome. biome = exec(repr(biome))
-
-        :return str: The representation.
-        """
-        return f"Biome({repr(self.name)}, {repr(self.height_to_color)})"
-
-    def add_biome(self: Biome) -> None:
-        """Adds the biome to the list of biomes."""
-        add_biome(self)
 
 class _InteractiveMode:
     """Class for pgzero and pygame interactive mode. Not meant for user use."""
@@ -96,7 +46,14 @@ class _InteractiveMode:
             self.for_on_mouse_move = args[3]
             """The on_mouse_move function. Call this in your pgzero `on_mouse_move()` function"""
 
-def _height_to_color(h, biome = "default"):
+@overload
+def height_to_color(h, biome: str = "default"): ...
+@overload
+def height_to_color(h, biome: Biome = DEFAULT_BIOME): ...
+
+def height_to_color(h, biome: Union[str, Biome]):
+    if isinstance(biome, Biome):
+        biome = biome.name
     for b in _BIOMES:
         if biome == b.name:
             return b.height_to_color(h)
@@ -129,160 +86,42 @@ class _Terrain:
         is_pgzero = isinstance(screen, _pgzero_screen)
         for y in range(self.size):
             for x in range(self.size):
-                color = _height_to_color(self.heights[y][x], self.biome)
+                color = height_to_color(self.heights[y][x], self.biome)
                 if is_pgzero:
                     screen.draw.rect(Rect(ox + x * self.scale, oy + y * self.scale, self.scale, self.scale), color=color)
                 else:
                     pygame.draw.rect(screen, color, Rect(ox + x * self.scale, oy + y * self.scale, self.scale, self.scale))
-
-_BIOMES = []
 
 def _point_in_circle(pos, center, radius):
     dx = pos[0] - center[0]
     dy = pos[1] - center[1]
     return dx ** 2 + dy ** 2 < radius ** 2
 
-def _default_func(h):
-    if h < 0.2:
-        return (0, 0, int(100 + h * 80))
-    if h < 0.3:
-        return (0, 50, int(150 + h * 80))
-    if h < 0.35:
-        return (194, 178, 128)
-    if h < 0.5:
-        return (34, 139, 34)
-    if h < 0.6:
-        return (0, 100, 0)
-    if h < 0.75:
-        return (120, 110, 100)
-    if h < 0.9:
-        return (160, 160, 160)
-    return (255, 255, 255)
-
-def _desert_func(h):
-    if h < 0.2:
-        return (210, 180, 140)
-    if h < 0.4:
-        return (237, 201, 175)
-    if h < 0.6:
-        return (194, 178, 128)
-    if h < 0.8:
-        return (150, 140, 120)
-    return (255, 255, 255)
-
-def _tundra_func(h):
-    if h < 0.05:
-        return (0, 0, 120)
-    if h < 0.1:
-        return (0, 40, 140)
-    if h < 0.3:
-        return (150, 150, 150)
-    if h < 0.4:
-        return (180, 180, 180)
-    return (255, 255, 255)
-
-def _tropical_func(h):
-    if h < 0.2:
-        return (0, 30, 150)
-    if h < 0.3:
-        return (0, 80, 180)
-    if h < 0.4:
-        return (240, 220, 130)
-    if h < 0.6:
-        return (34, 180, 34)
-    if h < 0.75:
-        return (0, 120, 0)
-    return (255, 255, 255) 
-
-def _volcanic_func(h):
-    if h < 0.2:
-        return (20, 20, 20)
-    if h < 0.4:
-        return (40, 40, 40)
-    if h < 0.6:
-        return (80, 0, 0)
-    if h < 0.8:
-        return (200, 50, 0)
-    return (255, 120, 50)
-
-def _swamp_func(h):
-    if h < 0.2:
-        return (20, 40, 20)
-    if h < 0.35:
-        return (40, 60, 30)
-    if h < 0.5:
-        return (70, 90, 50)
-    if h < 0.7:
-        return (90, 120, 70)
-    return (130, 160, 110)
-
-def _ocean_func(h):
-    if h < 0.2:
-        return (0, 10, 40)
-    if h < 0.4:
-        return (0, 30, 80)
-    if h < 0.6:
-        return (0, 60, 120)
-    if h < 0.8:
-        return (0, 100, 160)
-    if h < 0.9:
-        return (200, 190, 140)
-    return (240, 220, 180)
-
-def _mars_func(h):
-    if h < 0.2:
-        return (60, 30, 20)
-    if h < 0.35:
-        return (110, 50, 30)
-    if h < 0.55:
-        return (160, 70, 40)
-    if h < 0.7:
-        return (200, 120, 80)
-    if h < 0.85:
-        return (230, 200, 170)
-    return (240, 240, 240)
-
-_BIOMES.append(Biome("default", _default_func))
-_BIOMES.append(Biome("desert", _desert_func))
-_BIOMES.append(Biome("tundra", _tundra_func))
-_BIOMES.append(Biome("tropical", _tropical_func))
-_BIOMES.append(Biome("volcanic", _volcanic_func))
-_BIOMES.append(Biome("swamp", _swamp_func))
-_BIOMES.append(Biome("ocean", _ocean_func))
-_BIOMES.append(Biome("mars", _mars_func))
-
-def add_biome(biome: Biome):
-    if biome.name in [b.name for b in _BIOMES]:
-        raise TypeError(f"\"{biome}\" biome is already in the added biomes list: {list(map(str, _BIOMES))}.")
-
-    _BIOMES.append(biome)
-
 @overload
-def remove_biome(biome_name: str):
-    ...
-
+def generate_terrain(size, biome: str = "default", roughness = 0.6, scale = 4): ...
 @overload
-def remove_biome(biome: Biome):
-    ...
+def generate_terrain(size, biome: Biome = DEFAULT_BIOME, roughness = 0.6, scale = 4): ...
 
-def remove_biome(arg):
-    name = arg if isinstance(arg, str) else arg.name
-    for b in _BIOMES:
-        if b.name == name:
-            _BIOMES.remove(b)
-            return
-    raise TypeError(f'"{name}" biome is not in the list.')
-
-def generate_terrain(size, biome = "default", roughness = 0.6, scale = 4):
+def generate_terrain(size, biome: Union[str, Biome], roughness = 0.6, scale = 4):
+    if isinstance(biome, Biome):
+        biome = biome.name
     terrain = _Terrain(biome = biome, size = size, scale = scale)
     if biome not in [b.name for b in _BIOMES]:
-        raise TypeError(f"Biome must be in {list(map(str, _BIOMES))}")
+        raise TypeError(f"Biome name must be in {list(map(str, _BIOMES))}")
 
     terrain.heights = diamond_square(size, roughness)
 
     return terrain
 
-def generate_pgzero_interactive(size, start_biome = "default", max_roughness = 1.0,  min_roughness = 0, start_roughness = 0, scale = 4, pos = (0, 0)):
+@overload
+def generate_pgzero_interactive(size, start_biome: str = "default", max_roughness = 1.0,  min_roughness = 0, start_roughness = 0, scale = 4, pos = (0, 0)): ...
+@overload
+def generate_pgzero_interactive(size, start_biome: Biome = DEFAULT_BIOME, max_roughness = 1.0,  min_roughness = 0, start_roughness = 0, scale = 4, pos = (0, 0)): ...
+
+def generate_pgzero_interactive(size, start_biome: Union[str, Biome], max_roughness = 1.0,  min_roughness = 0, start_roughness = 0, scale = 4, pos = (0, 0)):
+    if isinstance(start_biome, Biome):
+        start_biome = start_biome.name
+
     state = {
         'roughness': max(min_roughness, min(start_roughness, max_roughness)),
         'biome': start_biome,
@@ -327,7 +166,7 @@ def generate_pgzero_interactive(size, start_biome = "default", max_roughness = 1
         ox, oy = pos
         for y in range(size):
             for x in range(size):
-                color = _height_to_color(state['height_map'][y][x], state['biome'])
+                color = height_to_color(state['height_map'][y][x], state['biome'])
                 screen.draw.filled_rect(Rect(ox + x * scale, oy + y * scale, scale, scale), color)
         screen.draw.filled_rect(base_slider, "gray")
         screen.draw.filled_circle(state['slider_circle_pos'], state['slider_circle_radius'], "red")
@@ -364,7 +203,14 @@ def generate_pgzero_interactive(size, start_biome = "default", max_roughness = 1
 
     return _InteractiveMode(draw_func, on_mouse_down_func, on_mouse_up_func, on_mouse_move_func)
 
-def generate_pygame_interactive(size, start_biome = "default", max_roughness = 1.0,  min_roughness = 0, start_roughness = 0, scale = 4, pos = (0, 0)):
+@overload
+def generate_pygame_interactive(size, start_biome: str = "default", max_roughness = 1.0,  min_roughness = 0, start_roughness = 0, scale = 4, pos = (0, 0)): ...
+@overload
+def generate_pygame_interactive(size, start_biome: Biome = DEFAULT_BIOME, max_roughness = 1.0,  min_roughness = 0, start_roughness = 0, scale = 4, pos = (0, 0)): ...
+
+def generate_pygame_interactive(size, start_biome: Union[str, Biome], max_roughness = 1.0,  min_roughness = 0, start_roughness = 0, scale = 4, pos = (0, 0)):
+    if isinstance(start_biome, Biome):
+        start_biome = start_biome.name
     pygame.init()
     pygame.font.init()
     state = {
@@ -432,7 +278,7 @@ def generate_pygame_interactive(size, start_biome = "default", max_roughness = 1
         ox, oy = pos
         for y in range(size):
             for x in range(size):
-                color = _height_to_color(state['height_map'][y][x], state['biome'])
+                color = height_to_color(state['height_map'][y][x], state['biome'])
                 pygame.draw.rect(surface, color, Rect(ox + x * scale, oy + y * scale, scale, scale), width = 0)
 
         font24 = pygame.font.SysFont(None, 24)
@@ -468,7 +314,7 @@ def save_terrain(terrain, save_path):
 
     for y in range(terrain.size):
         for x in range(terrain.size):
-            color = terrain.height_to_color(terrain.heights[y][x], terrain.biome)
+            color = height_to_color(terrain.heights[y][x], terrain.biome)
 
             color = tuple(max(0, min(255, int(c))) for c in color)
 

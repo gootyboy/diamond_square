@@ -60,7 +60,7 @@ void free_array2d(Array2D array2d) {
     free(array2d.data);
 }
 
-double** diamond_square(int size, float rough) {
+Array2D diamond_square(int size, float rough) {
     Array2D h_map = create_array2d(size, size);
 
     for (int y = 0; y < size; y++)
@@ -131,7 +131,7 @@ double** diamond_square(int size, float rough) {
         for (int x = 0; x < size; x++)
             h_map.data[y][x] = (h_map.data[y][x] - minv) / range;
 
-    return h_map.data;
+    return h_map;
 }
 
 #ifdef __cplusplus
