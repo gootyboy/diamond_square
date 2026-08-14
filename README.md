@@ -19,14 +19,17 @@ Implementation of the [Diamond–Square Algorithm](https://en.wikipedia.org/wiki
 ---
 
 > ### ⚠️ ***You MUST include all four interactive functions for pgzero interactive***
+>
 > Missing even one will cause failures or unpredictable behavior.
-
+>
 > ### ⚠️ ***You must pass the pgzero screen into draw functions***
+>
 > Use `terrain.draw(screen)` or `terrain.for_draw(screen)` — the yellow underline is expected.
 
 ---
 
 ## Table of Contents
+
 - Quick Start
   - Installation
 - Why Use Diamond Square?
@@ -46,7 +49,8 @@ Implementation of the [Diamond–Square Algorithm](https://en.wikipedia.org/wiki
 ## Quick Start
 
 ### Installation
-```
+
+```bash
 pip install diamond-square
 ```
 
@@ -102,7 +106,7 @@ Look at sample_code_pygame_drawing_terrain.py for pygame examples.
 
 For Pgzero Interative Mode, it requires **all four** of the following functions to be placed in their corresponding pgzero event handlers:
 
-```
+```python
 terrain.for_draw(screen)
 terrain.for_on_mouse_down(pos)
 terrain.for_on_mouse_up()
@@ -134,22 +138,25 @@ Version 0.0.3: Fixed bugs and errors.
 
 Version 0.0.4: Added sample terrain.
 
-Version 0.0.5: Added sample terrains.
+Version 0.0.5: Added more sample terrains.
 
-Version 0.0.6: Added functions to add/remove biomes and added external documentation website.
+Version 0.0.6: Added functions to add/remove biomes.
 
-Version 0.0.7: Added `pos` parameter to determine where to place the terrain and added function to save terrain as an image. Also made interative mode avaliable to pgzero.
+Version 0.0.7: Added pos parameter to determine where to place the terrain and added function to save terrain as an image. Also made interative mode avaliable to pgzero.
 
-Version 0.0.8:  Added C file for fast rendering of the [Diamond–Square Algorithm](https://en.wikipedia.org/wiki/Diamond-square_algorithm)
+Version 0.0.8:  Added C file for fast rendering of the Diamond–Square Algorithm.
 
-Version 0.0.9: Made pgzero and pygame interactive mode into one function and added documentation
+Version 0.0.9: Made pgzero and pygame interactive mode into one function and added documentation.
 
-Version 0.1.0: Fix bugs in C file and save_terrain function
+Version 0.1.0: Fix bugs in C file and save_terrain function.
 
-**(Latest) Version 0.1.1**: Refactor Code for more OOP
+Version 0.1.1: Refactor Code for more OOP.
+
+**(Latest) Version 0.1.2**: Add more documentation.
 
 ---
 
 ## Coming Soon
 
-Version 0.1.2: Complete documentation
+Version 0.1.3: Complete documentation.
+Version 0.1.4: Add re-generate button for interactive mode pgzero and pygame.

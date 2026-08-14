@@ -1,3 +1,7 @@
+"""
+This file has the height_to_color function, Terrain, and Interactive Terrain for Pgzero and Pygame.
+"""
+
 from __future__ import annotations
 from pgzero.rect import Rect
 from pgzero.screen import Screen as PGZeroScreen

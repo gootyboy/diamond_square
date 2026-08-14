@@ -1,3 +1,6 @@
+"""
+All functions and classes are accessible through this file.
+"""
 from terrain_classes import *
 from biomes import _BIOMES as _BIOMES
 from __future__ import annotations

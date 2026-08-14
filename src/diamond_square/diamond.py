@@ -1,7 +1,26 @@
+"""
+C to Python wrapper for the core diamond square algorithm.
+"""
+
 from ctypes import *
 import os
 
 class Array2D(Structure):
+    """
+    A Structure for a struct in the diamond.c file.
+
+    Fields
+    ------
+    **rows**: c_size_t
+
+        The amount of rows for the array.
+    **cols**: c_size_t
+
+        The amount of columns for the array.
+    **data**: POINTER(POINTER(c_double))
+
+        The data of the array.
+    """
     _fields_ = [
         ("rows", c_size_t),
         ("cols", c_size_t),
@@ -9,13 +28,31 @@ class Array2D(Structure):
     ]
 
 _file = 'diamond_lib.so'
+"""The file name of the .so file. Do not change the value of this variable."""
 _path = os.path.join(*(os.path.split(__file__)[:-1] + (_file,)))
+"""The path of the .so file. Do not change the value of this variable."""
 _mod = cdll.LoadLibrary(_path)
+"""The loaded library of the .so file. Do not change the value of this variable."""
 
 _mod.diamond_square.restype = Array2D
 _mod.diamond_square.argtypes = [c_int, c_float]
 
-def diamond_square(size, roughness):
+def diamond_square(size: int, roughness: float) -> list[list[float]]:
+    """
+    Returns a height map using the Diamond Square Algorithm.
+    
+    Parameters
+    ----------
+    **size**: int
+        The size of the height map. Must be in the form 2 ** n + 1.
+    **roughness**: float
+        Controls the amount of randomness that is added to each height value.
+
+    Returns
+    -------
+    **Height Map**: list[list[float]]
+        The height map generated using the Diamond Square Algorithm.
+    """
     c_heights = _mod.diamond_square(size, roughness)
 
     heights = [
