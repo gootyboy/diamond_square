@@ -4,12 +4,12 @@ This file has the Biome class, add_biome and remove_biome function, and 8 in-bui
 
 from typing import overload, Union
 
-_BIOMES = []
+ADDED_BIOMES = []
 """This is the list of the biome names. Do not update or change this list."""
 
 class Biome:
     """Class to create new biomes."""
-    def __init__(self: Biome, name: str, height_to_color_func: function) -> None:
+    def __init__(self, name: str, height_to_color_func: function) -> None:
         """
         Creates a new biome.
 
@@ -41,7 +41,7 @@ class Biome:
         self.height_to_color = height_to_color_func
         """The height to color function."""
 
-    def __str__(self: Biome) -> str:
+    def __str__(self) -> str:
         """
         String representation of the Biome. Returns the name of the Biome.
 
@@ -52,7 +52,7 @@ class Biome:
         """
         return self.name
 
-    def __repr__(self: Biome) -> str:
+    def __repr__(self) -> str:
         """
         Returns the representation of the Biome.
 
@@ -64,7 +64,7 @@ class Biome:
         """
         return f"Biome({repr(self.name)}, {repr(self.height_to_color)})"
 
-    def add_biome(self: Biome) -> None:
+    def add_biome(self) -> None:
         """
         Adds the biome to the list of biomes.
         """
@@ -291,10 +291,10 @@ def add_biome(biome: Biome):
     **biome**: Biome
         The biome to add.
     """
-    if biome.name in [b.name for b in _BIOMES]:
-        raise TypeError(f"\"{biome}\" biome is already in the added biomes list: {list(map(str, _BIOMES))}.")
+    if biome.name in [b.name for b in ADDED_BIOMES]:
+        raise TypeError(f"\"{biome}\" biome is already in the added biomes list: {list(map(str, ADDED_BIOMES))}.")
 
-    _BIOMES.append(biome)
+    ADDED_BIOMES.append(biome)
 
 DEFAULT_BIOME = Biome("default", _default_func)
 """The default Biome."""
@@ -363,9 +363,9 @@ def remove_biome(biome: Biome):
 def remove_biome(biome: Union[str, Biome]):
     if isinstance(biome, Biome):
         biome = biome.name
-    for b in _BIOMES:
+    for b in ADDED_BIOMES:
         if b.biome == biome:
-            _BIOMES.remove(b)
+            ADDED_BIOMES.remove(b)
             return
 
     raise TypeError(f'"{biome}" biome is not in the list. Biomes must be added before they can be removed.')

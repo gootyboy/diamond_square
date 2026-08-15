@@ -6,9 +6,9 @@ from pgzero.screen import Screen as PGZeroScreen
 from PIL import Image
 import pygame
 from pygame.surface import Surface as PyGameSurface
-from biomes import *
+from .biomes import *
 from .diamond import diamond_square
-from biomes import _BIOMES as _BIOMES
+from .biomes import ADDED_BIOMES as ADDED_BIOMES
 
 @overload
 def height_to_color(h: float, biome: str = "default") -> tuple[int, int, int]:
@@ -49,7 +49,7 @@ def height_to_color(h: float, biome: Union[str, Biome]) -> tuple[int, int, int]:
     if isinstance(biome, Biome):
         return biome.height_to_color(h)
 
-    for b in _BIOMES:
+    for b in ADDED_BIOMES:
         if biome == b.name:
             return b.height_to_color(h)
 
@@ -78,7 +78,7 @@ def _point_in_circle(pos: tuple[int, int], center: tuple[int, int], radius: floa
 class Terrain:
     """Class for pgzero and pygame terrains."""
     @overload
-    def __init__(self: Terrain, size: int, biome: str = "default", roughness: float = 0.6, scale: int = 4, pos: tuple[float, float] = (0, 0)) -> None:
+    def __init__(self, size: int, biome: str = "default", roughness: float = 0.6, scale: int = 4, pos: tuple[float, float] = (0, 0)) -> None:
         """
         Creates the terrain.
 
@@ -96,7 +96,7 @@ class Terrain:
             The topleft position of the terrain.
         """
     @overload
-    def __init__(self: Terrain, size: int, biome: Biome = DEFAULT_BIOME, roughness: float = 0.6, scale: int = 4, pos: tuple[int, int] = (0, 0)) -> None:
+    def __init__(self, size: int, biome: Biome = DEFAULT_BIOME, roughness: float = 0.6, scale: int = 4, pos: tuple[int, int] = (0, 0)) -> None:
         """
         Creates the terrain.
 
@@ -114,11 +114,11 @@ class Terrain:
             The topleft position of the terrain.
         """
 
-    def __init__(self: Terrain, size: int, biome: Union[str, Biome], roughness: float = 0.6, scale: int = 4, pos: tuple[int, int] = (0, 0)) -> None:
+    def __init__(self, size: int, biome: Union[str, Biome], roughness: float = 0.6, scale: int = 4, pos: tuple[int, int] = (0, 0)) -> None:
         if isinstance(biome, Biome):
             biome = biome.name
-        if biome not in [b.name for b in _BIOMES]:
-            raise TypeError(f"Biome name must be in {list(map(str, _BIOMES))}")
+        if biome not in [b.name for b in ADDED_BIOMES]:
+            raise TypeError(f"Biome name must be in {list(map(str, ADDED_BIOMES))}")
 
         height_map = diamond_square(size, roughness)
 
@@ -137,7 +137,7 @@ class Terrain:
         self.pos = pos
         """The topleft position of the terrain."""
 
-    def draw(self: Terrain, screen_or_surface: Union[PGZeroScreen, PyGameSurface]) -> None:
+    def draw(self, screen_or_surface: Union[PGZeroScreen, PyGameSurface]) -> None:
         """
         Draws the terrain on pgzero or pygame determined by the screen_or_surface parameter.
 
@@ -156,7 +156,7 @@ class Terrain:
                 else:
                     pygame.draw.rect(screen_or_surface, color, Rect(ox + x * self.scale, oy + y * self.scale, self.scale, self.scale))
 
-    def save_as_img(self: Terrain, save_path: str) -> None:
+    def save_as_img(self, save_path: str) -> None:
         """
         Saves the terrain as an image.
 
@@ -186,7 +186,7 @@ class Terrain:
 class PGZeroInteractive:
     """Class for pgzero interactive mode."""
     @overload
-    def __init__(self: PGZeroInteractive, size: int, start_biome: str = "default", max_roughness: float = 1.0,  min_roughness: float = 0, start_roughness: float = 0, scale: int = 4, pos: tuple[int, int] = (0, 0)) -> None:
+    def __init__(self, size: int, start_biome: str = "default", max_roughness: float = 1.0,  min_roughness: float = 0, start_roughness: float = 0, scale: int = 4, pos: tuple[int, int] = (0, 0)) -> None:
         """
         Creates a interactive mode for pgzero.
 
@@ -208,7 +208,7 @@ class PGZeroInteractive:
             The topleft position of the interactive terrain.
         """
     @overload
-    def __init__(self: PGZeroInteractive, size: int, start_biome: Biome = DEFAULT_BIOME, max_roughness: float = 1.0, min_roughness: float = 0, start_roughness: float = 0, scale: int = 4, pos: tuple[int, int] = (0, 0)) -> None:
+    def __init__(self, size: int, start_biome: Biome = DEFAULT_BIOME, max_roughness: float = 1.0, min_roughness: float = 0, start_roughness: float = 0, scale: int = 4, pos: tuple[int, int] = (0, 0)) -> None:
         """
         Creates a interactive mode for pgzero.
 
@@ -230,7 +230,7 @@ class PGZeroInteractive:
             The topleft position of the interactive terrain.
         """
 
-    def __init__(self: PGZeroInteractive, size: int, start_biome: Union[str, Biome], max_roughness: float = 1.0, min_roughness: float = 0, start_roughness: float = 0, scale: int = 4, pos: tuple[int, int] = (0, 0)) -> None:
+    def __init__(self, size: int, start_biome: Union[str, Biome], max_roughness: float = 1.0, min_roughness: float = 0, start_roughness: float = 0, scale: int = 4, pos: tuple[int, int] = (0, 0)) -> None:
         if isinstance(start_biome, Biome):
             start_biome = start_biome.name
 
@@ -328,7 +328,7 @@ class PGZeroInteractive:
 class PyGameInteractive:
     """Class for pygame interactive mode."""
     @overload
-    def __init__(self: PyGameInteractive, size: int, start_biome: str = "default", max_roughness: float = 1.0,  min_roughness: float = 0, start_roughness: float = 0, scale: int = 4, pos: tuple[int, int] = (0, 0)) -> None:
+    def __init__(self, size: int, start_biome: str = "default", max_roughness: float = 1.0,  min_roughness: float = 0, start_roughness: float = 0, scale: int = 4, pos: tuple[int, int] = (0, 0)) -> None:
         """
         Creates a interactive mode for pygame.
 
@@ -350,7 +350,7 @@ class PyGameInteractive:
             The topleft position of the interactive terrain.
         """
     @overload
-    def __init__(self: PyGameInteractive, size: int, start_biome: Biome = DEFAULT_BIOME, max_roughness: float = 1.0,  min_roughness: float = 0, start_roughness: float = 0, scale: int = 4, pos: tuple[int, int] = (0, 0)) -> None:
+    def __init__(self, size: int, start_biome: Biome = DEFAULT_BIOME, max_roughness: float = 1.0,  min_roughness: float = 0, start_roughness: float = 0, scale: int = 4, pos: tuple[int, int] = (0, 0)) -> None:
         """
         Creates a interactive mode for pygame.
 
@@ -372,7 +372,7 @@ class PyGameInteractive:
             The topleft position of the interactive terrain.
         """
 
-    def __init__(self: PyGameInteractive, size: int, start_biome: Union[str, Biome], max_roughness: float = 1.0,  min_roughness: float = 0, start_roughness: float = 0, scale: int = 4, pos: tuple[int, int] = (0, 0)) -> None:
+    def __init__(self, size: int, start_biome: Union[str, Biome], max_roughness: float = 1.0,  min_roughness: float = 0, start_roughness: float = 0, scale: int = 4, pos: tuple[int, int] = (0, 0)) -> None:
         if isinstance(start_biome, Biome):
             start_biome = start_biome.name
         pygame.init()

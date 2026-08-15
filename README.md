@@ -154,10 +154,12 @@ Version 0.1.1: Refactor Code for more OOP.
 
 Version 0.1.2: Add documentation.
 
-**(Latest) Version 0.1.3**: Complete documentation, fix bugs, and remove duplicate functions.
+Version 0.1.3: Complete documentation, fix bugs, and remove duplicate functions.
+
+**(Latest) Version 0.1.4**: Bug fixes.
 
 ---
 
 ## Coming Soon
 
-Version 0.1.4: Add re-generate button for interactive mode pgzero and pygame.
+Version 0.1.5: Add re-generate button for interactive mode pgzero and pygame.
