@@ -4,5 +4,6 @@ import pygame
 from PIL import Image
 from pgzero.rect import Rect
 from typing import overload, Union, Callable
+from pygame.event import Event as PyGameEvent
 from pgzero.screen import Screen as PGZeroScreen
 from pygame.surface import Surface as PyGameSurface

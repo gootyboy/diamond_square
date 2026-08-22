@@ -1,6 +1,6 @@
 # Diamond Square
 
-Implementation of the [Diamond–Square Algorithm](https://en.wikipedia.org/wiki/Diamond-square_algorithm). This package can draw terrain on pgzero and pygame, and can also set up interactive mode.
+Implementation of the [Diamond–Square Algorithm](https://en.wikipedia.org/wiki/Diamond-square_algorithm). This package can draw terrain on pgzero and pygame, and can also set up interactive mode for.
 
 ---
 
@@ -30,8 +30,6 @@ Implementation of the [Diamond–Square Algorithm](https://en.wikipedia.org/wiki
 
 ## Table of Contents
 
-- Quick Start
-  - Installation
 - Why Use Diamond Square?
 - Usage
   - Drawing Terrain
@@ -46,27 +44,23 @@ Implementation of the [Diamond–Square Algorithm](https://en.wikipedia.org/wiki
 
 ---
 
-## Quick Start
-
-### Installation
-
-```bash
-pip install diamond-square
-```
-
----
-
 ## Why Use diamond-square?
 
 This package provides a complete implementation of the Diamond–Square algorithm with:
 
-- Fast rendering of the Diamond-Square algorithm written in C
-- Multiple built‑in biomes  
-- Adjustable roughness and scale  
-- Support for pgzero and pygame  
-- Optional interactive mode  
-- The ability to save generated terrain as an image  
-- Functions to add or remove biomes dynamically  
+- Fast rendering of the Diamond-Square algorithm written in C.
+
+- Multiple built‑in biomes.
+
+- Adjustable roughness and scale.
+
+- Support for pgzero and pygame.
+
+- Optional interactive mode.
+
+- The ability to save generated terrain as an image.
+
+- Functions to add or remove biomes dynamically.
 
 It is designed for both experimentation and game development, making terrain generation simple and customizable.
 
@@ -158,7 +152,7 @@ Version 0.1.3: Complete documentation, fix bugs, and remove duplicate functions.
 
 Version 0.1.4: Bug fixes.
 
-**(Latest) Version 0.1.5**: Bug fixes, documentation changes, and added a utils.py file.
+**(Latest) Version 0.1.5**: Bug fixes, documentation changes, added utils.py, and updated sample code files.
 
 ---
 

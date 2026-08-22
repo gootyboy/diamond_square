@@ -36,7 +36,7 @@ _mod = ctypes.cdll.LoadLibrary(_path)
 _mod.diamond_square.restype = Array2D
 _mod.diamond_square.argtypes = [ctypes.c_int, ctypes.c_float]
 
-def diamond_square(size: int, roughness: float) -> Array2D:
+def diamond_square(size: int, roughness: float) -> list[list[float]]:
     """
     Returns a height map using the Diamond Square Algorithm.
     

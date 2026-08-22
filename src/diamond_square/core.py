@@ -91,6 +91,11 @@ class Terrain:
             This determines how large the pixels are. Must be an integer greater than 1.
         **pos**: tuple[int, int]
             The topleft position of the terrain.
+
+        Raises
+        ------
+        TypeError
+            If the biome is not in the ADDED_BIOMES list.
         """
     @overload
     def __init__(self, size: int, biome: Biome = DEFAULT_BIOME, roughness: float = 0.6, scale: int = 4, pos: tuple[int, int] = (0, 0)) -> None:
@@ -109,21 +114,39 @@ class Terrain:
             This determines how large the pixels are. Must be an integer greater than 1.
         **pos**: tuple[int, int]
             The topleft position of the terrain.
+
+        Raises
+        ------
+        TypeError
+            If the biome is not in the ADDED_BIOMES list.
         """
 
     def __init__(self, size: int, biome: Union[str, Biome], roughness: float = 0.6, scale: int = 4, pos: tuple[int, int] = (0, 0)) -> None:
         if isinstance(biome, Biome):
-            biome = biome.name
-        if biome not in [b.name for b in ADDED_BIOMES]:
+            biome_name = biome.name
+            """The biome name of the terrain."""
+            biome = biome
+            """The Biome of the terrain."""
+        elif isinstance(biome, str):
+            biome_name = biome
+            """The biome name of the terrain."""
+            for added_biome in ADDED_BIOMES:
+                if added_biome.name == biome_name:
+                    biome = added_biome
+                    """The Biome of the terrain."""
+                    break
+
+        if biome_name not in [b.name for b in ADDED_BIOMES]:
             raise TypeError(f"Biome name must be in {list(map(str, ADDED_BIOMES))}")
 
-        height_map = diamond_square(size, roughness)
-
-        self.heights = height_map
+        self.heights: list[list[float]] = diamond_square(size, roughness)
         """The heights in the height map."""
 
-        self.biome = biome
+        self.biome: str = biome_name
         """The biome name of the terrain."""
+
+        self.biome_obj: Biome = biome
+        """The Biome of the terrain."""
 
         self.size = size
         """The size of the terrain. Size must be in the form 2 ** n + 1."""
@@ -140,7 +163,7 @@ class Terrain:
 
         Parameters
         ----------
-        **screen_or_surface**: Screen, Surface
+        **screen_or_surface**: Screen | Surface
             This is the screen in pgzero or a Surface in pygame.
         """
         ox, oy = self.pos
@@ -153,7 +176,7 @@ class Terrain:
                 else:
                     pygame.draw.rect(screen_or_surface, color, Rect(ox + x * self.scale, oy + y * self.scale, self.scale, self.scale))
 
-    def save_as_img(self, save_path: str) -> None:
+    def save_as_img(self, save_path: str) -> Terrain:
         """
         Saves the terrain as an image.
 
@@ -161,6 +184,11 @@ class Terrain:
         ----------
         **save_path**: str
             The path to save the image to.
+
+        Returns
+        -------
+        terrain: Terrain
+            The terrain that was saved.
         """
         img_width = self.size * self.scale
         img_height = self.size * self.scale
@@ -178,7 +206,8 @@ class Terrain:
                         pixels[x * self.scale + dx, y * self.scale + dy] = color
 
         img.save(save_path)
-        print(f"Image saved as {save_path}")
+
+        return Terrain
 
 class PGZeroInteractive:
     """Class for pgzero interactive mode."""
@@ -231,7 +260,7 @@ class PGZeroInteractive:
         if isinstance(start_biome, Biome):
             start_biome = start_biome.name
 
-        state = {
+        self.state = {
             'roughness': max(min_roughness, min(start_roughness, max_roughness)),
             'biome': start_biome,
             'drag': False,
@@ -239,76 +268,85 @@ class PGZeroInteractive:
             'slider_circle_pos': (0, 0),
             'slider_circle_radius': 15
         }
+        """The current state of the interactive terrain"""
 
-        width = size * scale
-        height = size * scale + 50
-        
-        biomes = [
-            ["default", (50, 150, 50), "white"], 
-            ["desert", (210, 180, 140), "black"], 
-            ["tundra", (200, 200, 255), "black"], 
-            ["tropical", (0, 150, 0), "white"], 
-            ["volcanic", (60, 0, 0), "white"], 
-            ["swamp", (40, 60, 30), "white"], 
-            ["ocean", (0, 70, 140), "white"], 
-            ["mars", (150, 60, 40), "white"]
-        ]
+        self.width = size * scale
+        """The width of the interactive terrain."""
+        self.height = size * scale + 50
+        """The height of the interactive terrain."""
 
-        state['height_map'] = diamond_square(size, state['roughness'])
+        biomes: list[list[str, tuple[int, int, int], str]] = []
+        """The list of biomes to be drawn."""
+
+        for added_biome in ADDED_BIOMES:
+            biomes.append([added_biome.name, (0, 0, 0), "white"])
+
+        self.state['height_map'] = diamond_square(size, self.state['roughness'])
         
-        biome_step = width // len(biomes)
+        biome_step = self.width // len(biomes)
+        """The distance btween the biomes rectangles."""
         biome_rects = []
         for i, b in enumerate(biomes):
-            r = Rect(i * biome_step, height - 25, biome_step, 25)
+            r = Rect(i * biome_step, self.height - 25, biome_step, 25)
             biome_rects.append({'rect': r, 'color': b[1], 'name': b[0], 'txt': b[2]})
 
-        base_slider = Rect(0, height - 50, width, 25)
+        base_slider = Rect(0, self.height - 50, self.width, 25)
+        """The slider background rect."""
         
-        def update_slider_pos():
-            ratio = (state['roughness'] - min_roughness) / (max_roughness - min_roughness)
+        def update_slider_pos() -> None:
+            """
+            Function to update the current position of the slider.
+            """
+            ratio = (self.state['roughness'] - min_roughness) / (max_roughness - min_roughness)
             x = base_slider.left + ratio * base_slider.width
-            state['slider_circle_pos'] = (int(x), base_slider.centery)
+            self.state['slider_circle_pos'] = (int(x), base_slider.centery)
 
         update_slider_pos()
 
-        def draw_func(screen):
+        def draw_func(screen: PGZeroScreen) -> None:
             ox, oy = pos
             for y in range(size):
                 for x in range(size):
-                    color = height_to_color(state['height_map'][y][x], state['biome'])
+                    color = height_to_color(self.state['height_map'][y][x], self.state['biome'])
                     screen.draw.filled_rect(Rect(ox + x * scale, oy + y * scale, scale, scale), color)
+
             screen.draw.filled_rect(base_slider, "gray")
-            screen.draw.filled_circle(state['slider_circle_pos'], state['slider_circle_radius'], "red")
-            active_width = (state['roughness'] - min_roughness) / (max_roughness - min_roughness) * base_slider.width
+            screen.draw.filled_circle(self.state['slider_circle_pos'], self.state['slider_circle_radius'], "red")
+
+            active_width = (self.state['roughness'] - min_roughness) / (max_roughness - min_roughness) * base_slider.width
             active_rect = Rect(base_slider.topleft, (active_width, base_slider.height))
+
             screen.draw.filled_rect(active_rect, "red")
-            screen.draw.filled_circle(state['slider_circle_pos'], state['slider_circle_radius'], "white")
-            screen.draw.text(f"Roughness: {state['roughness']:.2f}", (10, height - 45), color="white", shadow=(1,1))
+            screen.draw.filled_circle(self.state['slider_circle_pos'], self.state['slider_circle_radius'], "white")
+            screen.draw.text(f"Roughness: {self.state['roughness']:.2f}", (10, self.height - 45), color="white", shadow=(1, 1))
+ 
             for b in biome_rects:
                 screen.draw.filled_rect(b['rect'], b['color'])
                 screen.draw.text(b['name'], center=b['rect'].center, color=b['txt'], fontsize=20)
-                if b['name'] == state['biome']:
+                if b['name'] == self.state['biome']:
                     screen.draw.rect(b['rect'], "yellow")
 
-        def on_mouse_down_func(p):
+        def on_mouse_down_func(pos) -> None:
             for b in biome_rects:
-                if b['rect'].collidepoint(p):
-                    state['biome'] = b['name']
-                    state['height_map'] = diamond_square(size, state['roughness'])
+                if b['rect'].collidepoint(pos):
+                    self.state['biome'] = b['name']
+                    self.state['height_map'] = diamond_square(size, self.state['roughness'])
                     return
-            if _point_in_circle(p, state['slider_circle_pos'], state['slider_circle_radius']):
-                state['drag'] = True
 
-        def on_mouse_move_func(p):
-            if state['drag']:
-                val = max(base_slider.left, min(p[0], base_slider.right))
+            if _point_in_circle(pos, self.state['slider_circle_pos'], self.state['slider_circle_radius']):
+                self.state['drag'] = True
+
+        def on_mouse_move_func(pos) -> None:
+            if self.state['drag']:
+                val = max(base_slider.left, min(pos[0], base_slider.right))
                 ratio = (val - base_slider.left) / base_slider.width
-                state['roughness'] = min_roughness + ratio * (max_roughness - min_roughness)
+                self.state['roughness'] = min_roughness + ratio * (max_roughness - min_roughness)
                 update_slider_pos()
-                state['height_map'] = diamond_square(size, state['roughness'])
 
-        def on_mouse_up_func():
-            state['drag'] = False
+                self.state['height_map'] = diamond_square(size, self.state['roughness'])
+
+        def on_mouse_up_func() -> None:
+            self.state['drag'] = False
 
         self.draw_func = draw_func
         """The draw function for the interactive mode. Must be called in your draw function in pgzero."""
@@ -386,16 +424,11 @@ class PyGameInteractive:
         width = size * scale
         height = size * scale + 50
         
-        biomes = [
-            ["default", (50, 150, 50), "white"], 
-            ["desert", (210, 180, 140), "black"], 
-            ["tundra", (200, 200, 255), "black"], 
-            ["tropical", (0, 150, 0), "white"], 
-            ["volcanic", (60, 0, 0), "white"], 
-            ["swamp", (40, 60, 30), "white"], 
-            ["ocean", (0, 70, 140), "white"], 
-            ["mars", (150, 60, 40), "white"]
-        ]
+        biomes: list[list[str, tuple[int, int, int], str]] = []
+        """The list of biomes to be drawn."""
+
+        for added_biome in ADDED_BIOMES:
+            biomes.append([added_biome.name, (0, 0, 0), "white"])
 
         state['height_map'] = diamond_square(size, state['roughness'])
         
@@ -414,7 +447,7 @@ class PyGameInteractive:
 
         update_slider_pos()
 
-        def main_function(surface, events):
+        def main_function(surface: PyGameSurface, events: list[PyGameEvent]):
             for event in events:
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     for b in biome_rects:
@@ -465,5 +498,5 @@ class PyGameInteractive:
                 if b['name'] == state['biome']:
                     pygame.draw.rect(surface, "yellow", b["rect"], width = 1)
 
-        self.draw = main_function
+        self.draw: Callable[[PyGameSurface, list[PyGameEvent]], None] = main_function
         """Draws the interactive mode in pygame. Must be called in the main loop."""
