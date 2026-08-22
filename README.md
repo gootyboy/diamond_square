@@ -158,4 +158,5 @@ Version 0.1.4: Bug fixes.
 
 ## Coming Soon
 
-Version 0.1.5: Add re-generate button for interactive mode pgzero and pygame.
+Version 0.1.6: Complete documentation.
+Version 0.1.7: Add re-generate button for interactive mode pgzero and pygame.
