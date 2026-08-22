@@ -156,7 +156,9 @@ Version 0.1.2: Add documentation.
 
 Version 0.1.3: Complete documentation, fix bugs, and remove duplicate functions.
 
-**(Latest) Version 0.1.4**: Bug fixes.
+Version 0.1.4: Bug fixes.
+
+**(Latest) Version 0.1.5**: Bug fixes, documentation changes, and added a utils.py file.
 
 ---
 

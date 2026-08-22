@@ -1,11 +1,8 @@
 """
 All functions and classes are accessible through this file.
 """
-from pgzero.rect import Rect
-from pgzero.screen import Screen as PGZeroScreen
-from PIL import Image
-import pygame
-from pygame.surface import Surface as PyGameSurface
+
+from .utils import *
 from .biomes import *
 from .diamond import diamond_square
 from .biomes import ADDED_BIOMES as ADDED_BIOMES
