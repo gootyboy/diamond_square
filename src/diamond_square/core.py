@@ -75,7 +75,7 @@ def _point_in_circle(pos: tuple[int, int], center: tuple[int, int], radius: floa
 class Terrain:
     """Class for pgzero and pygame terrains."""
     @overload
-    def __init__(self, size: int, biome: str = "default", roughness: float = 0.6, scale: int = 4, pos: tuple[float, float] = (0, 0)) -> None:
+    def __init__(self, size: int, biome: str = "default", roughness: float = 0.6, scale: int = 4, pos: tuple[int, int] = (0, 0)) -> None:
         """
         Creates the terrain.
 
@@ -139,8 +139,11 @@ class Terrain:
         if biome_name not in [b.name for b in ADDED_BIOMES]:
             raise TypeError(f"Biome name must be in {list(map(str, ADDED_BIOMES))}")
 
-        self.heights: list[list[float]] = diamond_square(size, roughness)
+        self.heights: list[list[float]]
         """The heights in the height map."""
+
+        for i in range(random.randint(1, 50)):
+            self.heights = diamond_square(size, roughness)
 
         self.biome: str = biome_name
         """The biome name of the terrain."""
@@ -157,7 +160,10 @@ class Terrain:
         self.pos = pos
         """The topleft position of the terrain."""
 
-    def draw(self, screen_or_surface: Union[PGZeroScreen, PyGameSurface]) -> None:
+        self.roughness = roughness
+        """The roughness of the terrain."""
+
+    def draw(self, screen_or_surface) -> None:
         """
         Draws the terrain on pgzero or pygame determined by the screen_or_surface parameter.
 
@@ -270,9 +276,12 @@ class PGZeroInteractive:
         }
         """The current state of the interactive terrain"""
 
-        self.width = size * scale
+        shift = -50
+
+        self.width = size * scale + 75
         """The width of the interactive terrain."""
-        self.height = size * scale + 50
+
+        self.height = size * scale + 75
         """The height of the interactive terrain."""
 
         biomes: list[list[str, tuple[int, int, int], str]] = []
@@ -287,10 +296,10 @@ class PGZeroInteractive:
         """The distance btween the biomes rectangles."""
         biome_rects = []
         for i, b in enumerate(biomes):
-            r = Rect(i * biome_step, self.height - 25, biome_step, 25)
+            r = Rect(i * biome_step + pos[0], self.height - 25 + pos[1] + shift, biome_step, 25)
             biome_rects.append({'rect': r, 'color': b[1], 'name': b[0], 'txt': b[2]})
 
-        base_slider = Rect(0, self.height - 50, self.width, 25)
+        base_slider = Rect(pos[0], self.height - 50 + pos[1] + shift, self.width, 25)
         """The slider background rect."""
         
         def update_slider_pos() -> None:
@@ -303,7 +312,12 @@ class PGZeroInteractive:
 
         update_slider_pos()
 
-        def draw_func(screen: PGZeroScreen) -> None:
+        bg_rect = Rect((pos[0] - 25, pos[1] - 25), (self.width, self.height))
+
+        def draw_func(screen) -> None:
+            screen.draw.filled_rect(bg_rect, "red")
+            screen.draw.rect(bg_rect, "white")
+
             ox, oy = pos
             for y in range(size):
                 for x in range(size):
@@ -311,14 +325,15 @@ class PGZeroInteractive:
                     screen.draw.filled_rect(Rect(ox + x * scale, oy + y * scale, scale, scale), color)
 
             screen.draw.filled_rect(base_slider, "gray")
-            screen.draw.filled_circle(self.state['slider_circle_pos'], self.state['slider_circle_radius'], "red")
+            circle_x, circle_y = self.state['slider_circle_pos']
+            screen.draw.filled_circle((circle_x, circle_y), self.state['slider_circle_radius'], "red")
 
             active_width = (self.state['roughness'] - min_roughness) / (max_roughness - min_roughness) * base_slider.width
             active_rect = Rect(base_slider.topleft, (active_width, base_slider.height))
 
             screen.draw.filled_rect(active_rect, "red")
             screen.draw.filled_circle(self.state['slider_circle_pos'], self.state['slider_circle_radius'], "white")
-            screen.draw.text(f"Roughness: {self.state['roughness']:.2f}", (10, self.height - 45), color="white", shadow=(1, 1))
+            screen.draw.text(f"Roughness: {self.state['roughness']:.2f}", (10 + pos[0], self.height - 95 + pos[1]), color="white", shadow=(1, 1))
  
             for b in biome_rects:
                 screen.draw.filled_rect(b['rect'], b['color'])

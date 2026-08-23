@@ -1,22 +1,12 @@
-# Sample code for drawing terrain in pgzero.
-# This sample code file displays both interactive mode and a terrain in the same screen.
+# Sample code for drawing interactive terrain in pgzero.
 
 # Imports diamond_square and pgzrun.
-from diamond_square import Terrain, PGZeroInteractive
+from src.diamond_square import PGZeroInteractive
 import pgzrun
 
 # Setting the WIDTH and HEIGHT of the window.
 WIDTH = 900
 HEIGHT = 900
-
-# Creating the terrain.
-terrain = Terrain(
-    size=2 ** 8 + 1,
-    biome="default",
-    roughness=1.0,
-    scale=1,
-    pos=(600, 600)
-)
 
 # Creating the interactive terrain.
 interactive_terrain = PGZeroInteractive(
@@ -33,9 +23,6 @@ interactive_terrain = PGZeroInteractive(
 def draw():
     # Clearing the screen to ensure that the interactive terrain updates correctly.
     screen.clear()
-
-    # Drawing the terrain.
-    terrain.draw(screen)
 
     # Drawing the interactive terrain.
     interactive_terrain.draw_func(screen)

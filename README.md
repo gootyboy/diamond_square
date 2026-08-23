@@ -21,10 +21,6 @@ Implementation of the [Diamond–Square Algorithm](https://en.wikipedia.org/wiki
 > ### ⚠️ ***You MUST include all four interactive functions for pgzero interactive***
 >
 > Missing even one will cause failures or unpredictable behavior.
->
-> ### ⚠️ ***You must pass the pgzero screen into draw functions***
->
-> Use `terrain.draw(screen)` or `terrain.for_draw(screen)` — the yellow underline is expected.
 
 ---
 
@@ -32,8 +28,10 @@ Implementation of the [Diamond–Square Algorithm](https://en.wikipedia.org/wiki
 
 - Why Use Diamond Square?
 - Usage
-  - Pgzero Examples
-  - Pygame Examples
+  - Pgzero Terrain Example
+  - Pgzero Interactive Terrain Example
+  - Pygame Terrain Example
+  - Pygame Interactive Terrain Example
   - Image Saving Examples
   - Custom Biome Examples
 - Requirements for Pgzero Interactive
@@ -66,13 +64,21 @@ It is designed for both experimentation and game development, making terrain gen
 
 ## Usage
 
-### Pgzero Examples
+### Pgzero Terrain Example
 
-Look at /sample_codes/pgzero_draw_terrain.py
+Look at /sample_codes/pgzero_terrain.py
 
-### Pygame Examples
+### Pgzero Interactive Terrain Example
+
+Look at /sample_codes/pgzero_interactive_terrain.py
+
+### Pygame Terrain Example
 
 Look at /sample_codes/pygame_draw_terrain.py
+
+### Pygame Interactive Terrain Example
+
+Look at /sample_codes/pygame_interactive_terrain.py
 
 ### Image Saving Examples
 
@@ -89,10 +95,10 @@ Look at /sample_code/custom_biome.py
 For Pgzero Interative Mode, it requires **all four** of the following functions to be placed in their corresponding pgzero event handlers:
 
 ```python
-terrain.for_draw(screen)
-terrain.for_on_mouse_down(pos)
-terrain.for_on_mouse_up()
-terrain.for_on_mouse_move(pos)
+terrain.draw_func(screen)
+terrain.on_mouse_down_func(pos)
+terrain.on_mouse_up_func()
+terrain.on_mouse_move_func(pos)
 ```
 
 If **any one** of these is missing, the interactive mode will:
@@ -107,51 +113,26 @@ These must be placed in these functions in pgzero:
 
 - `def draw():` → `terrain.draw_func(screen)`
 
-- `on_mouse_down(pos)` → `terrain.on_mouse_down_func(pos)`
+- `on_mouse_down(pos):` → `terrain.on_mouse_down_func(pos)`
 
-- `on_mouse_up()` → `terrain.on_mouse_up_func()`
+- `on_mouse_up():` → `terrain.on_mouse_up_func()`
 
-- `on_mouse_move(pos)` → `terrain.on_mouse_move_func(pos)`  
+- `on_mouse_move(pos):` → `terrain.on_mouse_move_func(pos)`  
 
 ---
 
 ## Versions
 
-Version 0.0.1: Main code for diamond-square added.
+**(Latest) Version 0.1.7**: Fix terrain generation and README updates.
 
-Version 0.0.2: Updated README file and added documentation.
-
-Version 0.0.3: Fixed bugs and errors.
-
-Version 0.0.4: Added sample terrains.
-
-Version 0.0.5: Added biomes.
-
-Version 0.0.6: Added functions to add/remove biomes.
-
-Version 0.0.7: Added pos parameter to determine where to place the terrain, added a function to save terrain as an image, and made interative mode avaliable in pgzero.
-
-Version 0.0.8: Added C file for fast rendering of the Diamond–Square Algorithm.
-
-Version 0.0.9: Made pgzero and pygame interactive mode into one function and added documentation.
-
-Version 0.1.0: Fix bugs in C file and save_terrain function.
-
-Version 0.1.1: Refactor Code for more OOP.
-
-Version 0.1.2: Add documentation.
-
-Version 0.1.3: Complete documentation, fix bugs, and remove duplicate functions.
-
-Version 0.1.4: Bug fixes.
+Version 0.1.6: Added custom_biome.py in sample_codes.
 
 Version 0.1.5: Bug fixes, documentation changes, added utils.py, and updated sample code files.
 
-**(Latest) Version 0.1.6**: Added custom_biome.py in sample_codes.
+*To view previous versions, go to [versions.txt](https://en.wikipedia.org/wiki/Diamond-square_algorithm)*
 
 ---
 
 ## Coming Soon
 
-Version 0.1.7: Complete documentation.
 Version 0.1.8: Add re-generate button for interactive mode pgzero and pygame.

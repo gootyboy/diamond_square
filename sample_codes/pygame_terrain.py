@@ -1,8 +1,7 @@
 # Sample code for drawing terrain in pygame.
-# This sample code file displays both interactive mode and a terrain in the same screen.
 
 # Import diamond_square and pygame
-from diamond_square import Terrain, PyGameInteractive
+from diamond_square import Terrain
 import pygame
 
 # Initilizing pygame.
@@ -17,18 +16,7 @@ terrain = Terrain(
     biome="default",
     roughness=1.0,
     scale=1,
-    pos=(300, 300)
-)
-
-# Creating the interactive terrain.
-interactive_terrain = PyGameInteractive(
-    size=2**8 + 1,
-    start_biome="default",
-    max_roughness=1.0,
-    min_roughness=0.0,
-    start_roughness=0.1, 
-    scale=1,
-    pos=(0, 0)
+    pos=(10, 10)
 )
 
 # Variable to keep track if the pygame window is open.
@@ -44,9 +32,6 @@ while running:
     for event in events:
         if event.type == pygame.QUIT:
             running = False
-
-    # Drawing the interactive terrain.
-    interactive_terrain.draw(screen, events)
 
     # Drawing the terrain.
     terrain.draw(screen)
