@@ -5,7 +5,7 @@ This file has the Biome class, add_biome and remove_biome function, and 8 in-bui
 from .utils import *
 from .biome_htc_funcs import *
 
-ADDED_BIOMES: list[Biome] = []
+ADDED_BIOMES = []
 """This is the list of the biome names. Do not update or change this list."""
 
 class Biome:
@@ -63,7 +63,7 @@ class Biome:
         """
         return f"Biome({repr(self.name)}, {repr(self.height_to_color)})"
 
-    def add_to_biomes(self) -> Biome:
+    def add_to_biomes(self):
         """
         Adds a Biome to the list of biomes so that it can be used in a terrain.
 
@@ -79,7 +79,7 @@ class Biome:
         """
         return add_biome(self)
 
-    def remove_from_biomes(self) -> Biome:
+    def remove_from_biomes(self):
         """
         Removes a Biome to the list of biomes.
 

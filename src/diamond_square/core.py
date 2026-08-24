@@ -206,7 +206,7 @@ class Terrain:
                 else:
                     pygame.draw.rect(screen_or_surface, color, Rect(ox + x * self.scale, oy + y * self.scale, self.scale, self.scale))
 
-    def save_as_img(self, save_path: str) -> Terrain:
+    def save_as_img(self, save_path: str):
         """
         Saves the terrain as an image.
 

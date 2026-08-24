@@ -1,3 +1,5 @@
+Version 0.1.6: Added custom_biome.py in sample_codes.
+
 Version 0.1.5: Bug fixes, documentation changes, added utils.py, and updated sample code files.
 
 Version 0.1.4: Bug fixes.
@@ -14,7 +16,7 @@ Version 0.0.9: Made pgzero and pygame interactive mode into one function and add
 
 Version 0.0.8: Added C file for fast rendering of the Diamond–Square Algorithm.
 
-Version 0.0.7: Added pos parameter to determine where to place the terrain, added a function to save terrain as an image, and made interative mode avaliable in pgzero.
+Version 0.0.7: Added pos parameter in terrain and interactive terrain, added a function to save terrain as an image, and made interative mode avaliable in pgzero.
 
 Version 0.0.6: Added functions to add/remove biomes.
 
