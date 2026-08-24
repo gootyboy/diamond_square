@@ -27,14 +27,14 @@ class Array2D(ctypes.Structure):
     ]
 
 _file = 'diamond_lib.so'
-"""The file name of the .so file. Do not change the value of this variable."""
 _path = os.path.join(*(os.path.split(__file__)[:-1] + (_file,)))
-"""The path of the .so file. Do not change the value of this variable."""
 _mod = ctypes.cdll.LoadLibrary(_path)
-"""The loaded library of the .so file. Do not change the value of this variable."""
 
 _mod.diamond_square.restype = Array2D
 _mod.diamond_square.argtypes = [ctypes.c_int, ctypes.c_float]
+
+_mod.free_array2d.restype = None
+_mod.free_array2d.argtypes = [Array2D]
 
 def diamond_square(size: int, roughness: float) -> list[list[float]]:
     """
@@ -53,10 +53,11 @@ def diamond_square(size: int, roughness: float) -> list[list[float]]:
         The height map generated using the Diamond Square Algorithm.
     """
     c_heights = _mod.diamond_square(size, roughness)
-
     heights = [
         [c_heights.data[y][x] for x in range(size)]
         for y in range(size)
     ]
+    if c_heights.data:
+        _mod.free_array2d(c_heights)
 
     return heights

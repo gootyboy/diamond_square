@@ -6,6 +6,33 @@ from .utils import *
 from .biomes import *
 from .diamond import diamond_square
 from .biomes import ADDED_BIOMES as ADDED_BIOMES
+import numpy as np
+
+def get_average_biome_color(biome: Biome) -> tuple[int, int, int]:
+    colors = []
+    for i in np.arange(0, 1, 0.01):
+       colors.append(biome.height_to_color(i))
+
+    rgb = list(zip(*colors))
+    red = sum(rgb[0]) / len(rgb[0])
+    green = sum(rgb[1]) / len(rgb[1])
+    blue = sum(rgb[2]) / len(rgb[2])
+
+    return (int(red), int(green), int(blue))
+
+def _get_matching_color(bg_color):
+    """
+    Takes an RGB background and returns a contrasting, matching color 
+    tone without using external libraries.
+    """
+    r, g, b = bg_color
+
+    luminance = (0.299 * r) + (0.587 * g) + (0.114 * b)
+
+    if luminance < 128:
+        return (255, 255, 255)
+    else:
+        return (0, 0, 0)
 
 @overload
 def height_to_color(h: float, biome: str = "default") -> tuple[int, int, int]:
@@ -139,11 +166,8 @@ class Terrain:
         if biome_name not in [b.name for b in ADDED_BIOMES]:
             raise TypeError(f"Biome name must be in {list(map(str, ADDED_BIOMES))}")
 
-        self.heights: list[list[float]]
+        self.heights = diamond_square(size, roughness)
         """The heights in the height map."""
-
-        for i in range(random.randint(1, 50)):
-            self.heights = diamond_square(size, roughness)
 
         self.biome: str = biome_name
         """The biome name of the terrain."""
@@ -278,17 +302,18 @@ class PGZeroInteractive:
 
         shift = -50
 
-        self.width = size * scale + 75
+        self.width = size * scale
         """The width of the interactive terrain."""
 
-        self.height = size * scale + 75
+        self.height = size * scale + 50
         """The height of the interactive terrain."""
 
         biomes: list[list[str, tuple[int, int, int], str]] = []
         """The list of biomes to be drawn."""
 
         for added_biome in ADDED_BIOMES:
-            biomes.append([added_biome.name, (0, 0, 0), "white"])
+            biome_color = get_average_biome_color(added_biome)
+            biomes.append([added_biome.name, biome_color, _get_matching_color(biome_color)])
 
         self.state['height_map'] = diamond_square(size, self.state['roughness'])
         
@@ -312,11 +337,18 @@ class PGZeroInteractive:
 
         update_slider_pos()
 
-        bg_rect = Rect((pos[0] - 25, pos[1] - 25), (self.width, self.height))
+        width_increase = 110
+        button_increase = (width_increase - 100) / 2
+
+        bg_rect = Rect(pos[0] - 10, pos[1] - 10, self.width + width_increase, self.height - 30)
+        re_generate_button = Rect(pos[0] + self.width + button_increase, pos[1], 80 + button_increase, 50)
 
         def draw_func(screen) -> None:
-            screen.draw.filled_rect(bg_rect, "red")
-            screen.draw.rect(bg_rect, "white")
+            screen.draw.filled_rect(bg_rect, (100, 100, 100))
+            pygame.draw.rect(screen.surface, "white", bg_rect, 5)
+
+            screen.draw.filled_rect(re_generate_button, (20, 20, 20))
+            screen.draw.textbox("Remake Terrain", re_generate_button, color="white")
 
             ox, oy = pos
             for y in range(size):
@@ -347,6 +379,9 @@ class PGZeroInteractive:
                     self.state['biome'] = b['name']
                     self.state['height_map'] = diamond_square(size, self.state['roughness'])
                     return
+
+            if re_generate_button.collidepoint(pos):
+                self.state['height_map'] = diamond_square(size, self.state['roughness'])
 
             if _point_in_circle(pos, self.state['slider_circle_pos'], self.state['slider_circle_radius']):
                 self.state['drag'] = True

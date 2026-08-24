@@ -2,6 +2,7 @@ import os
 import ctypes
 import pygame
 import random
+import numpy as np
 from PIL import Image
 from pgzero.rect import Rect
 from typing import overload, Union, Callable

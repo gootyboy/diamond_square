@@ -66,27 +66,27 @@ It is designed for both experimentation and game development, making terrain gen
 
 ### Pgzero Terrain Example
 
-Look at /sample_codes/pgzero_terrain.py
+Go to [/sample_codes/pgzero_terrain.py](https://github.com/gootyboy/diamond_square/blob/main/sample_codes/pgzero_terrain.py)
 
 ### Pgzero Interactive Terrain Example
 
-Look at /sample_codes/pgzero_interactive_terrain.py
+Go to [/sample_codes/pgzero_interactive_terrain.py](https://github.com/gootyboy/diamond_square/blob/main/sample_codes/pgzero_interactive_terrain.py)
 
 ### Pygame Terrain Example
 
-Look at /sample_codes/pygame_draw_terrain.py
+Go to [/sample_codes/pygame_terrain.py](https://github.com/gootyboy/diamond_square/blob/main/sample_codes/pygame_terrain.py)
 
 ### Pygame Interactive Terrain Example
 
-Look at /sample_codes/pygame_interactive_terrain.py
+Go to [/sample_codes/pygame_interactive_terrain.py](https://github.com/gootyboy/diamond_square/blob/main/sample_codes/pygame_interactive_terrain.py)
 
 ### Image Saving Examples
 
-Look at /sample_codes/save_terrain.py
+Go to [/sample_codes/save_terrain.py](https://github.com/gootyboy/diamond_square/blob/main/sample_codes/save_terrain.py)
 
 ### Custom Biome Examples
 
-Look at /sample_code/custom_biome.py
+Go to [/sample_code/custom_biome.py](https://github.com/gootyboy/diamond_square/blob/main/sample_codes/custom_biome.py)
 
 ---
 
@@ -123,16 +123,16 @@ These must be placed in these functions in pgzero:
 
 ## Versions
 
-**(Latest) Version 0.1.7**: Fix terrain generation and README updates.
+**(Latest) Version 0.1.8**: Add remake terrain button for interactive mode in pgzero.
+
+Version 0.1.7: Fix terrain generation and README updates.
 
 Version 0.1.6: Added custom_biome.py in sample_codes.
 
-Version 0.1.5: Bug fixes, documentation changes, added utils.py, and updated sample code files.
-
-*To view previous versions, go to [versions.txt](https://en.wikipedia.org/wiki/Diamond-square_algorithm)*
+*To view previous versions, go to [versions.txt](https://github.com/gootyboy/diamond_square/blob/main/versions.txt)*
 
 ---
 
 ## Coming Soon
 
-Version 0.1.8: Add re-generate button for interactive mode pgzero and pygame.
+Version 0.1.9: Add re-generate button for interactive mode in pygame.

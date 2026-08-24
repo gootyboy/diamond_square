@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
+#include <stdbool.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -61,6 +63,13 @@ void free_array2d(Array2D array2d) {
 }
 
 Array2D diamond_square(int size, float rough) {
+    static bool is_seeded = false;
+
+    if (!is_seeded) {
+        srand((unsigned int) time(NULL));
+        is_seeded = true;
+    }
+
     Array2D h_map = create_array2d(size, size);
 
     for (int y = 0; y < size; y++)
