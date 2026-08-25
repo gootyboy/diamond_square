@@ -123,11 +123,11 @@ These must be placed in these functions in pgzero:
 
 ## Versions
 
-**(Latest) Version 0.1.9**: Improve speed in C file and fix bugs.
+**(Latest) Version 0.2.0**: Add re-generate button for interactive mode in pygame.
+
+Version 0.1.9: Improve speed in C file and fix bugs.
 
 Version 0.1.8: Add remake terrain button for interactive mode in pgzero.
-
-Version 0.1.7: Fix terrain generation and README updates.
 
 *To view previous versions, go to [versions.txt](https://github.com/gootyboy/diamond_square/blob/main/versions.txt)*
 
@@ -135,4 +135,4 @@ Version 0.1.7: Fix terrain generation and README updates.
 
 ## Coming Soon
 
-Version 0.2.0: Add re-generate button for interactive mode in pygame.
+Version 1.0.0: Added 3D Terrain Generation in Pgzero and Pygame.

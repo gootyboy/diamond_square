@@ -7,8 +7,8 @@ import pygame
 # Initilizing pygame.
 pygame.init()
 
-# Creating the main surface with width 800 and height 600.
-screen = pygame.display.set_mode((800, 600))
+# Creating the main surface with width 1000 and height 1000.
+screen = pygame.display.set_mode((1000, 1000))
 
 # Creating the interactive terrain.
 interactive_terrain = PyGameInteractive(
@@ -17,8 +17,8 @@ interactive_terrain = PyGameInteractive(
     max_roughness=1.0,
     min_roughness=0.0,
     start_roughness=0.1, 
-    scale=1,
-    pos=(0, 0)
+    scale=2,
+    pos=(10, 10)
 )
 
 # Variable to keep track if the pygame window is open.
@@ -34,6 +34,8 @@ while running:
     for event in events:
         if event.type == pygame.QUIT:
             running = False
+
+    screen.fill("black")
 
     # Drawing the interactive terrain.
     interactive_terrain.draw(screen, events)

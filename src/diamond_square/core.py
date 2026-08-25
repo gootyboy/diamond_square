@@ -10,7 +10,7 @@ import numpy as np
 
 def get_average_biome_color(biome: Biome) -> tuple[int, int, int]:
     colors = []
-    for i in np.arange(0, 1, 0.01):
+    for i in np.arange(0, 1, 0.001):
        colors.append(biome.height_to_color(i))
 
     rgb = list(zip(*colors))
@@ -460,8 +460,10 @@ class PyGameInteractive:
     def __init__(self, size: int, start_biome: Union[str, Biome], max_roughness: float = 1.0,  min_roughness: float = 0, start_roughness: float = 0, scale: int = 4, pos: tuple[int, int] = (0, 0)) -> None:
         if isinstance(start_biome, Biome):
             start_biome = start_biome.name
+
         pygame.init()
         pygame.font.init()
+
         state = {
             'roughness': max(min_roughness, min(start_roughness, max_roughness)),
             'biome': start_biome,
@@ -471,31 +473,38 @@ class PyGameInteractive:
             'slider_circle_radius': 15
         }
 
-        width = size * scale
-        height = size * scale + 50
+        self.width = size * scale
+        self.height = size * scale + 50
         
         biomes: list[list[str, tuple[int, int, int], str]] = []
         """The list of biomes to be drawn."""
 
         for added_biome in ADDED_BIOMES:
-            biomes.append([added_biome.name, (0, 0, 0), "white"])
+            biome_color = get_average_biome_color(added_biome)
+            biomes.append([added_biome.name, biome_color, _get_matching_color(biome_color)])
 
         state['height_map'] = diamond_square(size, state['roughness'])
-        
-        biome_step = width // len(biomes)
+
+        biome_step = self.width // len(biomes)
         biome_rects = []
         for i, b in enumerate(biomes):
-            r = Rect(i * biome_step, height - 25, biome_step, 25)
+            r = Rect(i * biome_step + pos[0], self.height + pos[1] - 25, biome_step, 25)
             biome_rects.append({'rect': r, 'color': b[1], 'name': b[0], 'txt': b[2]})
 
-        base_slider = Rect(0, height - 50, width, 25)
-        
+        base_slider = Rect(pos[0], self.height + pos[1] - 50, self.width, 25)
+
         def update_slider_pos():
             ratio = (state['roughness'] - min_roughness) / (max_roughness - min_roughness)
             x = base_slider.left + ratio * base_slider.width
             state['slider_circle_pos'] = (int(x), base_slider.centery)
 
         update_slider_pos()
+
+        width_increase = 110
+        button_increase = (width_increase - 100) / 2
+
+        bg_rect = Rect(pos[0] - 10, pos[1] - 10, self.width + width_increase - 5, self.height + 20)
+        re_generate_button = Rect(pos[0] + self.width + button_increase, pos[1], 80 + button_increase, 50)
 
         def main_function(surface: PyGameSurface, events: list[PyGameEvent]):
             for event in events:
@@ -504,9 +513,12 @@ class PyGameInteractive:
                         if b['rect'].collidepoint(event.pos):
                             state['biome'] = b['name']
                             state['height_map'] = diamond_square(size, state['roughness'])
-                            return
+
                     if _point_in_circle(event.pos, state['slider_circle_pos'], state['slider_circle_radius']):
                         state['drag'] = True
+
+                    if re_generate_button.collidepoint(event.pos):
+                        state['height_map'] = diamond_square(size, state['roughness'])
 
                 if event.type == pygame.MOUSEMOTION:
                     if state['drag']:
@@ -518,6 +530,9 @@ class PyGameInteractive:
 
                 if event.type == pygame.MOUSEBUTTONUP:
                     state['drag'] = False
+
+            pygame.draw.rect(surface, (100, 100, 100), bg_rect)
+            pygame.draw.rect(surface, (20, 20, 20), re_generate_button)
 
             ox, oy = pos
             for y in range(size):
@@ -531,14 +546,25 @@ class PyGameInteractive:
             roughness_text = font24.render(text, True, "white")
             shadow = font24.render(text, True, "black")
 
+            remake_text = font24.render("Remake", True, "white")
+            terrain_text = font24.render("Terrain", True, "white")
+
             pygame.draw.rect(surface, "gray", base_slider, width = 0)
             pygame.draw.circle(surface, "red", state['slider_circle_pos'], state['slider_circle_radius'])
             active_width = (state['roughness'] - min_roughness) / (max_roughness - min_roughness) * base_slider.width
             active_rect = Rect(base_slider.topleft, (active_width, base_slider.height))
             pygame.draw.rect(surface, "red", active_rect, width = 0)
             pygame.draw.circle(surface, "white", state['slider_circle_pos'], state['slider_circle_radius'])
-            surface.blit(roughness_text, (10, height - 45))
-            surface.blit(shadow, (11, height - 44))
+            surface.blit(roughness_text, (10 + pos[0], self.height + pos[1] - 45))
+            surface.blit(shadow, (11 + pos[0], self.height + pos[1] - 44))
+
+            remake_text_rect = remake_text.get_rect()
+            remake_text_rect.midtop = (re_generate_button.midtop[0], re_generate_button.midtop[1] + 5)
+            terrain_text_rect = terrain_text.get_rect()
+            terrain_text_rect.midbottom = (re_generate_button.midbottom[0], re_generate_button.midbottom[1] - 5)
+
+            surface.blit(remake_text, remake_text_rect)
+            surface.blit(terrain_text, terrain_text_rect)
 
             for b in biome_rects:
                 biome_text = font20.render(b['name'], True, b['txt'])

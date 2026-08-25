@@ -1,3 +1,5 @@
+Version 0.1.7: Fix terrain generation and README updates.
+
 Version 0.1.6: Added custom_biome.py in sample_codes.
 
 Version 0.1.5: Bug fixes, documentation changes, added utils.py, and updated sample code files.

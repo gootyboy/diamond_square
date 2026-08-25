@@ -1,7 +1,7 @@
 # Sample code for drawing interactive terrain in pgzero.
 
 # Imports diamond_square and pgzrun.
-from src.diamond_square import PGZeroInteractive
+from diamond_square import PGZeroInteractive
 import pgzrun
 
 # Setting the WIDTH and HEIGHT of the window.
