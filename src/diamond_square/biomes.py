@@ -95,6 +95,18 @@ class Biome:
         """
         return remove_biome(self)
 
+    def get_average_color(self):
+        colors = []
+        for i in np.arange(0, 1, 0.001):
+            colors.append(self.height_to_color(i))
+
+        rgb = list(zip(*colors))
+        red = sum(rgb[0]) / len(rgb[0])
+        green = sum(rgb[1]) / len(rgb[1])
+        blue = sum(rgb[2]) / len(rgb[2])
+
+        return (int(red), int(green), int(blue))
+
 @overload
 def add_biome(biome: Biome) -> Biome:
     """

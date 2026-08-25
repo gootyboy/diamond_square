@@ -6,9 +6,22 @@ from .utils import *
 from .biomes import *
 from .diamond import diamond_square
 from .biomes import ADDED_BIOMES as ADDED_BIOMES
-import numpy as np
+from .terrain3d import Terrain3D
 
-def get_average_biome_color(biome: Biome) -> tuple[int, int, int]:
+@overload
+def get_average_biome_color(biome: Biome) -> tuple[int, int, int]: ...
+@overload
+def get_average_biome_color(biome: str) -> tuple[int, int, int]: ...
+
+def get_average_biome_color(biome: Union[Biome, str]) -> tuple[int, int, int]:
+    if isinstance(biome, str):
+        for added_biome in ADDED_BIOMES:
+            if added_biome.name == biome:
+                biome = added_biome
+
+    if isinstance(biome, str):
+        raise TypeError(f"{biome} biome was not added to ADDED_BIOMES.")
+
     colors = []
     for i in np.arange(0, 1, 0.001):
        colors.append(biome.height_to_color(i))
@@ -152,8 +165,6 @@ class Terrain:
         if isinstance(biome, Biome):
             biome_name = biome.name
             """The biome name of the terrain."""
-            biome = biome
-            """The Biome of the terrain."""
         elif isinstance(biome, str):
             biome_name = biome
             """The biome name of the terrain."""
@@ -238,6 +249,9 @@ class Terrain:
         img.save(save_path)
 
         return Terrain
+
+    def re_generate(self):
+        self.heights = diamond_square(self.size, self.roughness)
 
 class PGZeroInteractive:
     """Class for pgzero interactive mode."""

@@ -4,10 +4,10 @@ build-backend = "hatchling.build"
 
 [project]
 name = "diamond_square"
-version = "0.2.0"
+version = "1.0.0"
 description = "A package which can implement and draw terrains using the Diamond Square Algorithm in pgzero and pygame. Uses C for fast rendering."
 readme = "README.md"
-requires-python = ">=3.5"
+requires-python = ">=3.8"
 license = "MIT"
 license-files = ["LICEN[CS]E*"]
 classifiers = [
@@ -21,6 +21,7 @@ dependencies = [
     "pgzero",
     "pillow",
     "pygame",
+    "panda3d"
 ]
 
 [project.urls]
