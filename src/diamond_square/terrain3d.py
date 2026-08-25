@@ -32,5 +32,5 @@ class Terrain3D:
         for y, row in enumerate(self.height_map):
             for x, h in enumerate(row):
                 color = self.biome.height_to_color(h)
-                height = h
+                height = (h * 10) ** (1.5)
                 _panda3d_box(obj, 0.1 * self.scale, height, 0.1 * self.scale, (x * self.scale * 0.05, y * self.scale * 0.05, 0), color)
