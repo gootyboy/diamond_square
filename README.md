@@ -1,6 +1,7 @@
 # Diamond Square
 
-Implementation of the [Diamond–Square Algorithm](https://en.wikipedia.org/wiki/Diamond-square_algorithm). This package can draw terrain on pgzero and pygame, and can also set up interactive mode.
+245-278
+Implementation of the [Diamond–Square Algorithm](https://en.wikipedia.org/wiki/Diamond-square_algorithm). This package can draw terrains and interactive terrains in pgzero and pygame. Also can draw 3D terrains in panda3d.
 
 ---
 
@@ -34,6 +35,7 @@ Implementation of the [Diamond–Square Algorithm](https://en.wikipedia.org/wiki
   - Pygame Interactive Terrain Example
   - Image Saving Examples
   - Custom Biome Examples
+  - Panda3d 3D Terrain Example
 - Requirements for Pgzero Interactive
 - Versions
 - Coming Soon
@@ -52,13 +54,15 @@ This package provides a complete implementation of the Diamond–Square algorith
 
 - Support for pgzero and pygame.
 
+- 3d terrain drawing in panda3d.
+
 - Optional interactive mode.
 
 - The ability to save generated terrain as an image.
 
 - Functions to add or remove biomes dynamically.
 
-It is designed for both experimentation and game development, making terrain generation simple and customizable.
+It is designed for both experimentation and game development, making 2d/3d terrain generation simple and customizable.
 
 ---
 
@@ -87,6 +91,10 @@ Go to [/sample_codes/save_terrain.py](https://github.com/gootyboy/diamond_square
 ### Custom Biome Examples
 
 Go to [/sample_code/custom_biome.py](https://github.com/gootyboy/diamond_square/blob/main/sample_codes/custom_biome.py)
+
+### Panda3d 3D Terrain Example
+
+Go to [/sample_code/custom_biome.py](https://github.com/gootyboy/diamond_square/blob/main/sample_codes/panda3d_terrain3d.py)
 
 ---
 

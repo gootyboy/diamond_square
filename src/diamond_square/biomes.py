@@ -3,14 +3,14 @@ This file has the Biome class, add_biome and remove_biome function, and 8 in-bui
 """
 
 from .utils import *
-from .biome_htc_funcs import *
+from .biome_funcs import *
 
 ADDED_BIOMES = []
 """This is the list of the biome names. Do not update or change this list."""
 
 class Biome:
     """Class to create new biomes."""
-    def __init__(self, name: str, htc_func: Callable[[float], tuple[int, int, int]]) -> None:
+    def __init__(self, name: str, htc_func: Callable[[float], tuple[int, int, int]], height_to_3d: Optional[Callable[[float], float]] = None) -> None:
         """
         Creates a new biome.
 
@@ -32,6 +32,19 @@ class Biome:
                     else:
                         return ... # RGB tuple
                 # The function should return a RGB Tuple. Strings or Hex codes will not work.
+
+        height_to_3d (( float)) -> float
+            Optional function only necessary for 3D drawing in Terrain3D. 
+            A function that takes a height value (between 0 and 1) and returns another value, telling the code how much to stretch the pixel into 3d.
+            If height_to_3d = lambda h: h, then the 3d heights of the pixels are equal to the height map.
+            The best function to use is in the form lambda h: (h * 10) ** dramatic. dramatic is how dramatic you want your biome to be.
+
+            Examples:
+            - For biomes like DEFAULT_BIOME, height_to_3d is (h * 10) ** 1.5 
+              Stretches higher values drastically to create tall, dramatic mountain peaks.
+              
+            - For biomes like DESERT_BIOME, height_to_3d is (h * 10) ** 1.2 or just h
+              Keeps the terrain flatter and more gradual to simulate rolling desert dunes.
         """
 
         self.name = name
@@ -39,6 +52,12 @@ class Biome:
 
         self.height_to_color = htc_func
         """The height to color function."""
+
+        if height_to_3d == None:
+            height_to_3d = lambda h: (h * 10) ** 1.4
+
+        self.height_to_3d = height_to_3d
+        """Function that takes a height value and returns another value, which tells the code how much to stretch the pixel into 3d."""
 
     def __str__(self) -> str:
         """
@@ -61,7 +80,7 @@ class Biome:
             The representation of the Biome.
 
         """
-        return f"Biome({repr(self.name)}, {repr(self.height_to_color)})"
+        return f"Biome({repr(self.name)}, {repr(self.height_to_color)}, {repr(self.height_to_3d)})"
 
     def add_to_biomes(self):
         """
@@ -128,7 +147,7 @@ def add_biome(biome: Biome) -> Biome:
         If there already exists another biome with the same name as the biome parameter.
     """
 @overload
-def add_biome(biome_name: str, htc_func: Callable[[float], tuple[int, int, int]]) -> Biome:
+def add_biome(biome_name: str, htc_func: Callable[[float], tuple[int, int, int]], height_to_3d: Optional[Callable[[float], float]] = None) -> Biome:
     """
     Adds a Biome to the list of biomes so that it can be used in a terrain.
 
@@ -138,6 +157,19 @@ def add_biome(biome_name: str, htc_func: Callable[[float], tuple[int, int, int]]
         The name of the biome to add.
     **htc_func** (( float)) -> tuple[int, int, int]
         The height to color function.
+
+    height_to_3d (( float)) -> float
+        Optional function only necessary for 3D drawing in Terrain3D. 
+        A function that takes a height value (between 0 and 1) and returns another value, telling the code how much to stretch the pixel into 3d.
+        If height_to_3d = lambda h: h, then the 3d heights of the pixels are equal to the height map.
+        The best function to use is in the form lambda h: (h * 10) ** dramatic. dramatic is how dramatic you want your biome to be.
+
+        Examples:
+        - For biomes like DEFAULT_BIOME, height_to_3d is (h * 10) ** 1.5 
+            Stretches higher values drastically to create tall, dramatic mountain peaks.
+            
+        - For biomes like DESERT_BIOME, height_to_3d is (h * 10) ** 1.2 or just h
+            Keeps the terrain flatter and more gradual to simulate rolling desert dunes.
 
     Returns
     ------
@@ -153,9 +185,9 @@ def add_biome(biome_name: str, htc_func: Callable[[float], tuple[int, int, int]]
 def add_biome(*args: Union[Biome, str, Callable[[float], tuple[int, int, int]]]) -> Biome:
     if len(args) == 1:
         biome = args[0]
-    elif len(args) == 2:
-        name, htc = args
-        biome = Biome(name, htc)
+    elif len(args) == 3:
+        name, htc, ht3d = args
+        biome = Biome(name, htc, ht3d)
 
     if biome.name in [b.name for b in ADDED_BIOMES]:
         raise TypeError(f"You cannot add a biome with the same name as another biome in the added biomes list: {list(map(str, ADDED_BIOMES))}.")
@@ -163,38 +195,29 @@ def add_biome(*args: Union[Biome, str, Callable[[float], tuple[int, int, int]]])
     ADDED_BIOMES.append(biome)
     return biome
 
-DEFAULT_BIOME = Biome("default", default_biome_htc)
+DEFAULT_BIOME = Biome("default", default_biome_htc, default_biome_ht3d).add_to_biomes()
 """The default Biome."""
 
-DESERT_BIOME = Biome("desert", desert_biome_htc)
+DESERT_BIOME = Biome("desert", desert_biome_htc, desert_biome_ht3d).add_to_biomes()
 """The desert Biome."""
 
-TUNDRA_BIOME = Biome("tundra", tundra_biome_htc)
+TUNDRA_BIOME = Biome("tundra", tundra_biome_htc, tundra_biome_ht3d).add_to_biomes()
 """The tundra Biome."""
 
-TROPICAL_BIOME = Biome("tropical", tropical_biome_htc)
+TROPICAL_BIOME = Biome("tropical", tropical_biome_htc, tropical_biome_ht3d).add_to_biomes()
 """The tropical Biome."""
 
-VOLCANIC_BIOME = Biome("volcanic", volcanic_biome_htc)
+VOLCANIC_BIOME = Biome("volcanic", volcanic_biome_htc, volcanic_biome_ht3d).add_to_biomes()
 """The volcanic Biome."""
 
-SWAMP_BIOME = Biome("swamp", swamp_biome_htc)
+SWAMP_BIOME = Biome("swamp", swamp_biome_htc, swamp_biome_ht3d).add_to_biomes()
 """The swamp Biome."""
 
-OCEAN_BIOME = Biome("ocean", ocean_biome_htc)
+OCEAN_BIOME = Biome("ocean", ocean_biome_htc, ocean_biome_ht3d).add_to_biomes()
 """The ocean Biome."""
 
-MARS_BIOME = Biome("mars", mars_biome_htc)
+MARS_BIOME = Biome("mars", mars_biome_htc, mars_biome_ht3d).add_to_biomes()
 """The mars Biome."""
-
-DEFAULT_BIOME.add_to_biomes()
-DESERT_BIOME.add_to_biomes()
-TUNDRA_BIOME.add_to_biomes()
-TROPICAL_BIOME.add_to_biomes()
-VOLCANIC_BIOME.add_to_biomes()
-SWAMP_BIOME.add_to_biomes()
-OCEAN_BIOME.add_to_biomes()
-MARS_BIOME.add_to_biomes()
 
 @overload
 def remove_biome(biome: str) -> Biome:

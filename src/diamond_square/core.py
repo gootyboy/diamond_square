@@ -6,7 +6,7 @@ from .utils import *
 from .biomes import *
 from .diamond import diamond_square
 from .biomes import ADDED_BIOMES as ADDED_BIOMES
-from .terrain3d import Terrain3D
+from .terrain3d import Terrain3D, Panda3DBase
 
 @overload
 def get_average_biome_color(biome: Biome) -> tuple[int, int, int]: ...
