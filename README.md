@@ -53,7 +53,7 @@ This package provides a complete implementation of the Diamond–Square algorith
 
 - Multiple built‑in biomes.
 
-- Adjustable roughness and scale.
+- Adjustable roughness, scale, and size.
 
 - Support for pgzero and pygame.
 

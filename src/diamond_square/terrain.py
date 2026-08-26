@@ -76,8 +76,8 @@ class Terrain:
         self.biome_obj: Biome = biome
         """The Biome of the terrain."""
 
-        self.size = size
-        """The size of the terrain. Size must be in the form 2 ** n + 1."""
+        self._size = size
+        """The size of the terrain. Do not change the value of this variable. Use self.size instead of self._size."""
 
         self.scale = scale
         """The scale of the terrain. This determines how large the pixels are. Must be an integer greater than 1."""
@@ -85,8 +85,30 @@ class Terrain:
         self.pos = pos
         """The topleft position of the terrain."""
 
-        self.roughness = roughness
+        self._roughness = roughness
+        """The roughness of the terrain. Do not change the value of this variable. Use self.roughness instead of self._roughness."""
+
+    @property
+    def roughness(self):
         """The roughness of the terrain."""
+        return self._roughness
+
+    @roughness.setter
+    def roughness(self, value):
+        """Sets the roughness of the terrain."""
+        self._roughness = value
+        self.re_generate()
+
+    @property
+    def size(self):
+        """The size of the terrain. Size must be in the form 2 ** n + 1."""
+        return self._size
+
+    @size.setter
+    def size(self, value):
+        """Sets the size of the terrain. Size must be in the form 2 ** n + 1."""
+        self._size = value
+        self.re_generate()
 
     def draw(self, screen_or_surface) -> None:
         """
