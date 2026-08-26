@@ -39,21 +39,11 @@ class Terrain3D:
                 height = self.biome.height_to_3d(h)
                 _panda3d_box(obj, 0.1 * self.scale, height, 0.1 * self.scale, (x * self.scale * 0.05 + self.pos[0], y * self.scale * 0.05 + self.pos[1], self.pos[2]), color)
 
-
     def draw_panda3d_mandelbrot(self, obj, max_iterations=100):
-        """Only draws blocks inside the Mandelbrot set, perfectly scaled to stretch 
-        from the left edge to the right edge of your generated grid area."""
         for y, row in enumerate(self.height_map):
             for x, h in enumerate(row):
-                
-                # 1. Normalize the grid loops into percentages from 0.0 to 1.0
-                # Using (self.size - 1) prevents dividing by zero on a 1x1 grid
                 percent_x = x / (self.size - 1) if self.size > 1 else 0.5
                 percent_y = y / (self.size - 1) if self.size > 1 else 0.5
-                
-                # 2. Map percentages to true Mandelbrot boundaries
-                # X spans from -2.0 (left edge) to 1.0 (right edge)
-                # Y spans symmetrically from -1.5 (bottom edge) to 1.5 (top edge)
                 coord_x = -2.0 + (percent_x * 3.0)
                 coord_y = -1.5 + (percent_y * 3.0)
                 
@@ -67,8 +57,7 @@ class Terrain3D:
                         is_in_set = False
                         break
                     z = z**2 + c
-                
-                # 4. Draw using your original physical world spacing variables
+
                 if is_in_set:
                     color = self.biome.height_to_color(h)
                     height = self.biome.height_to_3d(h)

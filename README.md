@@ -143,4 +143,4 @@ Version 0.1.9: Improve speed in C file and fix bugs.
 
 ## Coming Soon
 
-Version 1.1.0: Added 3D Interactive Mode in panda3d.
+Version 1.0.1: Finish Documentation.
