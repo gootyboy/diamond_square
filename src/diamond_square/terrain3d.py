@@ -1,8 +1,9 @@
 from .utils import *
-from .diamond import diamond_square
+from .diamond import core_diamond_square
 from direct.showbase.ShowBase import ShowBase
 from panda3d.core import Vec3, MouseButton
 from .biomes import *
+from .filter_funcs import *
 
 def _panda3d_box(obj, width, height, depth, pos, color):
     rectangle = obj.loader.loadModel("models/box")
@@ -17,62 +18,6 @@ def _panda3d_box(obj, width, height, depth, pos, color):
     rectangle.setPos(*pos)
 
     return rectangle
-
-class Terrain3D:
-    def __init__(self, size, biome: Biome, roughness, scale, pos=(0, 0, 0)):
-        """The scale parameter does not have to be a integer ≥ 1. It can be any number > 0."""
-        self.size = size
-        self.biome = biome
-        self.roughness = roughness
-        self.scale = scale
-        spacing = 0.05 * scale
-        center = -(size * spacing) / 2
-        z_pos = pos[2] if len(pos) > 2 else 0
-        self.pos = (center + pos[0], center + pos[1], z_pos)
-        self.height_map = diamond_square(size, roughness)
-
-    def draw_panda3d(self, obj):
-        """obj is the panda3d class. When using this function inside a panda3d class, pass the panda3d class `self` into obj."""
-        for y, row in enumerate(self.height_map):
-            for x, h in enumerate(row):
-                color = self.biome.height_to_color(h)
-                height = self.biome.height_to_3d(h)
-                _panda3d_box(obj, 0.1 * self.scale, height, 0.1 * self.scale, (x * self.scale * 0.05 + self.pos[0], y * self.scale * 0.05 + self.pos[1], self.pos[2]), color)
-
-    def draw_panda3d_mandelbrot(self, obj, max_iterations=100):
-        for y, row in enumerate(self.height_map):
-            for x, h in enumerate(row):
-                percent_x = x / (self.size - 1) if self.size > 1 else 0.5
-                percent_y = y / (self.size - 1) if self.size > 1 else 0.5
-                coord_x = -2.0 + (percent_x * 3.0)
-                coord_y = -1.5 + (percent_y * 3.0)
-                
-                # 3. Run the Mandelbrot escape sequence
-                c = complex(coord_x, coord_y)
-                z = 0j
-                is_in_set = True
-                
-                for _ in range(max_iterations):
-                    if abs(z) > 2.0:
-                        is_in_set = False
-                        break
-                    z = z**2 + c
-
-                if is_in_set:
-                    color = self.biome.height_to_color(h)
-                    height = self.biome.height_to_3d(h)
-                    
-                    world_x = x * self.scale * 0.05 + self.pos[0]
-                    world_y = y * self.scale * 0.05 + self.pos[1]
-                    
-                    _panda3d_box(
-                        obj, 
-                        0.1 * self.scale, 
-                        height, 
-                        0.1 * self.scale, 
-                        (world_x, world_y, self.pos[2]), 
-                        color
-                    )
 
 class Panda3DBase(ShowBase):
     """
@@ -176,3 +121,58 @@ class Panda3DBase(ShowBase):
     def zoom_out(self):
         self.distance += 1
         self.update_camera()
+
+class Terrain3D:
+    def __init__(self, size, biome: Biome, roughness, scale, pos=(0, 0, 0)):
+        """The scale parameter does not have to be a integer ≥ 1. It can be any number > 0."""
+        self.size = size
+        self.biome = biome
+        self.roughness = roughness
+        self.scale = scale
+        self.spacing = 0.05 * scale
+        self.world_size = self.size * self.spacing
+        center = -(self.size * self.spacing) / 2
+        z_pos = pos[2] if len(pos) > 2 else 0
+        self.pos = (center + pos[0], center + pos[1], z_pos)
+        self.height_map = core_diamond_square(self.size, self.roughness)
+
+    def draw_panda3d(self, obj):
+        """obj is the panda3d class. When using this function inside a panda3d class, pass the panda3d class `self` into obj."""
+        for y, row in enumerate(self.height_map):
+            for x, h in enumerate(row):
+                color = self.biome.height_to_color(h)
+                height = self.biome.height_to_3d(h)
+                _panda3d_box(obj, 0.1 * self.scale, height, 0.1 * self.scale, (x * self.scale * 0.05 + self.pos[0], y * self.scale * 0.05 + self.pos[1], self.pos[2]), color)
+
+    def draw_filtered_panda3d(self, obj, filter_func):
+        """
+        Filters the rectangular prisms drawn, so that the output range can be other shapes instead of just a square.
+
+        ***Only works when self.pos = (0, 0, z)***
+
+        Parameters
+        ----------
+        **obj**: ShowBase
+            obj is the panda3d class. When using this function inside a panda3d class, pass the panda3d class `self` into obj.
+        **filter_func**: (( obj, pos)) -> bool
+            The filter function should have 2 parameters: obj, pos. obj is the Terrain3D self. From obj, you have access to all of the variables in the Terrain3D self.
+            pos is the current position of the pixel that it is checking.
+    
+            Example::
+
+                def circle_filter(obj, pos):
+                    return (pos[0] ** 2 + pos[1] ** 2) <= (obj.world_size / 2) ** 2
+                    # You have to use world_size instead of size because size is just the dimensions of the height map.
+                    # world_size is the dimensions of the Terrain3D.
+        """
+        for y, row in enumerate(self.height_map):
+            for x, h in enumerate(row):
+                world_x = x * self.scale * 0.05 + self.pos[0]
+                world_y = y * self.scale * 0.05 + self.pos[0]
+                if filter_func(self, (world_x, world_y)):
+                    color = self.biome.height_to_color(h)
+                    height = self.biome.height_to_3d(h)
+                    _panda3d_box(obj, 0.1 * self.scale, height, 0.1 * self.scale, (world_x, world_y, self.pos[2]), color)
+
+    def re_generate(self):
+        self.height_map = core_diamond_square(self.size, self.roughness)

@@ -36,7 +36,7 @@ _mod.diamond_square.argtypes = [ctypes.c_int, ctypes.c_float]
 _mod.free_array2d.restype = None
 _mod.free_array2d.argtypes = [Array2D]
 
-def diamond_square(size: int, roughness: float) -> list[list[float]]:
+def core_diamond_square(size: int, roughness: float) -> list[list[float]]:
     """
     Returns a height map using the Diamond Square Algorithm.
     

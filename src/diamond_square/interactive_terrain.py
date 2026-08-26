@@ -1,12 +1,6 @@
-"""
-All functions and classes are accessible through this file.
-"""
-
 from .utils import *
 from .biomes import *
-from .diamond import diamond_square
-from .biomes import ADDED_BIOMES as ADDED_BIOMES
-from .terrain3d import Terrain3D, Panda3DBase
+from .diamond import core_diamond_square
 
 @overload
 def get_average_biome_color(biome: Biome) -> tuple[int, int, int]: ...
@@ -33,12 +27,23 @@ def get_average_biome_color(biome: Union[Biome, str]) -> tuple[int, int, int]:
 
     return (int(red), int(green), int(blue))
 
-def _get_matching_color(bg_color):
+def _get_matching_color(color: tuple[int, int, int]) -> tuple[int, int, int]:
     """
-    Takes an RGB background and returns a contrasting, matching color 
-    tone without using external libraries.
+    Takes an RGB color and returns black or white based on the luminance (brightness)
+
+    Parameters
+    ----------
+    **color**: tuple[int, int, int]
+        The RGB color.
+
+    Returns
+    -------
+    (0, 0, 0)
+        If the luminance (brightness) is greater than 128
+    (255, 255, 255)
+        If the luminance (brightness) is less than 128
     """
-    r, g, b = bg_color
+    r, g, b = color
 
     luminance = (0.299 * r) + (0.587 * g) + (0.114 * b)
 
@@ -111,147 +116,6 @@ def _point_in_circle(pos: tuple[int, int], center: tuple[int, int], radius: floa
     dx = pos[0] - center[0]
     dy = pos[1] - center[1]
     return dx ** 2 + dy ** 2 <= radius ** 2
-
-class Terrain:
-    """Class for pgzero and pygame terrains."""
-    @overload
-    def __init__(self, size: int, biome: str = "default", roughness: float = 0.6, scale: int = 4, pos: tuple[int, int] = (0, 0)) -> None:
-        """
-        Creates the terrain.
-
-        Parameters
-        ----------
-        **size**: int
-            The size. Must be in the form 2 ** n + 1.
-        **biome**: str
-            The biome name.
-        **roughness**: float
-            Controls the amount of randomness is added to each pixel.
-        **scale**: int
-            This determines how large the pixels are. Must be an integer greater than 1.
-        **pos**: tuple[int, int]
-            The topleft position of the terrain.
-
-        Raises
-        ------
-        TypeError
-            If the biome is not in the ADDED_BIOMES list.
-        """
-    @overload
-    def __init__(self, size: int, biome: Biome = DEFAULT_BIOME, roughness: float = 0.6, scale: int = 4, pos: tuple[int, int] = (0, 0)) -> None:
-        """
-        Creates the terrain.
-
-        Parameters
-        ----------
-        **size**: int
-            The size. Must be in the form 2 ** n + 1.
-        **biome**: Biome
-            The Biome object.
-        **roughness**: float
-            Controls the amount of randomness is added to each pixel.
-        **scale**: int
-            This determines how large the pixels are. Must be an integer greater than 1.
-        **pos**: tuple[int, int]
-            The topleft position of the terrain.
-
-        Raises
-        ------
-        TypeError
-            If the biome is not in the ADDED_BIOMES list.
-        """
-
-    def __init__(self, size: int, biome: Union[str, Biome], roughness: float = 0.6, scale: int = 4, pos: tuple[int, int] = (0, 0)) -> None:
-        if isinstance(biome, Biome):
-            biome_name = biome.name
-            """The biome name of the terrain."""
-        elif isinstance(biome, str):
-            biome_name = biome
-            """The biome name of the terrain."""
-            for added_biome in ADDED_BIOMES:
-                if added_biome.name == biome_name:
-                    biome = added_biome
-                    """The Biome of the terrain."""
-                    break
-
-        if biome_name not in [b.name for b in ADDED_BIOMES]:
-            raise TypeError(f"Biome name must be in {list(map(str, ADDED_BIOMES))}")
-
-        self.heights = diamond_square(size, roughness)
-        """The heights in the height map."""
-
-        self.biome: str = biome_name
-        """The biome name of the terrain."""
-
-        self.biome_obj: Biome = biome
-        """The Biome of the terrain."""
-
-        self.size = size
-        """The size of the terrain. Size must be in the form 2 ** n + 1."""
-
-        self.scale = scale
-        """The scale of the terrain. This determines how large the pixels are. Must be an integer greater than 1."""
-
-        self.pos = pos
-        """The topleft position of the terrain."""
-
-        self.roughness = roughness
-        """The roughness of the terrain."""
-
-    def draw(self, screen_or_surface) -> None:
-        """
-        Draws the terrain on pgzero or pygame determined by the screen_or_surface parameter.
-
-        Parameters
-        ----------
-        **screen_or_surface**: Screen | Surface
-            This is the screen in pgzero or a Surface in pygame.
-        """
-        ox, oy = self.pos
-        is_pgzero = not isinstance(screen_or_surface, PyGameSurface)
-        for y in range(self.size):
-            for x in range(self.size):
-                color = height_to_color(self.heights[y][x], self.biome)
-                if is_pgzero:
-                    screen_or_surface.draw.rect(Rect(ox + x * self.scale, oy + y * self.scale, self.scale, self.scale), color=color)
-                else:
-                    pygame.draw.rect(screen_or_surface, color, Rect(ox + x * self.scale, oy + y * self.scale, self.scale, self.scale))
-
-    def save_as_img(self, save_path: str):
-        """
-        Saves the terrain as an image.
-
-        Parameters
-        ----------
-        **save_path**: str
-            The path to save the image to.
-
-        Returns
-        -------
-        terrain: Terrain
-            The terrain that was saved.
-        """
-        img_width = self.size * self.scale
-        img_height = self.size * self.scale
-        img = Image.new("RGB", (img_width, img_height))
-        pixels = img.load()
-
-        for y in range(self.size):
-            for x in range(self.size):
-                color = height_to_color(self.heights[y][x], self.biome)
-
-                color = tuple(max(0, min(255, int(c))) for c in color)
-
-                for dy in range(self.scale):
-                    for dx in range(self.scale):
-                        pixels[x * self.scale + dx, y * self.scale + dy] = color
-
-        img.save(save_path)
-
-        return Terrain
-
-    def re_generate(self):
-        self.heights = diamond_square(self.size, self.roughness)
 
 class PGZeroInteractive:
     """Class for pgzero interactive mode."""
@@ -329,7 +193,7 @@ class PGZeroInteractive:
             biome_color = get_average_biome_color(added_biome)
             biomes.append([added_biome.name, biome_color, _get_matching_color(biome_color)])
 
-        self.state['height_map'] = diamond_square(size, self.state['roughness'])
+        self.state['height_map'] = core_diamond_square(size, self.state['roughness'])
         
         biome_step = self.width // len(biomes)
         """The distance btween the biomes rectangles."""
@@ -391,11 +255,11 @@ class PGZeroInteractive:
             for b in biome_rects:
                 if b['rect'].collidepoint(pos):
                     self.state['biome'] = b['name']
-                    self.state['height_map'] = diamond_square(size, self.state['roughness'])
+                    self.state['height_map'] = core_diamond_square(size, self.state['roughness'])
                     return
 
             if re_generate_button.collidepoint(pos):
-                self.state['height_map'] = diamond_square(size, self.state['roughness'])
+                self.state['height_map'] = core_diamond_square(size, self.state['roughness'])
 
             if _point_in_circle(pos, self.state['slider_circle_pos'], self.state['slider_circle_radius']):
                 self.state['drag'] = True
@@ -407,7 +271,7 @@ class PGZeroInteractive:
                 self.state['roughness'] = min_roughness + ratio * (max_roughness - min_roughness)
                 update_slider_pos()
 
-                self.state['height_map'] = diamond_square(size, self.state['roughness'])
+                self.state['height_map'] = core_diamond_square(size, self.state['roughness'])
 
         def on_mouse_up_func() -> None:
             self.state['drag'] = False
@@ -497,7 +361,7 @@ class PyGameInteractive:
             biome_color = get_average_biome_color(added_biome)
             biomes.append([added_biome.name, biome_color, _get_matching_color(biome_color)])
 
-        state['height_map'] = diamond_square(size, state['roughness'])
+        state['height_map'] = core_diamond_square(size, state['roughness'])
 
         biome_step = self.width // len(biomes)
         biome_rects = []
@@ -526,13 +390,13 @@ class PyGameInteractive:
                     for b in biome_rects:
                         if b['rect'].collidepoint(event.pos):
                             state['biome'] = b['name']
-                            state['height_map'] = diamond_square(size, state['roughness'])
+                            state['height_map'] = core_diamond_square(size, state['roughness'])
 
                     if _point_in_circle(event.pos, state['slider_circle_pos'], state['slider_circle_radius']):
                         state['drag'] = True
 
                     if re_generate_button.collidepoint(event.pos):
-                        state['height_map'] = diamond_square(size, state['roughness'])
+                        state['height_map'] = core_diamond_square(size, state['roughness'])
 
                 if event.type == pygame.MOUSEMOTION:
                     if state['drag']:
@@ -540,7 +404,7 @@ class PyGameInteractive:
                         ratio = (val - base_slider.left) / base_slider.width
                         state['roughness'] = min_roughness + ratio * (max_roughness - min_roughness)
                         update_slider_pos()
-                        state['height_map'] = diamond_square(size, state['roughness'])
+                        state['height_map'] = core_diamond_square(size, state['roughness'])
 
                 if event.type == pygame.MOUSEBUTTONUP:
                     state['drag'] = False
