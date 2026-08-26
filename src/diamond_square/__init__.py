@@ -6,12 +6,12 @@ Uses C for fast rendering of the core Diamond Square algorithm.
 
 from .biome_funcs import *
 from .biomes import *
-from .diamond import core_diamond_square
+from .core_algorithm import core_diamond_square
 
 
 from .utils import *
 from .biomes import *
-from .diamond import diamond_square
+from .core_algorithm import diamond_square
 from .biomes import ADDED_BIOMES as ADDED_BIOMES
 from .terrain3d import Terrain3D, Panda3DBase
 from .filter_funcs import *

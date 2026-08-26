@@ -30,8 +30,8 @@ _file = 'diamond_lib.so'
 _path = os.path.join(*(os.path.split(__file__)[:-1] + (_file,)))
 _mod = ctypes.cdll.LoadLibrary(_path)
 
-_mod.diamond_square.restype = Array2D
-_mod.diamond_square.argtypes = [ctypes.c_int, ctypes.c_float]
+_mod.core_diamond_square.restype = Array2D
+_mod.core_diamond_square.argtypes = [ctypes.c_int, ctypes.c_float]
 
 _mod.free_array2d.restype = None
 _mod.free_array2d.argtypes = [Array2D]
@@ -52,7 +52,7 @@ def core_diamond_square(size: int, roughness: float) -> list[list[float]]:
     **Height Map**: list[list[float]]
         The height map generated using the Diamond Square Algorithm.
     """
-    c_heights = _mod.diamond_square(size, roughness)
+    c_heights = _mod.core_diamond_square(size, roughness)
     heights = [
         [c_heights.data[y][x] for x in range(size)]
         for y in range(size)

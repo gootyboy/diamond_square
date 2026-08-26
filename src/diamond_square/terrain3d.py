@@ -1,5 +1,5 @@
 from .utils import *
-from .diamond import core_diamond_square
+from .core_algorithm import core_diamond_square
 from direct.showbase.ShowBase import ShowBase
 from panda3d.core import Vec3, MouseButton
 from .biomes import *

@@ -1,6 +1,6 @@
 from .utils import *
 from .biomes import *
-from .diamond import core_diamond_square
+from .core_algorithm import core_diamond_square
 
 @overload
 def get_average_biome_color(biome: Biome) -> tuple[int, int, int]: ...

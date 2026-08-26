@@ -1,6 +1,6 @@
 from .utils import *
 from .biomes import *
-from .diamond import core_diamond_square
+from .core_algorithm import core_diamond_square
 
 class Terrain:
     """Class for pgzero and pygame terrains."""
