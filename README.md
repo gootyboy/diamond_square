@@ -29,13 +29,16 @@ Implementation of the [Diamond–Square Algorithm](https://en.wikipedia.org/wiki
 
 - Why Use Diamond Square?
 - Usage
-  - Pgzero Terrain Example
-  - Pgzero Interactive Terrain Example
-  - Pygame Terrain Example
-  - Pygame Interactive Terrain Example
-  - Image Saving Examples
-  - Custom Biome Examples
-  - Panda3d 3D Terrain Example
+  - Terrain Examples
+    - Pgzero Terrain Example
+    - Pygame Terrain Example
+    - Panda3d 3D Terrain Example
+  - Interactive Terrain Examples
+    - Pgzero Interactive Terrain Example
+    - Pygame Interactive Terrain Example
+  - Other Examples
+    - Custom Biome Examples
+    - Image Saving Examples
 - Requirements for Pgzero Interactive
 - Versions
 - Coming Soon
@@ -56,7 +59,9 @@ This package provides a complete implementation of the Diamond–Square algorith
 
 - 3d terrain drawing in panda3d.
 
-- Optional interactive mode.
+- Interactive mode.
+
+- Change the border shape of the terrain (it is normally a square) using a function.
 
 - The ability to save generated terrain as an image.
 
@@ -68,21 +73,35 @@ It is designed for both experimentation and game development, making 2d/3d terra
 
 ## Usage
 
-### Pgzero Terrain Example
+### Terrain Examples
+
+#### Pgzero Terrain Example
 
 Go to [/sample_codes/pgzero_terrain.py](https://github.com/gootyboy/diamond_square/blob/main/sample_codes/pgzero_terrain.py)
 
-### Pgzero Interactive Terrain Example
-
-Go to [/sample_codes/pgzero_interactive_terrain.py](https://github.com/gootyboy/diamond_square/blob/main/sample_codes/pgzero_interactive_terrain.py)
-
-### Pygame Terrain Example
+#### Pygame Terrain Example
 
 Go to [/sample_codes/pygame_terrain.py](https://github.com/gootyboy/diamond_square/blob/main/sample_codes/pygame_terrain.py)
 
-### Pygame Interactive Terrain Example
+#### Panda3d 3D Terrain Example
+
+Go to [/sample_code/custom_biome.py](https://github.com/gootyboy/diamond_square/blob/main/sample_codes/panda3d_terrain3d.py)
+
+---
+
+### Interactive Terrain Examples
+
+#### Pgzero Interactive Terrain Example
+
+Go to [/sample_codes/pgzero_interactive_terrain.py](https://github.com/gootyboy/diamond_square/blob/main/sample_codes/pgzero_interactive_terrain.py)
+
+#### Pygame Interactive Terrain Example
 
 Go to [/sample_codes/pygame_interactive_terrain.py](https://github.com/gootyboy/diamond_square/blob/main/sample_codes/pygame_interactive_terrain.py)
+
+---
+
+### Other Examples
 
 ### Image Saving Examples
 
@@ -91,10 +110,6 @@ Go to [/sample_codes/save_terrain.py](https://github.com/gootyboy/diamond_square
 ### Custom Biome Examples
 
 Go to [/sample_code/custom_biome.py](https://github.com/gootyboy/diamond_square/blob/main/sample_codes/custom_biome.py)
-
-### Panda3d 3D Terrain Example
-
-Go to [/sample_code/custom_biome.py](https://github.com/gootyboy/diamond_square/blob/main/sample_codes/panda3d_terrain3d.py)
 
 ---
 
