@@ -139,9 +139,9 @@ def volcanic_biome_htc(h: float) -> tuple[int, int, int]:
     """
     if h < 0.2:
         return (20, 20, 20)
-    if h < 0.4:
+    if h < 0.3:
         return (40, 40, 40)
-    if h < 0.6:
+    if h < 0.5:
         return (80, 0, 0)
     if h < 0.8:
         return (200, 50, 0)

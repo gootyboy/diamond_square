@@ -11,7 +11,6 @@ from .core_algorithm import core_diamond_square
 
 from .utils import *
 from .biomes import *
-from .core_algorithm import diamond_square
 from .biomes import ADDED_BIOMES as ADDED_BIOMES
 from .terrain3d import Terrain3D, Panda3DBase
 from .filter_funcs import *

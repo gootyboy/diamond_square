@@ -26,7 +26,7 @@ class Array2D(ctypes.Structure):
         ("data", ctypes.POINTER(ctypes.POINTER(ctypes.c_double)))
     ]
 
-_file = 'diamond_lib.so'
+_file = 'core_algorithm_lib.so'
 _path = os.path.join(*(os.path.split(__file__)[:-1] + (_file,)))
 _mod = ctypes.cdll.LoadLibrary(_path)
 
