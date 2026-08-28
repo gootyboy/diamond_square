@@ -8,6 +8,7 @@ Also can draw 3D terrains in panda3d.
 
 ## Sample Generations
 
+![Sample Default 3D Terrain](https://github.com/gootyboy/diamond_square/blob/main/panda3d_terrain.png)
 ![Sample Default Terrain](https://gootyboy.github.io/project_details/diamond-square/default_terrain.png)
 ![Sample Desert Terrain](https://gootyboy.github.io/project_details/diamond-square/desert_terrain.png)
 ![Sample Tundra Terrain](https://gootyboy.github.io/project_details/diamond-square/tundra_terrain.png)
@@ -16,7 +17,6 @@ Also can draw 3D terrains in panda3d.
 ![Sample Swamp Terrain](https://gootyboy.github.io/project_details/diamond-square/swamp_terrain.png)
 ![Sample Ocean Terrain](https://gootyboy.github.io/project_details/diamond-square/ocean_terrain.png)
 ![Sample Mars Terrain](https://gootyboy.github.io/project_details/diamond-square/mars_terrain.png)
-![Sample Crazy Mars Terrain](https://gootyboy.github.io/project_details/diamond-square/mars_crazy.png)
 
 ---
 
