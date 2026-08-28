@@ -158,4 +158,4 @@ Version 0.1.9: Improve speed in C file and fix bugs.
 
 ## Coming Soon
 
-Version 1.0.1: Finish Documentation.
+Version 1.1.0: Add filter functions for 2D terrains.

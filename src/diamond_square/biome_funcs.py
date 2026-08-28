@@ -18,6 +18,7 @@ def _darken_color(rgb, factor=0.2):
     
     return (r, g, b)
 
+
 def default_biome_htc(h: float) -> tuple[int, int, int]:
     """
     This is the height to color function for the default biome.
@@ -259,7 +260,6 @@ def tropical_biome_ht3d(h: float) -> float:
     This function takes a height value (between 0 and 1) and returns another value, telling the code how much to stretch the pixel into 3d.
     """
     return (h * 10) ** 1.35
-
 
 def volcanic_biome_ht3d(h: float) -> float:
     """

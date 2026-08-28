@@ -136,28 +136,21 @@ class Terrain3D:
         self.pos = (center + pos[0], center + pos[1], z_pos)
         self.height_map = core_diamond_square(self.size, self.roughness)
 
-    def draw_panda3d(self, obj):
-        """obj is the panda3d class. When using this function inside a panda3d class, pass the panda3d class `self` into obj."""
-        for y, row in enumerate(self.height_map):
-            for x, h in enumerate(row):
-                color = self.biome.height_to_color(h)
-                height = self.biome.height_to_3d(h)
-                _panda3d_box(obj, 0.1 * self.scale, height, 0.1 * self.scale, (x * self.scale * 0.05 + self.pos[0], y * self.scale * 0.05 + self.pos[1], self.pos[2]), color)
-
-    def draw_filtered_panda3d(self, obj, filter_func):
+    def draw_panda3d(self, obj, filter_func: Optional[Callable[[object, tuple[int, int]], bool]] = None):
         """
-        Filters the rectangular prisms drawn, so that the output range can be other shapes instead of just a square.
-
-        ***Only works when self.pos = (0, 0, z)***
+        Draws the 3D terrain in panda3d.
 
         Parameters
         ----------
-        **obj**: ShowBase
+        obj
             obj is the panda3d class. When using this function inside a panda3d class, pass the panda3d class `self` into obj.
-        **filter_func**: (( obj, pos)) -> bool
+        filter_func
+            Filters the rectangular prisms drawn, so that the output range can be other shapes instead of just a square.
+
             The filter function should have 2 parameters: obj, pos. obj is the Terrain3D self. From obj, you have access to all of the variables in the Terrain3D self.
+
             pos is the current position of the pixel that it is checking.
-    
+
             Example::
 
                 def circle_filter(obj, pos):
@@ -165,6 +158,9 @@ class Terrain3D:
                     # You have to use world_size instead of size because size is just the dimensions of the height map.
                     # world_size is the dimensions of the Terrain3D.
         """
+        if filter_func == None:
+            filter_func = lambda obj, pos: True
+
         for y, row in enumerate(self.height_map):
             for x, h in enumerate(row):
                 world_x = x * self.scale * 0.05 + self.pos[0]
@@ -177,8 +173,7 @@ class Terrain3D:
     def re_generate(self):
         self.height_map = core_diamond_square(self.size, self.roughness)
 
-
-    def save_as_stl(self, filename: str, filter_func=None):
+    def save_as_stl(self, filename: str, filter_func: Optional[Callable[[object, tuple[int, int]], bool]] = None):
         """
         Exports the terrain data into an ASCII STL file.
         Generates individual solid 3D blocks mirroring the `_panda3d_box` logic.
@@ -252,20 +247,27 @@ class Terrain3D:
 
             f.write("endsolid terrain\n")
 
-    def save_as_obj(self, filename: str, filter_func=None):
+    def save_as_obj(self, filename: str, filter_func: Optional[Callable[[object, tuple[int, int]], bool]] = None):
         """
-        Exports the terrain data into a colored Wavefront OBJ file 
-        with an accompanying MTL file for material/biome colors.
-        
+        Exports the terrain data into a colored OBJ file with an MTL file for material/biome colors.
+
         Parameters
         ----------
         filename : str
             The target file path (e.g., 'terrain.obj').
-        filter_func : function, optional
-            A filtering function mirroring `draw_filtered_panda3d`.
+        filter_func : Callable | None
+            Filters the rectangular prisms drawn, so that the output range can be other shapes instead of just a square.
+            The filter function should have 2 parameters: obj, pos. obj is the Terrain3D self. From obj, you have access to all of the variables in the Terrain3D self.
+            pos is the current position of the pixel that it is checking.
+    
+            Example::
+
+                def circle_filter(obj, pos):
+                    return (pos[0] ** 2 + pos[1] ** 2) <= (obj.world_size / 2) ** 2
+                    # You have to use world_size instead of size because size is just the dimensions of the height map.
+                    # world_size is the dimensions of the Terrain3D.
         """
-        
-        # Split extension to generate paths for both files
+
         base_name = os.path.splitext(filename)[0]
         obj_path = base_name + ".obj"
         mtl_path = base_name + ".mtl"
@@ -274,96 +276,80 @@ class Terrain3D:
         box_width = 0.1 * self.scale
         box_depth = 0.1 * self.scale
 
-        used_colors = {}  # Tracks unique colors to map them to materials
+        used_colors = {}
         vertices = []
-        faces = []        # List of tuples: (material_name, (v1, v2, v3, v4))
+        faces = []
 
-        # Define 8 local corners of a 3D block unit
         local_cube_verts = [
-            (0, 0, 0), (1, 0, 0), (1, 1, 0), (0, 1, 0),  # Bottom face vertices
-            (0, 0, 1), (1, 0, 1), (1, 1, 1), (0, 1, 1)   # Top face vertices
+            (0, 0, 0), (1, 0, 0), (1, 1, 0), (0, 1, 0),
+            (0, 0, 1), (1, 0, 1), (1, 1, 1), (0, 1, 1)
         ]
-        
-        # Local vertex index groups for the 6 faces (counter-clockwise orientation)
+
         local_quad_faces = [
-            (1, 4, 3, 2),  # Bottom (Z-)
-            (5, 6, 7, 8),  # Top (Z+)
-            (1, 2, 6, 5),  # Front (Y-)
-            (2, 3, 7, 6),  # Right (X+)
-            (3, 4, 8, 7),  # Back (Y+)
-            (4, 1, 5, 8)   # Left (X-)
+            (1, 4, 3, 2),
+            (5, 6, 7, 8),
+            (1, 2, 6, 5),
+            (2, 3, 7, 6),
+            (3, 4, 8, 7),
+            (4, 1, 5, 8)
         ]
 
         v_index_counter = 1
 
-        # Process the heightmap matrix
         for y, row in enumerate(self.height_map):
             for x, h in enumerate(row):
                 world_x = x * self.scale * 0.05 + self.pos[0]
                 world_y = y * self.scale * 0.05 + self.pos[1]
 
-                # Run custom geometry filters (like your circular terrain filter)
                 if filter_func and not filter_func(self, (world_x, world_y)):
                     continue
 
-                # Fetch biome graphics parameters
                 color = self.biome.height_to_color(h)  
                 height = self.biome.height_to_3d(h)
 
-                # Ensure RGB color values are normalized strictly from 0.0 to 1.0
                 if any(val > 1.0 for val in color[:3]):
                     color = tuple(val / 255.0 for val in color[:3])
                 else:
                     color = tuple(color[:3])
 
-                # Create a unique material name based on the RGB profile
                 color_key = f"mat_{int(color[0]*255)}_{int(color[1]*255)}_{int(color[2]*255)}"
                 if color_key not in used_colors:
                     used_colors[color_key] = color
 
-                # Set up local transformations matching your Panda3D bounding box dimensions
                 x_start = world_x - box_width / 2
                 y_start = world_y - box_depth / 2
                 z_start = self.pos[2]
 
-                # Convert the local bounding box to absolute world space
                 for vx, vy, vz in local_cube_verts:
                     px = x_start + (vx * box_width)
                     py = y_start + (vy * box_depth)
                     pz = z_start + (vz * height)
                     vertices.append((px, py, pz))
 
-                # Step through faces and append them tracking global indices
                 for quad in local_quad_faces:
                     global_quad = tuple(idx + v_index_counter - 1 for idx in quad)
                     faces.append((color_key, global_quad))
 
-                # Increment vertex index stack (8 points per voxel column)
                 v_index_counter += 8
 
-        # 1. Write out the Accompanying Material (.mtl) File
         with open(mtl_path, 'w') as mtl_f:
             mtl_f.write("# Terrain Biome Materials\n\n")
             for mat_name, rgb in used_colors.items():
                 mtl_f.write(f"newmtl {mat_name}\n")
-                mtl_f.write(f"Kd {rgb[0]:.4f} {rgb[1]:.4f} {rgb[2]:.4f}\n")  # Diffuse color
-                mtl_f.write(f"Ka {rgb[0]*0.2:.4f} {rgb[1]*0.2:.4f} {rgb[2]*0.2:.4f}\n")  # Ambient reflection
+                mtl_f.write(f"Kd {rgb[0]:.4f} {rgb[1]:.4f} {rgb[2]:.4f}\n")
+                mtl_f.write(f"Ka {rgb[0]*0.2:.4f} {rgb[1]*0.2:.4f} {rgb[2]*0.2:.4f}\n")
                 mtl_f.write("Illum 2\n\n")
 
-        # 2. Write out the Structural Mesh (.obj) File
         with open(obj_path, 'w') as obj_f:
             obj_f.write("# Terrain 3D Mesh Export\n")
             obj_f.write(f"mtllib {mtl_filename}\n\n")
-            
-            # Print global coordinate points array
+
             for v in vertices:
                 obj_f.write(f"v {v[0]:.6f} {v[1]:.6f} {v[2]:.6f}\n")
-            
-            # Group geometry assignments by material to reduce file clutter overhead
+
             current_mat = None
             for mat_name, quad in faces:
                 if mat_name != current_mat:
                     obj_f.write(f"\nusemtl {mat_name}\n")
                     current_mat = mat_name
                 obj_f.write(f"f {quad[0]} {quad[1]} {quad[2]} {quad[3]}\n")
-
