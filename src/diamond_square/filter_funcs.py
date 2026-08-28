@@ -1,3 +1,5 @@
+from .utils import *
+
 def circle_filter(obj, pos):
     return (pos[0] ** 2 + pos[1] ** 2) <= (obj.world_size / 2) ** 2
 

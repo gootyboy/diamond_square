@@ -1,6 +1,7 @@
 from .utils import *
 from .biomes import *
 from .core_algorithm import core_diamond_square
+from .terrain_saving import _TerrainSaving as _TerrainSaving
 
 class Terrain:
     """Class for pgzero and pygame terrains."""
@@ -50,25 +51,50 @@ class Terrain:
         TypeError
             If the biome is not in the ADDED_BIOMES list.
         """
+    @overload
+    def __init__(self, height_map: list[list[float]], biome: str = "default", scale: int = 4, pos: tuple[int, int] = (0, 0)) -> None: ...
+    @overload
+    def __init__(self, height_map: list[list[float]], biome: Biome = DEFAULT_BIOME, scale: int = 4, pos: tuple[int, int] = (0, 0)) -> None: ...
 
-    def __init__(self, size: int, biome: Union[str, Biome], roughness: float = 0.6, scale: int = 4, pos: tuple[int, int] = (0, 0)) -> None:
-        if isinstance(biome, Biome):
-            biome_name = biome.name
-            """The biome name of the terrain."""
-        elif isinstance(biome, str):
-            biome_name = biome
-            """The biome name of the terrain."""
-            for added_biome in ADDED_BIOMES:
-                if added_biome.name == biome_name:
-                    biome = added_biome
-                    """The Biome of the terrain."""
-                    break
+    def __init__(self, *args) -> None:
+        if len(args) == 5:
+            size, biome, roughness, scale, pos = args
+            if isinstance(biome, Biome):
+                biome_name = biome.name
+                """The biome name of the terrain."""
+            elif isinstance(biome, str):
+                biome_name = biome
+                """The biome name of the terrain."""
 
-        if biome_name not in [b.name for b in ADDED_BIOMES]:
-            raise TypeError(f"Biome name must be in {list(map(str, ADDED_BIOMES))}")
+                biome = ADDED_BIOMES.get(f"{biome_name}")
 
-        self.heights = core_diamond_square(size, roughness)
-        """The heights in the height map."""
+            if biome == None:
+                raise TypeError(f"Biome name must be in {list(ADDED_BIOMES.items())}")
+
+            self.heights = core_diamond_square(size, roughness)
+            """The heights in the height map."""
+            self._roughness = roughness
+            """The roughness of the terrain. Do not change the value of this variable. Use self.roughness instead of self._roughness."""
+        elif len(args) == 4:
+            height_map, biome, scale, pos = args
+            if isinstance(biome, Biome):
+                biome_name = biome.name
+                """The biome name of the terrain."""
+            elif isinstance(biome, str):
+                biome_name = biome
+                """The biome name of the terrain."""
+                biome = ADDED_BIOMES.get(f"{biome_name}")
+
+            if biome == None:
+                raise TypeError(f"Biome name must be in {list(ADDED_BIOMES.items())}")
+
+            size = len(height_map)
+            roughness = 0.0
+            self._roughness = roughness
+            """The roughness of the terrain (If the height map is given, then roughness is set to 0.0). Do not change the value of this variable. Use self.roughness instead of self._roughness."""
+
+            self.heights = height_map
+            """The heights in the height map."""
 
         self.biome: str = biome_name
         """The biome name of the terrain."""
@@ -84,9 +110,6 @@ class Terrain:
 
         self.pos = pos
         """The topleft position of the terrain."""
-
-        self._roughness = roughness
-        """The roughness of the terrain. Do not change the value of this variable. Use self.roughness instead of self._roughness."""
 
     @property
     def roughness(self):
@@ -137,30 +160,8 @@ class Terrain:
         ----------
         **save_path**: str
             The path to save the image to.
-
-        Returns
-        -------
-        terrain: Terrain
-            The terrain that was saved.
         """
-        img_width = self.size * self.scale
-        img_height = self.size * self.scale
-        img = Image.new("RGB", (img_width, img_height))
-        pixels = img.load()
-
-        for y in range(self.size):
-            for x in range(self.size):
-                color = self.biome_obj.height_to_color(self.heights[y][x])
-
-                color = tuple(max(0, min(255, int(c))) for c in color)
-
-                for dy in range(self.scale):
-                    for dx in range(self.scale):
-                        pixels[x * self.scale + dx, y * self.scale + dy] = color
-
-        img.save(save_path)
-
-        return Terrain
+        _TerrainSaving.save_as_img(self.size, self.scale, self.heights, self.biome_obj, save_path)
 
     def re_generate(self):
         self.heights = core_diamond_square(self.size, self.roughness)

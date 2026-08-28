@@ -4,6 +4,7 @@ from direct.showbase.ShowBase import ShowBase
 from panda3d.core import Vec3, MouseButton
 from .biomes import *
 from .filter_funcs import *
+from .terrain_saving import _TerrainSaving as _TerrainSaving
 
 def _panda3d_box(obj, width, height, depth, pos, color):
     rectangle = obj.loader.loadModel("models/box")
@@ -175,77 +176,25 @@ class Terrain3D:
 
     def save_as_stl(self, filename: str, filter_func: Optional[Callable[[object, tuple[int, int]], bool]] = None):
         """
-        Exports the terrain data into an ASCII STL file.
-        Generates individual solid 3D blocks mirroring the `_panda3d_box` logic.
-        
+        Exports the terrain into a STL file.
+
         Parameters
         ----------
         filename : str
             The target file path (e.g., 'terrain.stl').
         filter_func : function, optional
-            A filtering function mirroring `draw_filtered_panda3d`.
+            Filters the rectangular prisms drawn, so that the output range can be other shapes instead of just a square.
+            The filter function should have 2 parameters: obj, pos. obj is the Terrain3D self. From obj, you have access to all of the variables in the Terrain3D self.
+            pos is the current position of the pixel that it is checking.
+
+            Example::
+
+                def circle_filter(obj, pos):
+                    return (pos[0] ** 2 + pos[1] ** 2) <= (obj.world_size / 2) ** 2
+                    # You have to use world_size instead of size because size is just the dimensions of the height map.
+                    # world_size is the dimensions of the Terrain3D.
         """
-        # Define the 12 triangles that make up a standard 3D bounding box
-        # Each tuple represents: (normal_vector, vertex1, vertex2, vertex3)
-        cube_facets = [
-            # Top Face (Z+)
-            ((0, 0, 1), (0, 0, 1), (1, 0, 1), (1, 1, 1)),
-            ((0, 0, 1), (0, 0, 1), (1, 1, 1), (0, 1, 1)),
-            # Bottom Face (Z-)
-            ((0, 0, -1), (0, 0, 0), (0, 1, 0), (1, 1, 0)),
-            ((0, 0, -1), (0, 0, 0), (1, 1, 0), (1, 0, 0)),
-            # Front Face (Y-)
-            ((0, -1, 0), (0, 0, 0), (1, 0, 0), (1, 0, 1)),
-            ((0, -1, 0), (0, 0, 0), (1, 0, 1), (0, 0, 1)),
-            # Back Face (Y+)
-            ((0, 1, 0), (1, 1, 0), (0, 1, 0), (0, 1, 1)),
-            ((0, 1, 0), (1, 1, 0), (0, 1, 1), (1, 1, 1)),
-            # Left Face (X-)
-            ((-1, 0, 0), (0, 0, 0), (0, 0, 1), (0, 1, 1)),
-            ((-1, 0, 0), (0, 0, 0), (0, 1, 1), (0, 1, 0)),
-            # Right Face (X+)
-            ((1, 0, 0), (1, 1, 0), (1, 1, 1), (1, 0, 1)),
-            ((1, 0, 0), (1, 1, 0), (1, 0, 1), (1, 0, 0))
-        ]
-
-        box_width = 0.1 * self.scale
-        box_depth = 0.1 * self.scale
-
-        with open(filename, 'w') as f:
-            f.write("solid terrain\n")
-
-            for y, row in enumerate(self.height_map):
-                for x, h in enumerate(row):
-                    # Calculate position identical to the draw loops
-                    world_x = x * self.scale * 0.05 + self.pos[0]
-                    world_y = y * self.scale * 0.05 + self.pos[1] # Fixed typo from original code
-
-                    # Apply geometry filter if provided
-                    if filter_func and not filter_func(self, (world_x, world_y)):
-                        continue
-
-                    # Calculate precise block boundary variables
-                    height = self.biome.height_to_3d(h)
-                    
-                    # Aligning coordinates with how _panda3d_box typically spaces axes
-                    x_start = world_x - box_width / 2
-                    y_start = world_y - box_depth / 2
-                    z_start = self.pos[2]
-
-                    # Loop through all 12 triangles of the voxel column block
-                    for normal, v1, v2, v3 in cube_facets:
-                        f.write(f"  facet normal {normal[0]} {normal[1]} {normal[2]}\n")
-                        f.write("    outer loop\n")
-                        for v in (v1, v2, v3):
-                            # Scale the unit vertices to the calculated box sizes
-                            vx = x_start + (v[0] * box_width)
-                            vy = y_start + (v[1] * box_depth)
-                            vz = z_start + (v[2] * height)
-                            f.write(f"      vertex {vx:.6f} {vy:.6f} {vz:.6f}\n")
-                        f.write("    endloop\n")
-                        f.write("  endfacet\n")
-
-            f.write("endsolid terrain\n")
+        _TerrainSaving.save_as_stl(self, filename, filter_func)
 
     def save_as_obj(self, filename: str, filter_func: Optional[Callable[[object, tuple[int, int]], bool]] = None):
         """
@@ -268,88 +217,4 @@ class Terrain3D:
                     # world_size is the dimensions of the Terrain3D.
         """
 
-        base_name = os.path.splitext(filename)[0]
-        obj_path = base_name + ".obj"
-        mtl_path = base_name + ".mtl"
-        mtl_filename = os.path.basename(mtl_path)
-
-        box_width = 0.1 * self.scale
-        box_depth = 0.1 * self.scale
-
-        used_colors = {}
-        vertices = []
-        faces = []
-
-        local_cube_verts = [
-            (0, 0, 0), (1, 0, 0), (1, 1, 0), (0, 1, 0),
-            (0, 0, 1), (1, 0, 1), (1, 1, 1), (0, 1, 1)
-        ]
-
-        local_quad_faces = [
-            (1, 4, 3, 2),
-            (5, 6, 7, 8),
-            (1, 2, 6, 5),
-            (2, 3, 7, 6),
-            (3, 4, 8, 7),
-            (4, 1, 5, 8)
-        ]
-
-        v_index_counter = 1
-
-        for y, row in enumerate(self.height_map):
-            for x, h in enumerate(row):
-                world_x = x * self.scale * 0.05 + self.pos[0]
-                world_y = y * self.scale * 0.05 + self.pos[1]
-
-                if filter_func and not filter_func(self, (world_x, world_y)):
-                    continue
-
-                color = self.biome.height_to_color(h)  
-                height = self.biome.height_to_3d(h)
-
-                if any(val > 1.0 for val in color[:3]):
-                    color = tuple(val / 255.0 for val in color[:3])
-                else:
-                    color = tuple(color[:3])
-
-                color_key = f"mat_{int(color[0]*255)}_{int(color[1]*255)}_{int(color[2]*255)}"
-                if color_key not in used_colors:
-                    used_colors[color_key] = color
-
-                x_start = world_x - box_width / 2
-                y_start = world_y - box_depth / 2
-                z_start = self.pos[2]
-
-                for vx, vy, vz in local_cube_verts:
-                    px = x_start + (vx * box_width)
-                    py = y_start + (vy * box_depth)
-                    pz = z_start + (vz * height)
-                    vertices.append((px, py, pz))
-
-                for quad in local_quad_faces:
-                    global_quad = tuple(idx + v_index_counter - 1 for idx in quad)
-                    faces.append((color_key, global_quad))
-
-                v_index_counter += 8
-
-        with open(mtl_path, 'w') as mtl_f:
-            mtl_f.write("# Terrain Biome Materials\n\n")
-            for mat_name, rgb in used_colors.items():
-                mtl_f.write(f"newmtl {mat_name}\n")
-                mtl_f.write(f"Kd {rgb[0]:.4f} {rgb[1]:.4f} {rgb[2]:.4f}\n")
-                mtl_f.write(f"Ka {rgb[0]*0.2:.4f} {rgb[1]*0.2:.4f} {rgb[2]*0.2:.4f}\n")
-                mtl_f.write("Illum 2\n\n")
-
-        with open(obj_path, 'w') as obj_f:
-            obj_f.write("# Terrain 3D Mesh Export\n")
-            obj_f.write(f"mtllib {mtl_filename}\n\n")
-
-            for v in vertices:
-                obj_f.write(f"v {v[0]:.6f} {v[1]:.6f} {v[2]:.6f}\n")
-
-            current_mat = None
-            for mat_name, quad in faces:
-                if mat_name != current_mat:
-                    obj_f.write(f"\nusemtl {mat_name}\n")
-                    current_mat = mat_name
-                obj_f.write(f"f {quad[0]} {quad[1]} {quad[2]} {quad[3]}\n")
+        _TerrainSaving.save_as_obj(self, filename, filter_func)

@@ -1,12 +1,12 @@
 """
-This file has the Biome class, add_biome and remove_biome function, and 8 in-built biomes
+This file has the Biome class, add_biome and remove_biome function, and in-built biomes
 """
 
 from .utils import *
 from .biome_funcs import *
 
-ADDED_BIOMES = []
-"""This is the list of the biome names. Do not update or change this list."""
+ADDED_BIOMES = dict()
+"""This is the dict of the biome names. {name: obj}"""
 
 class Biome:
     """Class to create new biomes."""
@@ -189,10 +189,10 @@ def add_biome(*args: Union[Biome, str, Callable[[float], tuple[int, int, int]]])
         name, htc, ht3d = args
         biome = Biome(name, htc, ht3d)
 
-    if biome.name in [b.name for b in ADDED_BIOMES]:
-        raise TypeError(f"You cannot add a biome with the same name as another biome in the added biomes list: {list(map(str, ADDED_BIOMES))}.")
+    if biome.name in ADDED_BIOMES:
+        raise TypeError(f"You cannot add a biome with the same name as another biome in the added biomes list: {list(ADDED_BIOMES.keys())}.")
 
-    ADDED_BIOMES.append(biome)
+    ADDED_BIOMES[f"{biome.name}"] = biome
     return biome
 
 DEFAULT_BIOME = Biome("default", default_biome_htc, default_biome_ht3d).add_to_biomes()
@@ -263,9 +263,8 @@ def remove_biome(biome: Biome) -> Biome:
 def remove_biome(biome: Union[str, Biome]) -> Biome:
     if isinstance(biome, Biome):
         biome = biome.name
-    for b in ADDED_BIOMES:
-        if b.name == biome:
-            ADDED_BIOMES.remove(b)
-            return b
-
-    raise TypeError(f'"{biome}" biome is not in the list. Biomes must be added before they can be removed.')
+    deleted_val = ADDED_BIOMES.pop(biome, None)
+    if deleted_val == None:
+        raise TypeError(f'"{biome}" biome is not in the list. Biomes must be added before they can be removed.')
+    else:
+        return deleted_val
