@@ -1,7 +1,8 @@
 # Diamond Square
 
-245-278
-Implementation of the [Diamond–Square Algorithm](https://en.wikipedia.org/wiki/Diamond-square_algorithm). This package can draw terrains and interactive terrains in pgzero and pygame. Also can draw 3D terrains in panda3d.
+Implementation of the [Diamond–Square Algorithm](https://en.wikipedia.org/wiki/Diamond-square_algorithm). This package can draw terrains and interactive terrains in pgzero and pygame.
+
+Also can draw 3D terrains in panda3d.
 
 ---
 
