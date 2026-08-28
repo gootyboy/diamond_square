@@ -8,7 +8,7 @@ Also can draw 3D terrains in panda3d.
 
 ## Sample Generations
 
-![Sample Default 3D Terrain](https://github.com/gootyboy/diamond_square/blob/main/panda3d_terrain.png)
+![Sample Default 3D Terrain](https://gootyboy.github.io/project_details/diamond-square/panda3d_terrain.png)
 ![Sample Default Terrain](https://gootyboy.github.io/project_details/diamond-square/default_terrain.png)
 ![Sample Desert Terrain](https://gootyboy.github.io/project_details/diamond-square/desert_terrain.png)
 ![Sample Tundra Terrain](https://gootyboy.github.io/project_details/diamond-square/tundra_terrain.png)
@@ -147,11 +147,11 @@ These must be placed in these functions in pgzero:
 
 ## Versions
 
-**(LATEST) Version 1.0.0**: Added 3D Terrain Generation in panda3d.
+Version 1.0.1: Image Fixes.
+
+Version 1.0.0: Added 3D Terrain Generation in panda3d.
 
 Version 0.2.0: Add re-generate button for interactive mode in pygame.
-
-Version 0.1.9: Improve speed in C file and fix bugs.
 
 *To view previous versions, go to [versions.txt](https://github.com/gootyboy/diamond_square/blob/main/versions.txt)*
 
