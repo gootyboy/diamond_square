@@ -1,21 +1,33 @@
+"""
+The in-built biome htc (height to color) and ht3d (height to 3d) functions.
+"""
+
 from .utils import *
 
-def _darken_color(rgb, factor=0.2):
+def darken_color(rgb: tuple[int, int, int], factor: float = 0.2) -> tuple[int, int, int]:
     """
     Darkens an RGB color tuple by a given factor (0.0 to 1.0).
-    factor=0.2 means 20% darker.
+
+    Parameters
+    ---------
+    rgb: tuple[int, int, int]
+        The color to darken.
+    factor: float
+        The factor to darken by. factor = 0.2 means 20% darker.
+
+    Returns
+    -------
+    tuple[int, int, int]
+        The darkened rgb.
     """
-    # Ensure the factor is between 0 and 1
     factor = max(0.0, min(1.0, factor))
-    
-    # Calculate the multiplier (e.g., 20% darker means keeping 80% of the brightness)
+
     multiplier = 1.0 - factor
-    
-    # Multiply each channel and round to the nearest integer
+
     r = int(rgb[0] * multiplier)
     g = int(rgb[1] * multiplier)
     b = int(rgb[2] * multiplier)
-    
+
     return (r, g, b)
 
 
@@ -25,12 +37,12 @@ def default_biome_htc(h: float) -> tuple[int, int, int]:
 
     Parameters
     ----------
-    **h**: float
+    h: float
         The height. Must be a value from 0 to 1 (in the interval [0, 1]).
 
     Returns
     -------
-    **Color**: tuple[int, int, int]
+    tuple[int, int, int]
         The color based on the height and the function.
     """
     if h < 0.2:
@@ -56,23 +68,23 @@ def desert_biome_htc(h: float) -> tuple[int, int, int]:
 
     Parameters
     ----------
-    **h**: float
+    h: float
         The height. Must be a value from 0 to 1 (in the interval [0, 1]).
 
     Returns
     -------
-    **Color**: tuple[int, int, int]
+    tuple[int, int, int]
         The color based on the height and the function.
     """
     tan = (210, 180, 140)
     if h < 0.3:
-        return _darken_color(tan, 0.05)
+        return darken_color(tan, 0.05)
     if h < 0.5:
-        return _darken_color(tan, 0.1)
+        return darken_color(tan, 0.1)
     if h < 0.8:
-        return _darken_color(tan, 0.15)
+        return darken_color(tan, 0.15)
     else:
-        return _darken_color(tan, 0.2)
+        return darken_color(tan, 0.2)
 
 def tundra_biome_htc(h: float) -> tuple[int, int, int]:
     """
@@ -80,12 +92,12 @@ def tundra_biome_htc(h: float) -> tuple[int, int, int]:
 
     Parameters
     ----------
-    **h**: float
+    h: float
         The height. Must be a value from 0 to 1 (in the interval [0, 1]).
 
     Returns
     -------
-    **Color**: tuple[int, int, int]
+    tuple[int, int, int]
         The color based on the height and the function.
     """
     if h < 0.05:
@@ -105,12 +117,12 @@ def tropical_biome_htc(h: float) -> tuple[int, int, int]:
 
     Parameters
     ----------
-    **h**: float
+    h: float
         The height. Must be a value from 0 to 1 (in the interval [0, 1]).
 
     Returns
     -------
-    **Color**: tuple[int, int, int]
+    tuple[int, int, int]
         The color based on the height and the function.
     """
     if h < 0.3:
@@ -130,12 +142,12 @@ def volcanic_biome_htc(h: float) -> tuple[int, int, int]:
 
     Parameters
     ----------
-    **h**: float
+    h: float
         The height. Must be a value from 0 to 1 (in the interval [0, 1]).
 
     Returns
     -------
-    **Color**: tuple[int, int, int]
+    tuple[int, int, int]
         The color based on the height and the function.
     """
     if h < 0.2:
@@ -155,12 +167,12 @@ def swamp_biome_htc(h: float) -> tuple[int, int, int]:
 
     Parameters
     ----------
-    **h**: float
+    h: float
         The height. Must be a value from 0 to 1 (in the interval [0, 1]).
 
     Returns
     -------
-    **Color**: tuple[int, int, int]
+    tuple[int, int, int]
         The color based on the height and the function.
     """
     if h < 0.2:
@@ -180,12 +192,12 @@ def ocean_biome_htc(h: float) -> tuple[int, int, int]:
 
     Parameters
     ----------
-    **h**: float
+    h: float
         The height. Must be a value from 0 to 1 (in the interval [0, 1]).
 
     Returns
     -------
-    **Color**: tuple[int, int, int]
+    tuple[int, int, int]
         The color based on the height and the function.
     """
     if h < 0.2:
@@ -207,12 +219,12 @@ def mars_biome_htc(h: float) -> tuple[int, int, int]:
 
     Parameters
     ----------
-    **h**: float
+    h: float
         The height. Must be a value from 0 to 1 (in the interval [0, 1]).
 
     Returns
     -------
-    **Color**: tuple[int, int, int]
+    Color: tuple[int, int, int]
         The color based on the height and the function.
     """
     if h < 0.2:
@@ -234,6 +246,16 @@ def default_biome_ht3d(h: float) -> float:
     Height to 3D function for the default biome.
     This function only necessary for 3D drawing in Terrain3D. 
     This function takes a height value (between 0 and 1) and returns another value, telling the code how much to stretch the pixel into 3d.
+
+    Parameters
+    ----------
+    h: float
+        The height value. Must be a value from 0 to 1 (in the interval [0, 1]).
+
+    Returns
+    -------
+    float
+        The 3d height of the rectangular prism (pixel).
     """
     return (h * 10) ** (1.5)
 
@@ -242,6 +264,16 @@ def desert_biome_ht3d(h: float) -> float:
     Height to 3D function for the desert biome.
     This function only necessary for 3D drawing in Terrain3D. 
     This function takes a height value (between 0 and 1) and returns another value, telling the code how much to stretch the pixel into 3d.
+
+    Parameters
+    ----------
+    h: float
+        The height value. Must be a value from 0 to 1 (in the interval [0, 1]).
+
+    Returns
+    -------
+    float
+        The 3d height of the rectangular prism (pixel).
     """
     return (h * 10) ** 1.2
 
@@ -250,6 +282,16 @@ def tundra_biome_ht3d(h: float) -> float:
     Height to 3D function for the tundra biome.
     This function only necessary for 3D drawing in Terrain3D. 
     This function takes a height value (between 0 and 1) and returns another value, telling the code how much to stretch the pixel into 3d.
+
+    Parameters
+    ----------
+    h: float
+        The height value. Must be a value from 0 to 1 (in the interval [0, 1]).
+
+    Returns
+    -------
+    float
+        The 3d height of the rectangular prism (pixel).
     """
     return (h * 10) ** 1.7
 
@@ -258,6 +300,16 @@ def tropical_biome_ht3d(h: float) -> float:
     Height to 3D function for the tropical biome.
     This function only necessary for 3D drawing in Terrain3D. 
     This function takes a height value (between 0 and 1) and returns another value, telling the code how much to stretch the pixel into 3d.
+
+    Parameters
+    ----------
+    h: float
+        The height value. Must be a value from 0 to 1 (in the interval [0, 1]).
+
+    Returns
+    -------
+    float
+        The 3d height of the rectangular prism (pixel).
     """
     return (h * 10) ** 1.35
 
@@ -266,6 +318,16 @@ def volcanic_biome_ht3d(h: float) -> float:
     Height to 3D function for the volcanic biome.
     This function only necessary for 3D drawing in Terrain3D. 
     This function takes a height value (between 0 and 1) and returns another value, telling the code how much to stretch the pixel into 3d.
+
+    Parameters
+    ----------
+    h: float
+        The height value. Must be a value from 0 to 1 (in the interval [0, 1]).
+
+    Returns
+    -------
+    float
+        The 3d height of the rectangular prism (pixel).
     """
     return ((1 - h) * 10) ** (1 + 0.5 * ((1 - h)**2))
 
@@ -274,6 +336,16 @@ def swamp_biome_ht3d(h: float) -> float:
     Height to 3D function for the swamp biome.
     This function only necessary for 3D drawing in Terrain3D. 
     This function takes a height value (between 0 and 1) and returns another value, telling the code how much to stretch the pixel into 3d.
+
+    Parameters
+    ----------
+    h: float
+        The height value. Must be a value from 0 to 1 (in the interval [0, 1]).
+
+    Returns
+    -------
+    float
+        The 3d height of the rectangular prism (pixel).
     """
     return (h * 10) ** 1.1
 
@@ -282,6 +354,16 @@ def ocean_biome_ht3d(h: float) -> float:
     Height to 3D function for the ocean biome.
     This function only necessary for 3D drawing in Terrain3D. 
     This function takes a height value (between 0 and 1) and returns another value, telling the code how much to stretch the pixel into 3d.
+
+    Parameters
+    ----------
+    h: float
+        The height value. Must be a value from 0 to 1 (in the interval [0, 1]).
+
+    Returns
+    -------
+    float
+        The 3d height of the rectangular prism (pixel).
     """
     return (h * 10) ** 1.1
 
@@ -290,5 +372,15 @@ def mars_biome_ht3d(h: float) -> float:
     Height to 3D function for the mars biome.
     This function only necessary for 3D drawing in Terrain3D. 
     This function takes a height value (between 0 and 1) and returns another value, telling the code how much to stretch the pixel into 3d.
+
+    Parameters
+    ----------
+    h: float
+        The height value. Must be a value from 0 to 1 (in the interval [0, 1]).
+
+    Returns
+    -------
+    float
+        The 3d height of the rectangular prism (pixel).
     """
     return (h * 10) ** 1.15

@@ -203,7 +203,7 @@ class PGZeroInteractive:
 
         for name, added_biome in ADDED_BIOMES.items():
             biome_color = get_average_biome_color(added_biome)
-            biomes.append([name, biome_color, _get_matching_color(biome_color), add_biome])
+            biomes.append([name, biome_color, _get_matching_color(biome_color), added_biome])
 
         self.state['height_map'] = core_diamond_square(self.size, self.state['roughness'])
         

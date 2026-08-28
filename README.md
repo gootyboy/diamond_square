@@ -140,7 +140,7 @@ These must be placed in these functions in pgzero:
 
 - `on_mouse_up():` → `terrain.on_mouse_up_func()`
 
-- `on_mouse_move(pos):` → `terrain.on_mouse_move_func(pos)`  
+- `on_mouse_move(pos):` → `terrain.on_mouse_move_func(pos)`
 
 ---
 
