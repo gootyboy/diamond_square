@@ -6,7 +6,7 @@ from .biomes import *
 from .filter_funcs import *
 from .terrain_saving import _TerrainSaving as _TerrainSaving
 
-def _panda3d_box(obj, width, height, depth, pos, color):
+def draw_panda3d_box(obj, width, height, depth, pos, color):
     rectangle = obj.loader.loadModel("models/box")
     rectangle.reparentTo(obj.render)
 
@@ -169,7 +169,7 @@ class Terrain3D:
                 if filter_func(self, (world_x, world_y)):
                     color = self.biome.height_to_color(h)
                     height = self.biome.height_to_3d(h)
-                    _panda3d_box(obj, 0.1 * self.scale, height, 0.1 * self.scale, (world_x, world_y, self.pos[2]), color)
+                    draw_panda3d_box(obj, 0.1 * self.scale, height, 0.1 * self.scale, (world_x, world_y, self.pos[2]), color)
 
     def re_generate(self):
         self.height_map = core_diamond_square(self.size, self.roughness)

@@ -110,14 +110,18 @@ class Biome:
         Returns
         ------
         Biome
-            The biome that was added.
+            The biome that was added (self).
 
         Raises
         ------
         TypeError
             If the biome is not already added.
         """
-        return remove_biome(self)
+        deleted_val = ADDED_BIOMES.pop(self.name, None)
+        if deleted_val == None:
+            raise TypeError(f'"{self.name}" biome is not in the list. Biomes must be added before they can be removed.')
+        else:
+            return self
 
     def get_average_color(self):
         """
@@ -162,53 +166,3 @@ OCEAN_BIOME = Biome("ocean", ocean_biome_htc, ocean_biome_ht3d).add_to_biomes()
 
 MARS_BIOME = Biome("mars", mars_biome_htc, mars_biome_ht3d).add_to_biomes()
 """The mars Biome."""
-
-@overload
-def remove_biome(biome: str) -> Biome:
-    """
-    Removes a biome from the list of biomes so that it cannot be used in any terrains.
-
-    Parameters
-    ----------
-    biome: str
-        The name of the biome to remove.
-
-    Returns
-    ------
-    Biome
-        The biome that was removed.
-
-    Raises
-    ------
-    TypeError
-        If the biome was not already added.
-    """
-@overload
-def remove_biome(biome: Biome) -> Biome:
-    """
-    Removes a biome from the list of biomes so that it cannot be used in any terrains.
-
-    Parameters
-    ----------
-    biome: str
-        The Biome object to remove.
-
-    Returns
-    ------
-    Biome
-        The biome that was removed.
-
-    Raises
-    ------
-    TypeError
-        If the biome was not already added.
-    """
-
-def remove_biome(biome: Union[str, Biome]) -> Biome:
-    if isinstance(biome, Biome):
-        biome = biome.name
-    deleted_val = ADDED_BIOMES.pop(biome, None)
-    if deleted_val == None:
-        raise TypeError(f'"{biome}" biome is not in the list. Biomes must be added before they can be removed.')
-    else:
-        return deleted_val

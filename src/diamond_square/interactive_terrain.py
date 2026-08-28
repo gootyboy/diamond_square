@@ -4,120 +4,6 @@ from .core_algorithm import core_diamond_square
 from .terrain import *
 from .terrain_saving import _TerrainSaving as _TerrainSaving
 
-@overload
-def get_average_biome_color(biome: Biome) -> tuple[int, int, int]: ...
-@overload
-def get_average_biome_color(biome: str) -> tuple[int, int, int]: ...
-
-def get_average_biome_color(biome: Union[Biome, str]) -> tuple[int, int, int]:
-    if isinstance(biome, str):
-        biome = ADDED_BIOMES.get(f"{biome}")
-
-    if biome == None:
-        raise TypeError(f"{biome} biome was not added to ADDED_BIOMES.")
-
-    colors = []
-    for i in np.arange(0, 1, 0.001):
-       colors.append(biome.height_to_color(i))
-
-    rgb = list(zip(*colors))
-    red = sum(rgb[0]) / len(rgb[0])
-    green = sum(rgb[1]) / len(rgb[1])
-    blue = sum(rgb[2]) / len(rgb[2])
-
-    return (int(red), int(green), int(blue))
-
-def _get_matching_color(color: tuple[int, int, int]) -> tuple[int, int, int]:
-    """
-    Takes an RGB color and returns black or white based on the luminance (brightness)
-
-    Parameters
-    ----------
-    **color**: tuple[int, int, int]
-        The RGB color.
-
-    Returns
-    -------
-    (0, 0, 0)
-        If the luminance (brightness) is greater than 128
-    (255, 255, 255)
-        If the luminance (brightness) is less than 128
-    """
-    r, g, b = color
-
-    luminance = (0.299 * r) + (0.587 * g) + (0.114 * b)
-
-    if luminance < 128:
-        return (255, 255, 255)
-    else:
-        return (0, 0, 0)
-
-@overload
-def height_to_color(h: float, biome: str = "default") -> tuple[int, int, int]:
-    """
-    Turns a height value from 0 to 1 into a color using a biome. You may also use biome.height_to_color(h).
-
-    Parameters
-    ----------
-    **h**: float
-        The height value. Must be from 0 to 1.
-    **biome**: str
-        The name of the biome.
-
-    Returns
-    -------
-    **color**: tuple[int, int, int]
-        The color based on the biome and the height value.
-    """
-@overload
-def height_to_color(h: float, biome: Biome = DEFAULT_BIOME) -> tuple[int, int, int]:
-    """
-    Turns a height value from 0 to 1 into a color using a biome. You may also use biome.height_to_color(h).
-
-    Parameters
-    ----------
-    **h**: float
-        The height value. Must be from 0 to 1.
-    **biome**: Biome
-        The Biome object.
-
-    Returns
-    -------
-    **color**: tuple[int, int, int]
-        The color based on the biome and the height value.
-    """
-
-def height_to_color(h: float, biome: Union[str, Biome]) -> tuple[int, int, int]:
-    if isinstance(biome, str):
-        biome = ADDED_BIOMES.get(f"{biome}")
-
-    if biome == None:
-        raise TypeError(f"{biome} biome was not added to ADDED_BIOMES.")
-
-    return biome.height_to_color(h)
-
-def _point_in_circle(pos: tuple[int, int], center: tuple[int, int], radius: float) -> bool:
-    """
-    Checks if a point is in a circle. Not meant for user use.
-
-    Parameters
-    ----------
-    **pos**: tuple[int, int]
-        The point to check if it is inside a circle.
-    **center**: tuple[int, int]
-        The center of the circle.
-    **radius**: float
-        The radius of the circle.
-
-    Returns
-    -------
-    **is in circle**: bool
-        Returns True if the point is inside or on the circle, and returns False if the point is outside the circle.
-    """
-    dx = pos[0] - center[0]
-    dy = pos[1] - center[1]
-    return dx ** 2 + dy ** 2 <= radius ** 2
-
 class PGZeroInteractive:
     """Class for pgzero interactive mode."""
     @overload
@@ -202,8 +88,18 @@ class PGZeroInteractive:
         biomes: list[list[str, tuple[int, int, int], str]] = []
 
         for name, added_biome in ADDED_BIOMES.items():
-            biome_color = get_average_biome_color(added_biome)
-            biomes.append([name, biome_color, _get_matching_color(biome_color), added_biome])
+            biome_color = added_biome.get_average_biome_color()
+
+            r, g, b = biome_color
+
+            luminance = (0.299 * r) + (0.587 * g) + (0.114 * b)
+
+            if luminance < 128:
+                matching_color = (255, 255, 255)
+            else:
+                matching_color = (0, 0, 0)
+    
+            biomes.append([name, biome_color, matching_color, added_biome])
 
         self.state['height_map'] = core_diamond_square(self.size, self.state['roughness'])
         
@@ -242,7 +138,7 @@ class PGZeroInteractive:
             ox, oy = pos
             for y in range(self.size):
                 for x in range(self.size):
-                    color = height_to_color(self.state['height_map'][y][x], self.state['biome'])
+                    color = self.state["biome_obj"].height_to_color(self.state['height_map'][y][x])
                     screen.draw.filled_rect(Rect(ox + x * self.scale, oy + y * self.scale, self.scale, self.scale), color)
 
             screen.draw.filled_rect(base_slider, "gray")
@@ -273,7 +169,11 @@ class PGZeroInteractive:
             if re_generate_button.collidepoint(pos):
                 self.state['height_map'] = core_diamond_square(self.size, self.state['roughness'])
 
-            if _point_in_circle(pos, self.state['slider_circle_pos'], self.state['slider_circle_radius']):
+            dx = pos[0] - self.state["slider_circle_pos"][0]
+            dy = pos[1] - self.state["slider_circle_pos"][1]
+            point_in_circle = dx ** 2 + dy ** 2 <= self.state["slider_circle_radius"] ** 2
+
+            if point_in_circle:
                 self.state['drag'] = True
 
         def on_mouse_move_func(pos) -> None:
@@ -413,8 +313,18 @@ class PyGameInteractive:
         """The list of biomes to be drawn."""
 
         for name, added_biome in ADDED_BIOMES.items():
-            biome_color = get_average_biome_color(added_biome)
-            biomes.append([name, biome_color, _get_matching_color(biome_color), added_biome])
+            biome_color = added_biome.get_average_biome_color()
+
+            r, g, b = biome_color
+
+            luminance = (0.299 * r) + (0.587 * g) + (0.114 * b)
+
+            if luminance < 128:
+                matching_color = (255, 255, 255)
+            else:
+                matching_color = (0, 0, 0)
+
+            biomes.append([name, biome_color, matching_color, added_biome])
 
         self.state['height_map'] = core_diamond_square(self.size, self.state['roughness'])
 
@@ -448,7 +358,11 @@ class PyGameInteractive:
                             self.state["biome_obj"] = b["obj"]
                             self.state['height_map'] = core_diamond_square(self.size, self.state['roughness'])
 
-                    if _point_in_circle(event.pos, self.state['slider_circle_pos'], self.state['slider_circle_radius']):
+                    dx = event.pos[0] - self.state["slider_circle_pos"][0]
+                    dy = event.pos[1] - self.state["slider_circle_pos"][1]
+                    point_in_circle = dx ** 2 + dy ** 2 <= self.state["slider_circle_radius"] ** 2
+
+                    if point_in_circle:
                         self.state['drag'] = True
 
                     if re_generate_button.collidepoint(event.pos):
@@ -471,7 +385,7 @@ class PyGameInteractive:
             ox, oy = self.pos
             for y in range(self.size):
                 for x in range(self.size):
-                    color = height_to_color(self.state['height_map'][y][x], self.state['biome'])
+                    color = self.state["biome_obj"].height_to_color(self.state['height_map'][y][x])
                     pygame.draw.rect(surface, color, Rect(ox + x * self.scale, oy + y * self.scale, self.scale, self.scale), width = 0)
 
             font24 = pygame.font.SysFont(None, 24)
