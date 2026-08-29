@@ -4,7 +4,13 @@
 from diamond_square import *
 
 # Generate 3D Terrain.
-terrain = Terrain3D(size=2 ** 8 + 1, biome=TROPICAL_BIOME, roughness=0.6, scale=5, pos=(10, 10, 10))
+terrain = Terrain3D(size=2 ** 8 + 1, biome=TROPICAL_BIOME, roughness=0.6, scale=5, pos=(1, 1, 1))
+
+# Saving the terrain as a .stl file.
+terrain.save_as_stl()
+
+# Saving the terrain as a .obj file.
+terrain.save_as_obj()
 
 # Panda3D main class. Panda3DBase is a class included in diamond_square.
 class Panda3DTerrain3D(Panda3DBase):

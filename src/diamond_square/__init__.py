@@ -8,6 +8,6 @@ from .biome_funcs import *
 from .biomes import *
 from .core_algorithm import core_diamond_square
 from .filter_funcs import *
-from .interactive_terrain import *
-from .terrain import *
+from .interactive_terrain import PGZeroInteractive, PyGameInteractive
+from .terrain import Terrain
 from .terrain3d import Terrain3D, Panda3DBase

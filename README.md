@@ -86,7 +86,7 @@ Go to [/sample_codes/pygame_terrain.py](https://github.com/gootyboy/diamond_squa
 
 #### Panda3d 3D Terrain Example
 
-Go to [/sample_code/custom_biome.py](https://github.com/gootyboy/diamond_square/blob/main/sample_codes/panda3d_terrain3d.py)
+Go to [/sample_code/panda3d_terrain3d.py](https://github.com/gootyboy/diamond_square/blob/main/sample_codes/panda3d_terrain3d.py)
 
 ---
 
@@ -147,11 +147,11 @@ These must be placed in these functions in pgzero:
 
 ## Versions
 
-Version 1.0.1: Image Fixes.
+Version 1.0.2: Bug fixes.
+
+Version 1.0.1: README Image Fixes.
 
 Version 1.0.0: Added 3D Terrain Generation in panda3d.
-
-Version 0.2.0: Add re-generate button for interactive mode in pygame.
 
 *To view previous versions, go to [versions.txt](https://github.com/gootyboy/diamond_square/blob/main/versions.txt)*
 
@@ -159,4 +159,5 @@ Version 0.2.0: Add re-generate button for interactive mode in pygame.
 
 ## Coming Soon
 
+Version 1.0.3: Add 3D terrain images in README.
 Version 1.1.0: Add filter functions for 2D terrains.

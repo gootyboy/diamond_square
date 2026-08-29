@@ -62,7 +62,7 @@ void free_array2d(Array2D array2d) {
     free(array2d.data);
 }
 
-Array2D core_diamond_square(int size, float rough) {
+Array2D custom_diamond(int size, float topleft, float topright, float bottomleft, float bottomright, float roughness) {
     static bool is_seeded = false;
 
     if (!is_seeded) {
@@ -76,13 +76,13 @@ Array2D core_diamond_square(int size, float rough) {
         for (int x = 0; x < size; x++)
             h_map.data[y][x] = 0.0;
 
-    h_map.data[0][0] = random_custom();
-    h_map.data[0][size - 1] = random_custom();
-    h_map.data[size - 1][0] = random_custom();
-    h_map.data[size - 1][size - 1] = random_custom();
+    h_map.data[0][0] = topleft;
+    h_map.data[0][size - 1] = topright;
+    h_map.data[size - 1][0] = bottomleft;
+    h_map.data[size - 1][size - 1] = bottomright;
 
     int step = size - 1;
-    float s = rough;
+    float s = roughness;
 
     while (step > 1) {
         int half = step / 2;
@@ -123,7 +123,7 @@ Array2D core_diamond_square(int size, float rough) {
         }
 
         step /= 2;
-        s *= rough;
+        s *= roughness;
     }
 
     double minv = h_map.data[0][0];
@@ -131,8 +131,12 @@ Array2D core_diamond_square(int size, float rough) {
 
     for (int y = 0; y < size; y++)
         for (int x = 0; x < size; x++) {
-            if (h_map.data[y][x] < minv) minv = h_map.data[y][x];
-            if (h_map.data[y][x] > maxv) maxv = h_map.data[y][x];
+            if (h_map.data[y][x] < minv) {
+                minv = h_map.data[y][x];
+            }
+            if (h_map.data[y][x] > maxv)  {
+                maxv = h_map.data[y][x];
+            }
         }
 
     double range = maxv - minv + 0.0001;
@@ -141,6 +145,10 @@ Array2D core_diamond_square(int size, float rough) {
             h_map.data[y][x] = (h_map.data[y][x] - minv) / range;
 
     return h_map;
+}
+
+Array2D core_diamond_square(int size, float roughness) {
+    return custom_diamond(size, random_custom(), random_custom(), random_custom(), random_custom(), roughness);
 }
 
 #ifdef __cplusplus

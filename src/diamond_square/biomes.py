@@ -2,15 +2,16 @@
 This file has the Biome class, add_biome and remove_biome function, and in-built biomes.
 """
 
-from .utils import *
+from typing import Callable
 from .biome_funcs import *
+import numpy as np
 
 ADDED_BIOMES = dict()
 """This is the dict of the biome names. {name: obj}."""
 
 class Biome:
     """Class to create new biomes."""
-    def __init__(self, name: str, htc_func: Callable[[float], tuple[int, int, int]], height_to_3d: Optional[Callable[[float], float]] = None) -> None:
+    def __init__(self, name: str, htc_func: Callable[[float], tuple[int, int, int]], height_to_3d: Callable[[float], float] | None = None) -> None:
         """
         Creates a new biome.
 

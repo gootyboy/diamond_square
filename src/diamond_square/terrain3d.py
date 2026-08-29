@@ -1,10 +1,10 @@
-from .utils import *
 from .core_algorithm import core_diamond_square
 from direct.showbase.ShowBase import ShowBase
 from panda3d.core import Vec3, MouseButton
 from .biomes import *
 from .filter_funcs import *
 from .terrain_saving import _TerrainSaving as _TerrainSaving
+import math
 
 def draw_panda3d_box(obj, width, height, depth, pos, color):
     rectangle = obj.loader.loadModel("models/box")
@@ -137,7 +137,7 @@ class Terrain3D:
         self.pos = (center + pos[0], center + pos[1], z_pos)
         self.height_map = core_diamond_square(self.size, self.roughness)
 
-    def draw_panda3d(self, obj, filter_func: Optional[Callable[[object, tuple[int, int]], bool]] = None):
+    def draw_panda3d(self, obj, filter_func: Callable[[object, tuple[int, int]], bool] | None = None):
         """
         Draws the 3D terrain in panda3d.
 
@@ -174,7 +174,7 @@ class Terrain3D:
     def re_generate(self):
         self.height_map = core_diamond_square(self.size, self.roughness)
 
-    def save_as_stl(self, filename: str, filter_func: Optional[Callable[[object, tuple[int, int]], bool]] = None):
+    def save_as_stl(self, filename: str, filter_func: Callable[[object, tuple[int, int]], bool] | None = None):
         """
         Exports the terrain into a STL file.
 
@@ -196,7 +196,7 @@ class Terrain3D:
         """
         _TerrainSaving.save_as_stl(self, filename, filter_func)
 
-    def save_as_obj(self, filename: str, filter_func: Optional[Callable[[object, tuple[int, int]], bool]] = None):
+    def save_as_obj(self, filename: str, filter_func: Callable[[object, tuple[int, int]], bool] | None = None):
         """
         Exports the terrain data into a colored OBJ file with an MTL file for material/biome colors.
 

@@ -1,5 +1,6 @@
-from .utils import *
 from .biomes import *
+from PIL import Image
+import os
 
 class _TerrainSaving:
     """Functions to save 2D terrain as images, and 3D terrain as .stl and .obj. Not meant for user use."""
@@ -23,7 +24,7 @@ class _TerrainSaving:
         img.save(save_path)
 
     @staticmethod
-    def save_as_stl(obj, filename: str, filter_func: Optional[Callable[[object, tuple[int, int]], bool]] = None):
+    def save_as_stl(obj, filename: str, filter_func: Callable[[object, tuple[int, int]], bool] | None = None):
         cube_facets = [
             ((0, 0, 1), (0, 0, 1), (1, 0, 1), (1, 1, 1)),
             ((0, 0, 1), (0, 0, 1), (1, 1, 1), (0, 1, 1)),
@@ -72,7 +73,7 @@ class _TerrainSaving:
             f.write("endsolid terrain\n")
 
     @staticmethod
-    def save_as_obj(obj, filename: str, filter_func: Optional[Callable[[object, tuple[int, int]], bool]] = None):
+    def save_as_obj(obj, filename: str, filter_func: Callable[[object, tuple[int, int]], bool] | None = None):
         base_name = os.path.splitext(filename)[0]
         obj_path = base_name + ".obj"
         mtl_path = base_name + ".mtl"

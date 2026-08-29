@@ -1,9 +1,13 @@
-from .utils import *
+"""
+These are all of the filter functions that you can use to make your terrain different shpaes instead of just a square.
+"""
 
-def circle_filter(obj, pos):
+import math
+
+def circle_filter_3d(obj, pos):
     return (pos[0] ** 2 + pos[1] ** 2) <= (obj.world_size / 2) ** 2
 
-def mandelbrot_set_filter(obj, pos):
+def mandelbrot_set_filter_3d(obj, pos):
     x = (pos[0] - obj.pos[0]) / (0.05 * obj.scale)
     y = (pos[1] - obj.pos[1]) / (0.05 * obj.scale)
     max_iterations = 1000
@@ -24,3 +28,9 @@ def mandelbrot_set_filter(obj, pos):
         z = z**2 + c
 
     return is_in_set
+
+def eq_triangle_filter_3d(obj, pos):
+    half_size = obj.world_size / 2
+    within_y = -half_size <= pos[1] <= half_size
+    within_sides = abs(pos[0]) <= (half_size - pos[1]) * math.tan(math.radians(30))
+    return within_y and within_sides

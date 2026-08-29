@@ -2,35 +2,6 @@
 The in-built biome htc (height to color) and ht3d (height to 3d) functions.
 """
 
-from .utils import *
-
-def darken_color(rgb: tuple[int, int, int], factor: float = 0.2) -> tuple[int, int, int]:
-    """
-    Darkens an RGB color tuple by a given factor (0.0 to 1.0).
-
-    Parameters
-    ---------
-    rgb: tuple[int, int, int]
-        The color to darken.
-    factor: float
-        The factor to darken by. factor = 0.2 means 20% darker.
-
-    Returns
-    -------
-    tuple[int, int, int]
-        The darkened rgb.
-    """
-    factor = max(0.0, min(1.0, factor))
-
-    multiplier = 1.0 - factor
-
-    r = int(rgb[0] * multiplier)
-    g = int(rgb[1] * multiplier)
-    b = int(rgb[2] * multiplier)
-
-    return (r, g, b)
-
-
 def default_biome_htc(h: float) -> tuple[int, int, int]:
     """
     This is the height to color function for the default biome.
@@ -76,15 +47,14 @@ def desert_biome_htc(h: float) -> tuple[int, int, int]:
     tuple[int, int, int]
         The color based on the height and the function.
     """
-    tan = (210, 180, 140)
     if h < 0.3:
-        return darken_color(tan, 0.05)
+        return (200, 171, 133)
     if h < 0.5:
-        return darken_color(tan, 0.1)
+        return (189, 162, 126)
     if h < 0.8:
-        return darken_color(tan, 0.15)
+        return (179, 153, 119)
     else:
-        return darken_color(tan, 0.2)
+        return (168, 144, 122)
 
 def tundra_biome_htc(h: float) -> tuple[int, int, int]:
     """

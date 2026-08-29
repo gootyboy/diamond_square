@@ -1,8 +1,8 @@
-from .utils import *
 from .biomes import *
 from .core_algorithm import core_diamond_square
 from .terrain import *
 from .terrain_saving import _TerrainSaving as _TerrainSaving
+import pygame
 
 class PGZeroInteractive:
     """Class for pgzero interactive mode."""
@@ -51,7 +51,7 @@ class PGZeroInteractive:
             The topleft position of the interactive terrain.
         """
 
-    def __init__(self, size: int, start_biome: Union[str, Biome], max_roughness: float = 1.0, min_roughness: float = 0, start_roughness: float = 0, scale: int = 4, pos: tuple[int, int] = (0, 0)) -> None:
+    def __init__(self, size: int, start_biome: str | Biome, max_roughness: float = 1.0, min_roughness: float = 0, start_roughness: float = 0, scale: int = 4, pos: tuple[int, int] = (0, 0)) -> None:
         if isinstance(start_biome, str):
             start_biome_obj = ADDED_BIOMES.get(f"{start_biome}")
         if isinstance(start_biome, Biome):
@@ -106,10 +106,10 @@ class PGZeroInteractive:
         biome_step = self.width // len(biomes)
         biome_rects = []
         for i, b in enumerate(biomes):
-            r = Rect(i * biome_step + pos[0], self.height - 25 + pos[1] - 50, biome_step, 25)
+            r = pygame.Rect(i * biome_step + self.pos[0], self.height - 25 + self.pos[1] - 50, biome_step, 25)
             biome_rects.append({'rect': r, 'color': b[1], 'name': b[0], 'txt': b[2], "obj": b[3]})
 
-        base_slider = Rect(pos[0], self.height - 50 + pos[1] - 50, self.width, 25)
+        base_slider = pygame.Rect(self.pos[0], self.height - 50 + self.pos[1] - 50, self.width, 25)
         """The slider background rect."""
         
         def update_slider_pos() -> None:
@@ -125,8 +125,8 @@ class PGZeroInteractive:
         width_increase = 110
         button_increase = (width_increase - 100) / 2
 
-        bg_rect = Rect(pos[0] - 10, pos[1] - 10, self.width + width_increase, self.height - 30)
-        re_generate_button = Rect(pos[0] + self.width + button_increase, pos[1], 80 + button_increase, 50)
+        bg_rect = pygame.Rect(self.pos[0] - 10, self.pos[1] - 10, self.width + width_increase, self.height - 30)
+        re_generate_button = pygame.Rect(self.pos[0] + self.width + button_increase, self.pos[1], 80 + button_increase, 50)
 
         def draw_func(screen) -> None:
             screen.draw.filled_rect(bg_rect, (100, 100, 100))
@@ -135,22 +135,22 @@ class PGZeroInteractive:
             screen.draw.filled_rect(re_generate_button, (20, 20, 20))
             screen.draw.textbox("Remake Terrain", re_generate_button, color="white")
 
-            ox, oy = pos
+            ox, oy = self.pos
             for y in range(self.size):
                 for x in range(self.size):
                     color = self.state["biome_obj"].height_to_color(self.state['height_map'][y][x])
-                    screen.draw.filled_rect(Rect(ox + x * self.scale, oy + y * self.scale, self.scale, self.scale), color)
+                    screen.draw.filled_rect(pygame.Rect(ox + x * self.scale, oy + y * self.scale, self.scale, self.scale), color)
 
             screen.draw.filled_rect(base_slider, "gray")
             circle_x, circle_y = self.state['slider_circle_pos']
             screen.draw.filled_circle((circle_x, circle_y), self.state['slider_circle_radius'], "red")
 
             active_width = (self.state['roughness'] - min_roughness) / (max_roughness - min_roughness) * base_slider.width
-            active_rect = Rect(base_slider.topleft, (active_width, base_slider.height))
+            active_rect = pygame.Rect(base_slider.topleft, (active_width, base_slider.height))
 
             screen.draw.filled_rect(active_rect, "red")
             screen.draw.filled_circle(self.state['slider_circle_pos'], self.state['slider_circle_radius'], "white")
-            screen.draw.text(f"Roughness: {self.state['roughness']:.2f}", (10 + pos[0], self.height - 95 + pos[1]), color="white", shadow=(1, 1))
+            screen.draw.text(f"Roughness: {self.state['roughness']:.2f}", (10 + self.pos[0], self.height - 95 + self.pos[1]), color="white", shadow=(1, 1))
  
             for b in biome_rects:
                 screen.draw.filled_rect(b['rect'], b['color'])
@@ -212,6 +212,9 @@ class PGZeroInteractive:
         self.re_generate_terrain()
 
     def re_generate_terrain(self):
+        """
+        Re-generates the terrain.
+        """
         self.state["height_map"] = core_diamond_square(self.size, self.state['roughness'])
 
     def save_as_img(self, save_path: str):
@@ -272,7 +275,7 @@ class PyGameInteractive:
             The topleft position of the interactive terrain.
         """
 
-    def __init__(self, size: int, start_biome: Union[str, Biome], max_roughness: float = 1.0,  min_roughness: float = 0, start_roughness: float = 0, scale: int = 4, pos: tuple[int, int] = (0, 0)) -> None:
+    def __init__(self, size: int, start_biome: str | Biome, max_roughness: float = 1.0,  min_roughness: float = 0, start_roughness: float = 0, scale: int = 4, pos: tuple[int, int] = (0, 0)) -> None:
         if isinstance(start_biome, str):
             start_biome_obj = ADDED_BIOMES.get(f"{start_biome}")
         if isinstance(start_biome, Biome):
@@ -331,10 +334,10 @@ class PyGameInteractive:
         biome_step = self.width // len(biomes)
         biome_rects = []
         for i, b in enumerate(biomes):
-            r = Rect(i * biome_step + self.pos[0], self.height + self.pos[1] - 25, biome_step, 25)
+            r = pygame.Rect(i * biome_step + self.pos[0], self.height + self.pos[1] - 25, biome_step, 25)
             biome_rects.append({'rect': r, 'color': b[1], 'name': b[0], 'txt': b[2], "obj": b[3]})
 
-        base_slider = Rect(self.pos[0], self.height + self.pos[1] - 50, self.width, 25)
+        base_slider = pygame.Rect(self.pos[0], self.height + self.pos[1] - 50, self.width, 25)
 
         def update_slider_pos():
             ratio = (self.state['roughness'] - min_roughness) / (max_roughness - min_roughness)
@@ -346,10 +349,10 @@ class PyGameInteractive:
         width_increase = 110
         button_increase = (width_increase - 100) / 2
 
-        bg_rect = Rect(self.pos[0] - 10, self.pos[1] - 10, self.width + width_increase - 5, self.height + 20)
-        re_generate_button = Rect(self.pos[0] + self.width + button_increase, self.pos[1], 80 + button_increase, 50)
+        bg_rect = pygame.Rect(self.pos[0] - 10, self.pos[1] - 10, self.width + width_increase - 5, self.height + 20)
+        re_generate_button = pygame.Rect(self.pos[0] + self.width + button_increase, self.pos[1], 80 + button_increase, 50)
 
-        def main_function(surface: PyGameSurface, events: list[PyGameEvent]):
+        def main_function(surface, events):
             for event in events:
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     for b in biome_rects:
@@ -386,7 +389,7 @@ class PyGameInteractive:
             for y in range(self.size):
                 for x in range(self.size):
                     color = self.state["biome_obj"].height_to_color(self.state['height_map'][y][x])
-                    pygame.draw.rect(surface, color, Rect(ox + x * self.scale, oy + y * self.scale, self.scale, self.scale), width = 0)
+                    pygame.draw.rect(surface, color, pygame.Rect(ox + x * self.scale, oy + y * self.scale, self.scale, self.scale), width = 0)
 
             font24 = pygame.font.SysFont(None, 24)
             font20 = pygame.font.SysFont(None, 20)
@@ -400,7 +403,7 @@ class PyGameInteractive:
             pygame.draw.rect(surface, "gray", base_slider, width = 0)
             pygame.draw.circle(surface, "red", self.state['slider_circle_pos'], self.state['slider_circle_radius'])
             active_width = (self.state['roughness'] - min_roughness) / (max_roughness - min_roughness) * base_slider.width
-            active_rect = Rect(base_slider.topleft, (active_width, base_slider.height))
+            active_rect = pygame.Rect(base_slider.topleft, (active_width, base_slider.height))
             pygame.draw.rect(surface, "red", active_rect, width = 0)
             pygame.draw.circle(surface, "white", self.state['slider_circle_pos'], self.state['slider_circle_radius'])
             surface.blit(roughness_text, (10 + self.pos[0], self.height + self.pos[1] - 45))
@@ -422,7 +425,7 @@ class PyGameInteractive:
                 if b['name'] == self.state['biome']:
                     pygame.draw.rect(surface, "yellow", b["rect"], width = 1)
 
-        self.draw: Callable[[PyGameSurface, list[PyGameEvent]], None] = main_function
+        self.draw = main_function
         """Draws the interactive mode in pygame. Must be called in the main loop."""
 
     @property

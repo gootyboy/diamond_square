@@ -1,3 +1,5 @@
+Version 0.2.0: Add re-generate button for interactive mode in pygame.
+
 Version 0.1.9: Improve speed in C file and fix bugs.
 
 Version 0.1.8: Add remake terrain button for interactive mode in pgzero.
