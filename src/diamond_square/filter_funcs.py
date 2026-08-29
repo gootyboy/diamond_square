@@ -34,3 +34,7 @@ def eq_triangle_filter_3d(obj, pos):
     within_y = -half_size <= pos[1] <= half_size
     within_sides = abs(pos[0]) <= (half_size - pos[1]) * math.tan(math.radians(30))
     return within_y and within_sides
+
+
+def circle_filter_2d(obj, pos):
+    return (pos[0] ** 2 + pos[1] ** 2) <= ((obj.size * obj.scale) / 2) ** 2

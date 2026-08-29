@@ -76,12 +76,9 @@ class Terrain:
             inspect.Parameter('pos', inspect.Parameter.POSITIONAL_OR_KEYWORD, default=(0, 0)),
         ])
 
-        # 2. Determine which overload to use by inspecting what was passed
-        # Check if 'height_map' was passed as a keyword, or if the first argument is a list
         is_map_variant = 'height_map' in kwargs or (len(args) > 0 and isinstance(args[0], list))
 
         if is_map_variant:
-            # Bind using the height_map signature rules
             bound = sig_map.bind(*args, **kwargs)
             bound.apply_defaults()
             params = bound.arguments
@@ -104,7 +101,6 @@ class Terrain:
             """The roughness of the terrain (If the height map is given, then roughness is set to 0.0). Do not change the value of this variable. Use self.roughness instead of self._roughness."""
 
         else:
-            # Bind using the size signature rules
             bound = sig_size.bind(*args, **kwargs)
             bound.apply_defaults()
             params = bound.arguments
@@ -124,7 +120,6 @@ class Terrain:
             self._roughness = roughness
             """The roughness of the terrain. Do not change the value of this variable. Use self.roughness instead of self._roughness."""
 
-        # 3. Handle shared Biome validation logic
         if isinstance(biome, Biome):
             biome_name = biome.name
             """The biome name of the terrain."""
@@ -176,7 +171,7 @@ class Terrain:
         self._size = value
         self.re_generate()
 
-    def draw(self, screen_or_surface) -> None:
+    def draw(self, screen_or_surface, filter_func = None) -> None:
         """
         Draws the terrain on pgzero or pygame determined by the screen_or_surface parameter.
 
@@ -184,18 +179,32 @@ class Terrain:
         ----------
         **screen_or_surface**: Screen | Surface
             This is the screen in pgzero or a Surface in pygame.
+
+        filter_func : function | None
+            Filters the pixels drawn, so that the output range can be other shapes instead of just a square.
+            The filter function should have 2 parameters: obj, pos. obj is the Terrain self. From obj, you have access to all of the variables in the Terrain self.
+            pos is the current position of the pixel that it is checking. Returns True or False (to draw the pixel or not).
+
+            Example::
+
+                def circle_filter(obj, pos) -> bool:
+                    return (pos[0] ** 2 + pos[1] ** 2) <= ((obj.size * obj.scale) / 2) ** 2
+                    # You have to use size * scale instead of size because size is just the dimensions of the height map.
         """
+        if filter_func == None:
+            filter_func = lambda obj, pos: True
         ox, oy = self.pos
-        is_pgzero = not isinstance(screen_or_surface, pygame.surface.Surface)
+        is_pgzero = not isinstance(screen_or_surface, pygame.Surface)
         for y in range(self.size):
             for x in range(self.size):
-                color = self.biome_obj.height_to_color(self.heights[y][x])
-                if is_pgzero:
-                    screen_or_surface.draw.rect(pgzero.rect.Rect(ox + x * self.scale, oy + y * self.scale, self.scale, self.scale), color=color)
-                else:
-                    pygame.draw.rect(screen_or_surface, color, pygame.rect.Rect(ox + x * self.scale, oy + y * self.scale, self.scale, self.scale))
+                if filter_func(self, (x, y)):
+                    color = self.biome_obj.height_to_color(self.heights[y][x])
+                    if is_pgzero:
+                        screen_or_surface.draw.rect(pgzero.rect.Rect(ox + x * self.scale, oy + y * self.scale, self.scale, self.scale), color=color)
+                    else:
+                        pygame.draw.rect(screen_or_surface, color, pygame.Rect(ox + x * self.scale, oy + y * self.scale, self.scale, self.scale))
 
-    def save_as_img(self, save_path: str):
+    def save_as_img(self, save_path: str, filter_func = None):
         """
         Saves the terrain as an image.
 
@@ -204,12 +213,23 @@ class Terrain:
         **save_path**: str
             The path to save the image to.
 
+        filter_func : function | None
+            Filters the pixels drawn, so that the output range can be other shapes instead of just a square.
+            The filter function should have 2 parameters: obj, pos. obj is the Terrain self. From obj, you have access to all of the variables in the Terrain self.
+            pos is the current position of the pixel that it is checking. Returns True or False (to draw the pixel or not).
+
+            Example::
+
+                def circle_filter(obj, pos) -> bool:
+                    return (pos[0] ** 2 + pos[1] ** 2) <= ((obj.size * obj.scale) / 2) ** 2
+                    # You have to use size * scale instead of size because size is just the dimensions of the height map.
+
         Returns
         -------
         Terrain
             The terrain that was saved (self).
         """
-        _TerrainSaving.save_as_img(self.size, self.scale, self.heights, self.biome_obj, save_path)
+        _TerrainSaving.save_as_img(self.size, self.scale, self.heights, self.biome_obj, save_path, filter_func, self)
 
         return self
 

@@ -5,26 +5,38 @@ import os
 class _TerrainSaving:
     """Functions to save 2D terrain as images, and 3D terrain as .stl and .obj. Not meant for user use."""
     @staticmethod
-    def save_as_img(size: int, scale: int, heights: list[list[float]], biome_obj: Biome, save_path: str):
+    def save_as_img(size, scale, heights, biome_obj, save_path, filter_func = None, obj = None):
         img_width = size * scale
         img_height = size * scale
         img = Image.new("RGB", (img_width, img_height))
         pixels = img.load()
 
-        for y in range(size):
-            for x in range(size):
-                color = biome_obj.height_to_color(heights[y][x])
+        if filter_func != None:
+            for y in range(size):
+                for x in range(size):
+                    if filter_func(obj, (x, y)):
+                        color = biome_obj.height_to_color(heights[y][x])
 
-                color = tuple(max(0, min(255, int(c))) for c in color)
+                        color = tuple(max(0, min(255, int(c))) for c in color)
 
-                for dy in range(scale):
-                    for dx in range(scale):
-                        pixels[x * scale + dx, y * scale + dy] = color
+                        for dy in range(scale):
+                            for dx in range(scale):
+                                pixels[x * scale + dx, y * scale + dy] = color
+        else:
+            for y in range(size):
+                for x in range(size):
+                    color = biome_obj.height_to_color(heights[y][x])
+
+                    color = tuple(max(0, min(255, int(c))) for c in color)
+
+                    for dy in range(scale):
+                        for dx in range(scale):
+                            pixels[x * scale + dx, y * scale + dy] = color
 
         img.save(save_path)
 
     @staticmethod
-    def save_as_stl(obj, filename: str, filter_func: Callable[[object, tuple[int, int]], bool] | None = None):
+    def save_as_stl(obj, filename, filter_func = None):
         cube_facets = [
             ((0, 0, 1), (0, 0, 1), (1, 0, 1), (1, 1, 1)),
             ((0, 0, 1), (0, 0, 1), (1, 1, 1), (0, 1, 1)),

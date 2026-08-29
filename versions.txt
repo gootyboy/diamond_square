@@ -1,3 +1,7 @@
+Version 1.0.1: README Image Fixes.
+
+Version 1.0.0: Added 3D Terrain Generation in panda3d.
+
 Version 0.2.0: Add re-generate button for interactive mode in pygame.
 
 Version 0.1.9: Improve speed in C file and fix bugs.

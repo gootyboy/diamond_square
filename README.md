@@ -147,13 +147,11 @@ These must be placed in these functions in pgzero:
 
 ## Versions
 
-**(Latest) Version 1.0.3**: Fix bugs, and added saving Terrain3D sample code in save_terrain.py.
+**(Latest) Version 1.1.0**: Add filter functions for 2D terrains.
+
+Version 1.0.3: Added saving Terrain3D sample code in save_terrain.py.
 
 Version 1.0.2: Bug fixes.
-
-Version 1.0.1: README Image Fixes.
-
-Version 1.0.0: Added 3D Terrain Generation in panda3d.
 
 *To view previous versions, go to [versions.txt](https://github.com/gootyboy/diamond_square/blob/main/versions.txt)*
 
@@ -161,4 +159,4 @@ Version 1.0.0: Added 3D Terrain Generation in panda3d.
 
 ## Coming Soon
 
-Version 1.1.0: Add filter functions for 2D terrains.
+Version 1.2.0: Added 3D Interactive Mode.
