@@ -126,7 +126,7 @@ class Biome:
 
     def get_average_color(self):
         """
-        Gets the average color of the biome based on the htc function.
+        Gets the average color of the biome based on the htc (height_to_color) function.
 
         Returns
         -------

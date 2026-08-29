@@ -128,7 +128,7 @@ class Terrain3D:
         """The scale parameter does not have to be a integer ≥ 1. It can be any number > 0."""
         self.size = size
         self.biome = biome
-        self.roughness = roughness
+        self._roughness = roughness
         self.scale = scale
         self.spacing = 0.05 * scale
         self.world_size = self.size * self.spacing
@@ -136,6 +136,15 @@ class Terrain3D:
         z_pos = pos[2] if len(pos) > 2 else 0
         self.pos = (center + pos[0], center + pos[1], z_pos)
         self.height_map = core_diamond_square(self.size, self.roughness)
+
+    @property
+    def roughness(self):
+        return self._roughness
+
+    @roughness.setter
+    def roughness(self, value):
+        self._roughness = value
+        self.re_generate()
 
     def draw_panda3d(self, obj, filter_func: Callable[[object, tuple[int, int]], bool] | None = None):
         """
@@ -147,31 +156,41 @@ class Terrain3D:
             obj is the panda3d class. When using this function inside a panda3d class, pass the panda3d class `self` into obj.
         filter_func
             Filters the rectangular prisms drawn, so that the output range can be other shapes instead of just a square.
-
-            The filter function should have 2 parameters: obj, pos. obj is the Terrain3D self. From obj, you have access to all of the variables in the Terrain3D self.
-
+            The filter function should have 2 parameters: obj, pos.
+            obj is the Terrain3D self. From obj, you have access to all of the variables in the Terrain3D self.
             pos is the current position of the pixel that it is checking.
 
             Example::
 
                 def circle_filter(obj, pos):
                     return (pos[0] ** 2 + pos[1] ** 2) <= (obj.world_size / 2) ** 2
-                    # You have to use world_size instead of size because size is just the dimensions of the height map.
-                    # world_size is the dimensions of the Terrain3D.
+                # You have to use world_size instead of size because size is just the dimensions of the height map.
+                # world_size is the dimensions of the Terrain3D.
+
+        Return
+        ------
+        NodePath
+            The single optimized mesh object containing all boxes drawn in the terrain.
         """
+        terrain_root = obj.render.attachNewNode("Terrain3D")
         if filter_func == None:
             filter_func = lambda obj, pos: True
-
+        original_render = obj.render
+        obj.render = terrain_root
         for y, row in enumerate(self.height_map):
             for x, h in enumerate(row):
                 world_x = x * self.scale * 0.05 + self.pos[0]
-                world_y = y * self.scale * 0.05 + self.pos[0]
+                world_y = y * self.scale * 0.05 + self.pos[1]
                 if filter_func(self, (world_x, world_y)):
                     color = self.biome.height_to_color(h)
                     height = self.biome.height_to_3d(h)
                     draw_panda3d_box(obj, 0.1 * self.scale, height, 0.1 * self.scale, (world_x, world_y, self.pos[2]), color)
+        obj.render = original_render
+        terrain_root.flattenStrong()
+        return terrain_root
 
-    def re_generate(self):
+    def re_generate(self) -> None:
+        """Re-Generates the terrain (creates a new height map)."""
         self.height_map = core_diamond_square(self.size, self.roughness)
 
     def save_as_stl(self, filename: str, filter_func: Callable[[object, tuple[int, int]], bool] | None = None):
@@ -193,6 +212,11 @@ class Terrain3D:
                     return (pos[0] ** 2 + pos[1] ** 2) <= (obj.world_size / 2) ** 2
                     # You have to use world_size instead of size because size is just the dimensions of the height map.
                     # world_size is the dimensions of the Terrain3D.
+
+        Returns
+        -------
+        Terrain3D
+            The terrain that was saved (self).
         """
         _TerrainSaving.save_as_stl(self, filename, filter_func)
 
@@ -215,6 +239,11 @@ class Terrain3D:
                     return (pos[0] ** 2 + pos[1] ** 2) <= (obj.world_size / 2) ** 2
                     # You have to use world_size instead of size because size is just the dimensions of the height map.
                     # world_size is the dimensions of the Terrain3D.
+
+        Returns
+        -------
+        Terrain3D
+            The terrain that was saved (self).
         """
 
         _TerrainSaving.save_as_obj(self, filename, filter_func)

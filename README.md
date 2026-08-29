@@ -39,7 +39,7 @@ Also can draw 3D terrains in panda3d.
     - Pygame Interactive Terrain Example
   - Other Examples
     - Custom Biome Examples
-    - Image Saving Examples
+    - Terrain and Terrain 3D Saving Examples
 - Requirements for Pgzero Interactive
 - Versions
 - Coming Soon
@@ -104,11 +104,11 @@ Go to [/sample_codes/pygame_interactive_terrain.py](https://github.com/gootyboy/
 
 ### Other Examples
 
-### Image Saving Examples
+#### Terrain and 3D Terrain Saving Examples
 
-Go to [/sample_codes/save_terrain.py](https://github.com/gootyboy/diamond_square/blob/main/sample_codes/save_terrain.py)
+Go to [/sample_codes/terrain_saving.py](https://github.com/gootyboy/diamond_square/blob/main/sample_codes/terrain_saving.py)
 
-### Custom Biome Examples
+#### Custom Biome Examples
 
 Go to [/sample_code/custom_biome.py](https://github.com/gootyboy/diamond_square/blob/main/sample_codes/custom_biome.py)
 
@@ -147,6 +147,8 @@ These must be placed in these functions in pgzero:
 
 ## Versions
 
+**(Latest) Version 1.0.3**: Add 3D terrain images in README, fix bugs, and added saving Terrain3D sample code in save_terrain.py.
+
 Version 1.0.2: Bug fixes.
 
 Version 1.0.1: README Image Fixes.
@@ -159,5 +161,4 @@ Version 1.0.0: Added 3D Terrain Generation in panda3d.
 
 ## Coming Soon
 
-Version 1.0.3: Add 3D terrain images in README.
 Version 1.1.0: Add filter functions for 2D terrains.

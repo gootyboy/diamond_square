@@ -203,8 +203,16 @@ class Terrain:
         ----------
         **save_path**: str
             The path to save the image to.
+
+        Returns
+        -------
+        Terrain
+            The terrain that was saved (self).
         """
         _TerrainSaving.save_as_img(self.size, self.scale, self.heights, self.biome_obj, save_path)
 
+        return self
+
     def re_generate(self):
+        """Re-Generates the terrain (creates a new height map)."""
         self.heights = core_diamond_square(self.size, self.roughness)
