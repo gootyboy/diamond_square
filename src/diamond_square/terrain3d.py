@@ -170,7 +170,7 @@ class Terrain3D:
         Return
         ------
         NodePath
-            The single optimized mesh object containing all boxes drawn in the terrain.
+            The single object containing all boxes drawn in the terrain.
         """
         terrain_root = obj.render.attachNewNode("Terrain3D")
         if filter_func == None:

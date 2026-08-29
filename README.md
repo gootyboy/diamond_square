@@ -147,7 +147,7 @@ These must be placed in these functions in pgzero:
 
 ## Versions
 
-**(Latest) Version 1.0.3**: Add 3D terrain images in README, fix bugs, and added saving Terrain3D sample code in save_terrain.py.
+**(Latest) Version 1.0.3**: Fix bugs, and added saving Terrain3D sample code in save_terrain.py.
 
 Version 1.0.2: Bug fixes.
 
