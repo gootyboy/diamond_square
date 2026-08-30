@@ -1,5 +1,5 @@
 from src.diamond_square import *
-from panda3d.core import TextNode, CardMaker
+from panda3d.core import TextNode, CardMaker, NodePath
 
 class Panda3DTerrain3D(Panda3DBase):
     def __init__(self):
@@ -17,43 +17,41 @@ class Panda3DTerrain3D(Panda3DBase):
         self.taskMgr.add(self._draw_loop, "DrawTerrainTask")
         self.key_state = {"arrow_right-down": False, "arrow_left-down": False, "r-down": False}
 
-        all_textbg_cm = CardMaker('ui_rect')
-        all_textbg_cm.set_frame(-1, 0, -0.35, 0)
-        self.all_textbg_rect = self.a2dTopRight.attach_new_node(all_textbg_cm.generate())
-        self.all_textbg_rect.set_color(0.0, 0.0, 0.0, 1.0)
+        self.all_text_group = self.a2dTopRight.attach_new_node("all_text_group")
+        self.no_loading_group = self.a2dTopRight.attach_new_node("no_loading_group")
+
+        self.all_textbg_rect = self.a2dTopRight.attach_new_node("all_textbg_rect")
         self.all_textbg_rect.hide()
 
-        no_loading_cm = CardMaker('ui_rect')
-        no_loading_cm.set_frame(-1, 0, -0.25, 0)
-        self.no_loading_bg_rect = self.a2dTopRight.attach_new_node(no_loading_cm.generate())
-        self.no_loading_bg_rect.set_color(0.0, 0.0, 0.0, 1.0)
+        self.no_loading_bg_rect = self.a2dTopRight.attach_new_node("no_loading_bg_rect")
         self.no_loading_bg_rect.hide()
 
+        self.all_textbg_rect.set_bin("fixed", 0)
+        self.no_loading_bg_rect.set_bin("fixed", 0)
+        self.all_text_group.set_bin("fixed", 10)
+        self.no_loading_group.set_bin("fixed", 10)
+
         self.roughness_text = TextNode('RoughnessText')
-        self.roughness_text.setText(f"Roughness = {self.current_rough}")
         self.roughness_text.setTextColor(1, 1, 1, 1)
         self.roughness_text.setAlign(TextNode.A_right)
-        self.rough_text_node = self.a2dTopRight.attachNewNode(self.roughness_text)
+        self.rough_text_node = self.no_loading_group.attach_new_node(self.roughness_text)
         self.rough_text_node.setScale(0.07)
-        self.rough_text_node.setPos(-0.05, 0, -0.1) 
-        self.rough_text_node.hide()
+        self.rough_text_node.setPos(-0.05, 0, -0.1)
+
+        self.biome_text = TextNode('BiomeText')
+        self.biome_text.setTextColor(1, 1, 1, 1)
+        self.biome_text.setAlign(TextNode.A_right)
+        self.biome_text_node = self.no_loading_group.attach_new_node(self.biome_text)
+        self.biome_text_node.setScale(0.07)
+        self.biome_text_node.setPos(-0.05, 0, -0.2)
 
         self.loading_text = TextNode("LoadingText")
-        self.loading_text.setText(f"Generating...")
         self.loading_text.setTextColor(1, 1, 1, 1)
         self.loading_text.setAlign(TextNode.A_right)
-        self.loading_text_node = self.a2dTopRight.attachNewNode(self.loading_text)
+        self.loading_text_node = self.all_text_group.attach_new_node(self.loading_text)
         self.loading_text_node.setScale(0.07)
         self.loading_text_node.setPos(-0.05, 0, -0.3)
         self.loading_text_node.hide()
-
-        self.biome_text = TextNode('BiomeText')
-        self.biome_text.setText(f"Biome ({self.current_biome_index}/{len(ADDED_BIOMES.biomes()) - 1}): {ADDED_BIOMES.names()[self.current_biome_index]}")
-        self.biome_text.setTextColor(1, 1, 1, 1)
-        self.biome_text.setAlign(TextNode.A_right)
-        self.biome_text_node = self.a2dTopRight.attachNewNode(self.biome_text)
-        self.biome_text_node.setScale(0.07)
-        self.biome_text_node.setPos(-0.05, 0, -0.2)
 
         text1 = TextNode("InstructionText")
         text1.setText("KEYS")
@@ -86,13 +84,48 @@ class Panda3DTerrain3D(Panda3DBase):
         self.accept("arrow_up-up", self._arrow_up_up)
         self.accept("arrow_down-up", self._arrow_down_up)
 
-    def _get_dimensions(node_path):
-        pt1, pt2 = node_path.getTightBounds()
+    def _update_ui_text(self):
+        self.roughness_text.setText(f"Roughness = {self.current_rough}")
+        self.loading_text.setText(f"Generating...")
+        self.biome_text.setText(f"Biome ({self.current_biome_index}/{len(ADDED_BIOMES.biomes()) - 1}): {ADDED_BIOMES.names()[self.current_biome_index]}")
 
-        width = pt2.getX() - pt1.getX()
-        height = pt2.getY() - pt1.getY()
-        depth = pt2.getZ() - pt1.getZ()
-        return width, height, depth
+        self.roughness_text.get_card_actual()
+        self.biome_text.get_card_actual()
+        self.loading_text.get_card_actual()
+
+        padding = 0.03
+        
+        self.no_loading_bg_rect.node().remove_all_children()
+        min_nl, max_nl = self.no_loading_group.get_tight_bounds()
+        
+        nl_left = min_nl.get_x() - padding
+        nl_right = max_nl.get_x() + padding
+        nl_bottom = min_nl.get_z() - padding
+        nl_top = max_nl.get_z() + padding
+
+        cm_nl = CardMaker('ui_rect_no_loading')
+        cm_nl.set_frame(nl_left, nl_right, nl_bottom, nl_top)
+        self.no_loading_bg_rect.attach_new_node(cm_nl.generate())
+        self.no_loading_bg_rect.set_color(0.0, 0.0, 0.0, 1.0)
+
+        self.all_textbg_rect.node().remove_all_children()
+        
+        combined_container = NodePath("temp")
+        self.no_loading_group.copy_to(combined_container)
+        self.loading_text_node.copy_to(combined_container)
+        
+        min_all, max_all = combined_container.get_tight_bounds()
+        combined_container.remove_node()
+
+        all_left = min_all.get_x() - padding
+        all_right = max_all.get_x() + padding
+        all_bottom = min_all.get_z() - padding
+        all_top = max_all.get_z() + padding
+
+        cm_all = CardMaker('ui_rect_all')
+        cm_all.set_frame(all_left, all_right, all_bottom, all_top)
+        self.all_textbg_rect.attach_new_node(cm_all.generate())
+        self.all_textbg_rect.set_color(0.0, 0.0, 0.0, 1.0)
 
     def _arrow_up_up(self):
         self.current_biome_index += 1
@@ -201,6 +234,7 @@ class Panda3DTerrain3D(Panda3DBase):
             self.current_boxes = self.terrain.draw_panda3d(obj=self)
 
     def _draw_loop(self, task):
+        self._update_ui_text()
         self.biome_text.setText(f"Biome ({self.current_biome_index}/{len(ADDED_BIOMES.biomes()) - 1}): {ADDED_BIOMES.names()[self.current_biome_index]}")
         if self.instructions_visible == False:
             self.roughness_text.setText(f"Roughness: {self.current_rough:.2f}")
