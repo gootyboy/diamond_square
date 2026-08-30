@@ -1,3 +1,5 @@
+Version 1.0.2: Bug fixes.
+
 Version 1.0.1: README Image Fixes.
 
 Version 1.0.0: Added 3D Terrain Generation in panda3d.

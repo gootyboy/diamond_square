@@ -147,11 +147,11 @@ These must be placed in these functions in pgzero:
 
 ## Versions
 
-**(Latest) Version 1.1.0**: Add filter functions for 2D terrains.
+**(Latest) Version 1.2.0**: Added 3D Interactive Mode.
+
+Version 1.1.0: Add filter functions for 2D terrains.
 
 Version 1.0.3: Added saving Terrain3D sample code in save_terrain.py.
-
-Version 1.0.2: Bug fixes.
 
 *To view previous versions, go to [versions.txt](https://github.com/gootyboy/diamond_square/blob/main/versions.txt)*
 
@@ -159,4 +159,4 @@ Version 1.0.2: Bug fixes.
 
 ## Coming Soon
 
-Version 1.2.0: Added 3D Interactive Mode.
+Version 1.3.0: Add Save as Image option in Interactive Mode.

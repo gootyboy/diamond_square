@@ -6,8 +6,33 @@ from typing import Callable
 from .biome_funcs import *
 import numpy as np
 
-ADDED_BIOMES = dict()
-"""This is the dict of the biome names. {name: obj}."""
+class _BiomeDict(dict):
+    """A dictionary class with 2 added methods: self.names() and self.biomes(). Not meant for user use."""
+    def names(self) -> list:
+        """
+        The list of the names of the biomes added.
+        Equivalent to `list(self.keys())`.
+
+        Returns
+        -------
+        list
+            The list of the names of the biomes added.
+        """
+        return list(self.keys())
+
+    def biomes(self) -> list:
+        """
+        The list of Biome objects added.
+        Equivalent to `list(self.values())`.
+
+        Returns
+        -------
+        The list of Biome objects added.
+        """
+        return list(self.values())
+
+ADDED_BIOMES = _BiomeDict()
+"""This is the dict of the biome names. {name: Biome}."""
 
 class Biome:
     """Class to create new biomes."""
@@ -98,7 +123,7 @@ class Biome:
             If there already exists another biome with the same name as the biome parameter.
         """
         if self.name in ADDED_BIOMES:
-            raise TypeError(f"You cannot add a biome with the same name as another biome in the added biomes list: {list(ADDED_BIOMES.keys())}.")
+            raise TypeError(f"You cannot add a biome with the same name as another biome in the added biomes list: {ADDED_BIOMES.names()}.")
 
         ADDED_BIOMES[f"{self.name}"] = self
 
