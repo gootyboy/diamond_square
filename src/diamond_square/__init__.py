@@ -11,3 +11,4 @@ from .filter_funcs import *
 from .interactive_terrain import PGZeroInteractive, PyGameInteractive
 from .terrain import Terrain
 from .terrain3d import Terrain3D, Panda3DBase
+from .panda_3d_interactive import Panda3DInteractive

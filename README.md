@@ -37,6 +37,7 @@ Also can draw 3D terrains in panda3d.
   - Interactive Terrain Examples
     - Pgzero Interactive Terrain Example
     - Pygame Interactive Terrain Example
+    - Panda3d Interactive Terrain Example
   - Other Examples
     - Custom Biome Examples
     - Terrain and Terrain 3D Saving Examples
@@ -100,6 +101,10 @@ Go to [/sample_codes/pgzero_interactive_terrain.py](https://github.com/gootyboy/
 
 Go to [/sample_codes/pygame_interactive_terrain.py](https://github.com/gootyboy/diamond_square/blob/main/sample_codes/pygame_interactive_terrain.py)
 
+#### Panda3d Interactive Terrain Example
+
+Go to [/sample_codes/panda3d_interactive_terrain.py](https://github.com/gootyboy/diamond_square/blob/main/sample_codes/panda3d_interactive_terrain.py)
+
 ---
 
 ### Other Examples
@@ -119,10 +124,24 @@ Go to [/sample_code/custom_biome.py](https://github.com/gootyboy/diamond_square/
 For Pgzero Interative Mode, it requires **all four** of the following functions to be placed in their corresponding pgzero event handlers:
 
 ```python
-terrain.draw_func(screen)
-terrain.on_mouse_down_func(pos)
-terrain.on_mouse_up_func()
-terrain.on_mouse_move_func(pos)
+...
+
+def draw():
+  terrain.draw_func(screen)
+  ...
+
+def on_mouse_down():
+  terrain.on_mouse_down_func(pos)
+  ...
+
+def on_mouse_up():
+  terrain.on_mouse_up_func()
+  ...
+
+def on_mouse_move():
+  terrain.on_mouse_move_func(pos)
+  ...
+
 ```
 
 If **any one** of these is missing, the interactive mode will:

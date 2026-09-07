@@ -21,7 +21,8 @@ dependencies = [
     "pgzero",
     "pillow",
     "pygame",
-    "panda3d"
+    "panda3d",
+    "numpy"
 ]
 
 [project.urls]

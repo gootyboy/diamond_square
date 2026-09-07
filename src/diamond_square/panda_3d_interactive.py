@@ -1,7 +1,7 @@
 from src.diamond_square import *
 from panda3d.core import TextNode, CardMaker, NodePath
 
-class Panda3DTerrain3D(Panda3DBase):
+class Panda3DInteractive(Panda3DBase):
     def __init__(self):
         super().__init__()
 
@@ -97,7 +97,7 @@ class Panda3DTerrain3D(Panda3DBase):
         
         self.no_loading_bg_rect.node().remove_all_children()
         min_nl, max_nl = self.no_loading_group.get_tight_bounds()
-        
+
         nl_left = min_nl.get_x() - padding
         nl_right = max_nl.get_x() + padding
         nl_bottom = min_nl.get_z() - padding
@@ -285,6 +285,3 @@ class Panda3DTerrain3D(Panda3DBase):
 
             self.terrain.re_generate()
             self.current_boxes = self.terrain.draw_panda3d(obj=self)
-
-app = Panda3DTerrain3D()
-app.run()

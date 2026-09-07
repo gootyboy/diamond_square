@@ -62,7 +62,7 @@ void free_array2d(Array2D array2d) {
     free(array2d.data);
 }
 
-Array2D custom_diamond(int size, float topleft, float topright, float bottomleft, float bottomright, float roughness) {
+Array2D custom_diamond_square(int size, float roughness, float topleft, float topright, float bottomleft, float bottomright) {
     static bool is_seeded = false;
 
     if (!is_seeded) {
@@ -148,7 +148,7 @@ Array2D custom_diamond(int size, float topleft, float topright, float bottomleft
 }
 
 Array2D core_diamond_square(int size, float roughness) {
-    return custom_diamond(size, random_custom(), random_custom(), random_custom(), random_custom(), roughness);
+    return custom_diamond_square(size, roughness, random_custom(), random_custom(), random_custom(), random_custom());
 }
 
 #ifdef __cplusplus

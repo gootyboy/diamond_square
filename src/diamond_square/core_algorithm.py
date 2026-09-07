@@ -34,6 +34,9 @@ _mod = ctypes.cdll.LoadLibrary(_path)
 _mod.core_diamond_square.restype = Array2D
 _mod.core_diamond_square.argtypes = [ctypes.c_int, ctypes.c_float]
 
+_mod.custom_diamond_square.restype = Array2D
+_mod.custom_diamond_square.argtypes = [ctypes.c_int, ctypes.c_float, ctypes.c_float, ctypes.c_float, ctypes.c_float, ctypes.c_float]
+
 _mod.free_array2d.restype = None
 _mod.free_array2d.argtypes = [Array2D]
 
@@ -54,6 +57,32 @@ def core_diamond_square(size: int, roughness: float) -> list[list[float]]:
         The height map generated using the Diamond Square Algorithm.
     """
     c_heights = _mod.core_diamond_square(size, roughness)
+    heights = [
+        [c_heights.data[y][x] for x in range(size)]
+        for y in range(size)
+    ]
+    if c_heights.data:
+        _mod.free_array2d(c_heights)
+
+    return heights
+
+def custom_diamond_square(size: int, roughness: float, topleft: float, topright: float, bottomleft: float, bottomright: float) -> list[list[float]]:
+    """
+    Returns a height map using the Diamond Square Algorithm.
+
+    Parameters
+    ----------
+    **size**: int
+        The size of the height map. Must be in the form 2 ** n + 1.
+    **roughness**: float
+        Controls the amount of randomness that is added to each height value.
+
+    Returns
+    -------
+    **Height Map**: list[list[float]]
+        The height map generated using the Diamond Square Algorithm.
+    """
+    c_heights = _mod.custom_diamond_square(size, roughness, topleft, topright, bottomleft, bottomright)
     heights = [
         [c_heights.data[y][x] for x in range(size)]
         for y in range(size)
