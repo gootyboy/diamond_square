@@ -1,3 +1,5 @@
+Version 1.0.3: Added saving Terrain3D sample code in save_terrain.py.
+
 Version 1.0.2: Bug fixes.
 
 Version 1.0.1: README Image Fixes.

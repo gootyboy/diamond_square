@@ -1,4 +1,4 @@
-from src.diamond_square import *
+from .terrain3d import *
 from panda3d.core import TextNode, CardMaker, NodePath
 
 class Panda3DInteractive(Panda3DBase):
