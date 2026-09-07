@@ -166,11 +166,11 @@ These must be placed in these functions in pgzero:
 
 ## Versions
 
-**(Latest) Version 1.2.1**: Bug Fixes.
+**(Latest) Version 1.2.2**: Update Panda3DInteractive
+
+Version 1.2.1: Bug Fixes.
 
 Version 1.2.0: Added 3D Interactive Mode.
-
-Version 1.1.0: Add filter functions for 2D terrains.
 
 *To view previous versions, go to [versions.txt](https://github.com/gootyboy/diamond_square/blob/main/versions.txt)*
 
