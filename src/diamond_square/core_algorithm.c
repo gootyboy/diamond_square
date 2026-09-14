@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <stdbool.h>
+#include <math.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -62,7 +63,7 @@ void free_array2d(Array2D array2d) {
     free(array2d.data);
 }
 
-Array2D custom_diamond_square(int size, float roughness, float topleft, float topright, float bottomleft, float bottomright) {
+Array2D core_diamond_algorithm(int size, float roughness, float topleft, float topright, float bottomleft, float bottomright) {
     static bool is_seeded = false;
 
     if (!is_seeded) {
@@ -147,8 +148,41 @@ Array2D custom_diamond_square(int size, float roughness, float topleft, float to
     return h_map;
 }
 
+Array2D custom_diamond_square(int size, float roughness, float topleft, float topright, float bottomleft, float bottomright) {
+    if (size <= 0) {
+        return create_array2d(0, 0);
+    }
+
+    if (size == 1) {
+        Array2D larger_grid = core_diamond_algorithm(2, roughness, topleft, topright, bottomleft, bottomright);
+        Array2D cropped_grid = create_array2d(1, 1);
+        
+        cropped_grid.data[0][0] = larger_grid.data[0][0];
+        
+        free_array2d(larger_grid);
+        return cropped_grid;
+    }
+
+    int n = (int)ceil(log2(size - 1));
+    int valid_size = (1 << n) + 1;
+
+    Array2D larger_grid = core_diamond_algorithm(valid_size, roughness, topleft, topright, bottomleft, bottomright);
+
+    Array2D cropped_grid = create_array2d(size, size);
+
+    for (int y = 0; y < size; y++) {
+        for (int x = 0; x < size; x++) {
+            cropped_grid.data[y][x] = larger_grid.data[y][x];
+        }
+    }
+
+    free_array2d(larger_grid);
+
+    return cropped_grid;
+}
+
 Array2D core_diamond_square(int size, float roughness) {
-    return custom_diamond_square(size, roughness, random_custom(), random_custom(), random_custom(), random_custom());
+    return core_diamond_algorithm(size, roughness, random_custom(), random_custom(), random_custom(), random_custom());
 }
 
 #ifdef __cplusplus

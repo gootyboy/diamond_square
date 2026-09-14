@@ -36,14 +36,15 @@ ADDED_BIOMES = _BiomeDict()
 
 class Biome:
     """Class to create new biomes."""
-    def __init__(self, name: str, htc_func: Callable[[float], tuple[int, int, int]], height_to_3d: Callable[[float], float] | None = None) -> None:
+    def __init__(self, name: str | None = None, htc_func: Callable[[float], tuple[int, int, int]]=default_biome_htc, height_to_3d: Callable[[float], float] = default_biome_ht3d) -> None:
         """
         Creates a new biome.
 
         Parameters
         ----------
-        name: str
+        name: str | None
             The name of the biome.
+            If `name = None`, then `name = "Biome #{num}"` where num is a unique numbering > 0.
 
         htc_func (( float)) -> tuple[int, int, int]
             A function that maps a height value to a color. The function must have
@@ -66,12 +67,25 @@ class Biome:
             The best function to use is in the form lambda h: (h * 10) ** dramatic. dramatic is how dramatic you want your biome to be.
 
             Examples:
-            - For biomes like DEFAULT_BIOME, height_to_3d is (h * 10) ** 1.5 
+            - For biomes like DEFAULT_BIOME, height_to_3d is (h * 10) ** 1.5
+
               Stretches higher values drastically to create tall, dramatic mountain peaks.
-              
+
             - For biomes like DESERT_BIOME, height_to_3d is (h * 10) ** 1.2 or just h
+
               Keeps the terrain flatter and more gradual to simulate rolling desert dunes.
         """
+        if name == None:
+            nums = [-1]
+            for name in ADDED_BIOMES.names():
+                if name.startswith("Biome #"):
+                    current_num = name.removeprefix("Biome #")
+                    if current_num.isdigit():
+                        current_num = int(current_num)
+                        nums.append(current_num)
+
+            num = max(nums) + 1
+            name = f"Biome #{num}"
 
         self.name = name
         """The name of the Biome."""
@@ -84,29 +98,6 @@ class Biome:
 
         self.height_to_3d = height_to_3d
         """Function that takes a height value and returns another value, which tells the code how much to stretch the pixel into 3d."""
-
-    def __str__(self) -> str:
-        """
-        String representation of the Biome. Returns the name of the Biome.
-
-        Returns
-        -------
-        str
-            The name of the biome.
-        """
-        return self.name
-
-    def __repr__(self) -> str:
-        """
-        Returns the representation of the Biome.
-
-        Returns
-        -------
-        str
-            The representation of the Biome such that exec(repr(biome)) = biome.
-
-        """
-        return f"Biome({repr(self.name)}, {repr(self.height_to_color)}, {repr(self.height_to_3d)})"
 
     def add_to_biomes(self):
         """
@@ -168,6 +159,29 @@ class Biome:
         blue = sum(rgb[2]) / len(rgb[2])
 
         return (int(red), int(green), int(blue))
+
+    def __str__(self) -> str:
+        """
+        String representation of the Biome. Returns the name of the Biome.
+
+        Returns
+        -------
+        str
+            The name of the biome.
+        """
+        return self.name
+
+    def __repr__(self) -> str:
+        """
+        Returns the representation of the Biome.
+
+        Returns
+        -------
+        str
+            The representation of the Biome such that exec(repr(biome)) = biome.
+
+        """
+        return f"Biome({repr(self.name)}, {repr(self.height_to_color)}, {repr(self.height_to_3d)})"
 
 DEFAULT_BIOME = Biome("default", default_biome_htc, default_biome_ht3d).add_to_biomes()
 """The default Biome."""

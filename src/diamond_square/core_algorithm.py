@@ -4,6 +4,7 @@ C to Python wrapper for the core diamond square algorithm.
 
 import os
 import ctypes
+import math
 
 class Array2D(ctypes.Structure):
     """
