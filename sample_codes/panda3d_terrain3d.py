@@ -4,15 +4,12 @@
 from diamond_square import *
 
 # Generate 3D Terrain.
-terrain = Terrain3D(size=2 ** 8 + 1, biome=TROPICAL_BIOME, roughness=0.6, scale=5, pos=(1, 1, 1))
+terrain = Terrain3D(size=2 ** 8 + 1, biome=TROPICAL_BIOME, roughness=0.6, scale=0.5, pos=(1, 1, 1))
 
 # Panda3D main class. Panda3DBase is a class included in diamond_square.
 class Panda3DTerrain3D(Panda3DBase):
-    def __init__(self):
-        super().__init__()
-
+    def draw(self):
         # Drawing the terrain.
-        # You must pass in self for the obj parameter.
         terrain.draw_panda3d(obj=self)
 
 # Creating the panda3d app.

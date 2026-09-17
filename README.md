@@ -152,25 +152,15 @@ If **any one** of these is missing, the interactive mode will:
 
 - or stop working entirely
 
-These must be placed in these functions in pgzero:
-
-- `def draw():` → `terrain.draw_func(screen)`
-
-- `on_mouse_down(pos):` → `terrain.on_mouse_down_func(pos)`
-
-- `on_mouse_up():` → `terrain.on_mouse_up_func()`
-
-- `on_mouse_move(pos):` → `terrain.on_mouse_move_func(pos)`
-
 ---
 
 ## Versions
 
-**(Latest) Version 1.2.2**: Update Panda3DInteractive
+**(Latest) Version 1.2.3**: Added dynamic sizes instead of just `2**n+1`.
+
+Version 1.2.2: Update Panda3DInteractive.
 
 Version 1.2.1: Bug Fixes.
-
-Version 1.2.0: Added 3D Interactive Mode.
 
 *To view previous versions, go to [versions.txt](https://github.com/gootyboy/diamond_square/blob/main/versions.txt)*
 
@@ -178,4 +168,4 @@ Version 1.2.0: Added 3D Interactive Mode.
 
 ## Coming Soon
 
-Version 1.3.0: Add Save as Image option in Interactive Mode.
+Version 1.3.0: Add Save as Image option in 2D Interactive Mode.

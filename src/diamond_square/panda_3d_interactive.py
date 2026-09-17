@@ -2,7 +2,7 @@ from .terrain3d import *
 from panda3d.core import TextNode, CardMaker, NodePath
 
 class Panda3DInteractive(Panda3DBase):
-    def __init__(self):
+    def __init__(self, size):
         super().__init__()
 
         self.current_biome_index = 0
@@ -12,7 +12,7 @@ class Panda3DInteractive(Panda3DBase):
         self.roughness = 1.0
         self.current_rough = 1.0
         self.current_boxes = None
-        self.terrain = Terrain3D(size=2 ** 7 + 1, biome=ADDED_BIOMES.biomes()[self.current_biome_index], roughness=self.roughness, scale=5, pos=(0, 0, 0))
+        self.terrain = Terrain3D(size=size, biome=ADDED_BIOMES.biomes()[self.current_biome_index], roughness=self.roughness, scale=5, pos=(0, 0, 0))
         self.current_boxes = self.terrain.draw_panda3d(obj=self)
         self.taskMgr.add(self._draw_loop, "DrawTerrainTask")
         self.key_state = {"arrow_right-down": False, "arrow_left-down": False, "r-down": False}

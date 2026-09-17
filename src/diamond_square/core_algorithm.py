@@ -48,7 +48,7 @@ def core_diamond_square(size: int, roughness: float) -> list[list[float]]:
     Parameters
     ----------
     **size**: int
-        The size of the height map. Must be in the form 2 ** n + 1.
+        The size of the height map. Must be integer greater than 1.
     **roughness**: float
         Controls the amount of randomness that is added to each height value.
 
@@ -74,7 +74,7 @@ def custom_diamond_square(size: int, roughness: float, topleft: float, topright:
     Parameters
     ----------
     **size**: int
-        The size of the height map. Must be in the form 2 ** n + 1.
+        The size of the height map. Must be integer greater than 1.
     **roughness**: float
         Controls the amount of randomness that is added to each height value.
 
