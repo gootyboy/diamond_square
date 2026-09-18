@@ -7,7 +7,26 @@ from .biome_funcs import *
 import numpy as np
 
 class _BiomeDict(dict):
-    """A dictionary class with 2 added methods: self.names() and self.biomes(). Not meant for user use."""
+    """
+    A dictionary class with 2 added methods: self.names() and self.biomes(). Not meant for user use.
+    dict() -> new empty dictionary
+
+    dict(mapping) -> new dictionary initialized from a mapping object's
+    (key, value) pairs
+
+    dict(iterable) -> new dictionary initialized as if via:
+
+    d = {}
+
+    for k, v in iterable:
+
+    d[k] = v
+
+    dict(**kwargs) -> new dictionary initialized with the name=value pairs
+
+    in the keyword argument list. For example: dict(one=1, two=2)
+    """
+    
     def names(self) -> list:
         """
         The list of the names of the biomes added.
@@ -36,7 +55,7 @@ ADDED_BIOMES = _BiomeDict()
 
 class Biome:
     """Class to create new biomes."""
-    def __init__(self, name: str | None = None, htc_func: Callable[[float], tuple[int, int, int]]=default_biome_htc, height_to_3d: Callable[[float], float] = default_biome_ht3d) -> None:
+    def __init__(self, name: str | None = None, htc_func: Callable[[float], tuple[int, int, int]] = default_biome_htc, height_to_3d: Callable[[float], float] = default_biome_ht3d) -> None:
         """
         Creates a new biome.
 
@@ -183,26 +202,26 @@ class Biome:
         """
         return f"Biome({repr(self.name)}, {repr(self.height_to_color)}, {repr(self.height_to_3d)})"
 
-DEFAULT_BIOME = Biome("default", default_biome_htc, default_biome_ht3d).add_to_biomes()
+DEFAULT_BIOME = Biome("Default", default_biome_htc, default_biome_ht3d).add_to_biomes()
 """The default Biome."""
 
-DESERT_BIOME = Biome("desert", desert_biome_htc, desert_biome_ht3d).add_to_biomes()
+DESERT_BIOME = Biome("Sesert", desert_biome_htc, desert_biome_ht3d).add_to_biomes()
 """The desert Biome."""
 
-TUNDRA_BIOME = Biome("tundra", tundra_biome_htc, tundra_biome_ht3d).add_to_biomes()
+TUNDRA_BIOME = Biome("Tundra", tundra_biome_htc, tundra_biome_ht3d).add_to_biomes()
 """The tundra Biome."""
 
-TROPICAL_BIOME = Biome("tropical", tropical_biome_htc, tropical_biome_ht3d).add_to_biomes()
+TROPICAL_BIOME = Biome("Tropical", tropical_biome_htc, tropical_biome_ht3d).add_to_biomes()
 """The tropical Biome."""
 
-VOLCANIC_BIOME = Biome("volcanic", volcanic_biome_htc, volcanic_biome_ht3d).add_to_biomes()
+VOLCANIC_BIOME = Biome("Volcanic", volcanic_biome_htc, volcanic_biome_ht3d).add_to_biomes()
 """The volcanic Biome."""
 
-SWAMP_BIOME = Biome("swamp", swamp_biome_htc, swamp_biome_ht3d).add_to_biomes()
+SWAMP_BIOME = Biome("Swamp", swamp_biome_htc, swamp_biome_ht3d).add_to_biomes()
 """The swamp Biome."""
 
-OCEAN_BIOME = Biome("ocean", ocean_biome_htc, ocean_biome_ht3d).add_to_biomes()
+OCEAN_BIOME = Biome("Ocean", ocean_biome_htc, ocean_biome_ht3d).add_to_biomes()
 """The ocean Biome."""
 
-MARS_BIOME = Biome("mars", mars_biome_htc, mars_biome_ht3d).add_to_biomes()
+MARS_BIOME = Biome("Mars", mars_biome_htc, mars_biome_ht3d).add_to_biomes()
 """The mars Biome."""

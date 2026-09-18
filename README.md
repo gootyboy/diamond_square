@@ -75,6 +75,8 @@ It is designed for both experimentation and game development, making 2d/3d terra
 
 ## Usage
 
+Usage examples are found in the documentation or in the sample codes:
+
 ### Terrain Examples
 
 #### Pgzero Terrain Example
