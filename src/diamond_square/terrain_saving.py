@@ -1,9 +1,18 @@
+"""
+### terrain_saving.py
+
+This file contains a _TerrainSaving clas which contains fucntions to save terrains.
+Not meant for user use.
+"""
+
 from .biomes import *
 from PIL import Image
 import os
 
 class _TerrainSaving:
-    """Functions to save 2D terrain as images, and 3D terrain as .stl and .obj. Not meant for user use."""
+    """
+    Functions to save 2D terrain as images, and 3D terrain as .stl and .obj. Not meant for user use.
+    """
     @staticmethod
     def save_as_img(size, scale, heights, biome_obj, save_path, filter_func = None, obj = None):
         img_width = size * scale

@@ -91,10 +91,10 @@ Array2D core_diamond_algorithm(int size, float roughness, float topleft, float t
         for (int y = half; y < size - 1; y += step) {
             for (int x = half; x < size - 1; x += step) {
                 double avg =
-                    (h_map.data[y-half][x-half] +
-                     h_map.data[y-half][x+half] +
-                     h_map.data[y+half][x-half] +
-                     h_map.data[y+half][x+half]) / 4.0;
+                    (h_map.data[y - half][x - half] +
+                     h_map.data[y - half][x + half] +
+                     h_map.data[y + half][x - half] +
+                     h_map.data[y + half][x + half]) / 4.0;
 
                 h_map.data[y][x] = avg + random_uniform(-s, s);
             }

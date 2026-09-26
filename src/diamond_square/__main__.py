@@ -1,3 +1,9 @@
+"""
+### __main__.py
+
+Outputs links to all of the sample code files.
+"""
+
 def main():
     print("Welcome to diamond-square:")
     print("A package which can draw terrains and interactive terrains using the Diamond Square Algorithm in pgzero and pygame.")
@@ -19,6 +25,7 @@ def main():
     print("")
     print("Saving terrain as image: https://github.com/gootyboy/diamond_square/blob/main/sample_codes/save_terrain.py")
     print("Creating Custom Biomes: https://github.com/gootyboy/diamond_square/blob/main/sample_codes/custom_biome.py")
+    print("")
 
 if __name__ == "__main__":
     main()

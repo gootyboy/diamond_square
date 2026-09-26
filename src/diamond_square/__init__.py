@@ -1,7 +1,179 @@
 """
-This package implements the Diamond Square Algorithm to draw terrains in pgzero and pygame and 3D terrains in panda3D.
-Interactive terrain generation also available in pgzero and pygame.
-Uses C for fast rendering of the core Diamond Square algorithm.
+# Diamond Square
+### __init__.py
+
+Implementation of the [Diamond–Square Algorithm](https://en.wikipedia.org/wiki/Diamond-square_algorithm). This package can draw 2d terrains and 2d interactive terrains in pgzero and pygame.
+
+Also can draw 3D terrains and 3D interactive terrains in panda3d.
+
+---
+
+## Sample Generations
+
+![Sample Default 3D Terrain](https://gootyboy.github.io/project_details/diamond-square/panda3d_terrain.png)
+![Sample Default Terrain](https://gootyboy.github.io/project_details/diamond-square/default_terrain.png)
+![Sample Desert Terrain](https://gootyboy.github.io/project_details/diamond-square/desert_terrain.png)
+![Sample Tundra Terrain](https://gootyboy.github.io/project_details/diamond-square/tundra_terrain.png)
+![Sample Tropical Terrain](https://gootyboy.github.io/project_details/diamond-square/tropical_terrain.png)
+![Sample Volcanic Terrain](https://gootyboy.github.io/project_details/diamond-square/volcanic_terrain.png)
+![Sample Swamp Terrain](https://gootyboy.github.io/project_details/diamond-square/swamp_terrain.png)
+![Sample Ocean Terrain](https://gootyboy.github.io/project_details/diamond-square/ocean_terrain.png)
+![Sample Mars Terrain](https://gootyboy.github.io/project_details/diamond-square/mars_terrain.png)
+
+---
+
+> ### ⚠️ ***You MUST include all four interactive functions for pgzero interactive***
+>
+> Missing even one will cause failures or unpredictable behavior.
+
+---
+
+## Table of Contents
+
+- Why Use Diamond Square?
+- Usage
+  - Terrain Examples
+    - Pgzero Terrain Example
+    - Pygame Terrain Example
+    - Panda3d 3D Terrain Example
+  - Interactive Terrain Examples
+    - Pgzero Interactive Terrain Example
+    - Pygame Interactive Terrain Example
+    - Panda3d Interactive Terrain Example
+  - Other Examples
+    - Custom Biome Examples
+    - Terrain and Terrain 3D Saving Examples
+- Requirements for Pgzero Interactive
+- Versions
+- Coming Soon
+
+---
+
+## Why Use diamond-square?
+
+This package provides a complete implementation of the Diamond–Square algorithm with:
+
+- Fast rendering of the Diamond-Square algorithm written in C.
+
+- Multiple built‑in biomes.
+
+- Adjustable roughness, scale, and size.
+
+- Support for pgzero and pygame.
+
+- 3d terrain drawing in panda3d.
+
+- Interactive mode in 2d and 3d terrains.
+
+- Change the border shape of the terrain (it is normally a square) using a filter function.
+
+- The ability to save generated terrain as an image.
+
+- Functions to add or remove biomes dynamically.
+
+It is designed for both experimentation and game development, making 2d/3d terrain generation simple and customizable.
+
+---
+
+## Usage
+
+Usage examples are found in the documentation or in the sample codes:
+
+### Terrain Examples
+
+#### Pgzero Terrain Example
+
+Go to [/sample_codes/pgzero_terrain.py](https://github.com/gootyboy/diamond_square/blob/main/sample_codes/pgzero_terrain.py)
+
+#### Pygame Terrain Example
+
+Go to [/sample_codes/pygame_terrain.py](https://github.com/gootyboy/diamond_square/blob/main/sample_codes/pygame_terrain.py)
+
+#### Panda3d 3D Terrain Example
+
+Go to [/sample_code/panda3d_terrain3d.py](https://github.com/gootyboy/diamond_square/blob/main/sample_codes/panda3d_terrain3d.py)
+
+---
+
+### Interactive Terrain Examples
+
+#### Pgzero Interactive Terrain Example
+
+Go to [/sample_codes/pgzero_interactive_terrain.py](https://github.com/gootyboy/diamond_square/blob/main/sample_codes/pgzero_interactive_terrain.py)
+
+#### Pygame Interactive Terrain Example
+
+Go to [/sample_codes/pygame_interactive_terrain.py](https://github.com/gootyboy/diamond_square/blob/main/sample_codes/pygame_interactive_terrain.py)
+
+#### Panda3d Interactive Terrain Example
+
+Go to [/sample_codes/panda3d_interactive_terrain.py](https://github.com/gootyboy/diamond_square/blob/main/sample_codes/panda3d_interactive_terrain.py)
+
+---
+
+### Other Examples
+
+#### Terrain and 3D Terrain Saving Examples
+
+Go to [/sample_codes/terrain_saving.py](https://github.com/gootyboy/diamond_square/blob/main/sample_codes/terrain_saving.py)
+
+#### Custom Biome Examples
+
+Go to [/sample_code/custom_biome.py](https://github.com/gootyboy/diamond_square/blob/main/sample_codes/custom_biome.py)
+
+---
+
+## Requirements for Pgzero Interactive
+
+For Pgzero Interative Mode, it requires **all four** of the following functions to be placed in their corresponding pgzero event handlers:
+
+```python
+...
+
+def draw():
+  terrain.draw_func(screen)
+  ...
+
+def on_mouse_down():
+  terrain.on_mouse_down_func(pos)
+  ...
+
+def on_mouse_up():
+  terrain.on_mouse_up_func()
+  ...
+
+def on_mouse_move():
+  terrain.on_mouse_move_func(pos)
+  ...
+
+```
+
+If **any one** of these is missing, the interactive mode will:
+
+- fail to update correctly
+
+- behave unpredictably
+
+- or stop working entirely
+
+---
+
+## Versions
+
+**(Latest) Version 1.2.3**: Added dynamic sizes instead of just `2**n+1`.
+
+Version 1.2.2: Update Panda3DInteractive.
+
+Version 1.2.1: Bug Fixes.
+
+*To view previous versions, go to [versions.txt](https://github.com/gootyboy/diamond_square/blob/main/versions.txt)*
+
+---
+
+## Coming Soon
+
+Version 1.3.0: Add Save as Image option in 2D Interactive Mode.
+
 """
 
 from .biome_funcs import *

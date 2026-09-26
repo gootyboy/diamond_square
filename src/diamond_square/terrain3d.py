@@ -6,7 +6,9 @@ from .filter_funcs import *
 from .terrain_saving import _TerrainSaving as _TerrainSaving
 import math
 
-def draw_panda3d_box(obj, width: float = 1, height: float = 1, depth: float = 1, pos: tuple[float, float, float] = (0, 0, 0), color: tuple[int, int, int] = (0, 0, 0)):
+def draw_panda3d_box(obj: Panda3DBase, width: float = 1, height: float = 1, depth: float = 1, pos: tuple[float, float, float] = (0, 0, 0), color: tuple[int, int, int] = (0, 0, 0)) -> NodePath:
+    """
+    Draws a 3D Rectangular Prism in Panda3D"""
     rectangle = obj.loader.loadModel("models/box")
     rectangle.reparentTo(obj.render)
 

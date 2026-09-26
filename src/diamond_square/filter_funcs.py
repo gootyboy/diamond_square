@@ -1,4 +1,6 @@
 """
+### filter_funcs.py
+
 These are all of the filter functions that you can use to make your terrain different shpaes instead of just a square.
 """
 

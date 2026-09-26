@@ -1,10 +1,11 @@
 """
+### core_algorithm.py
+
 C to Python wrapper for the core diamond square algorithm.
 """
 
 import os
 import ctypes
-import math
 
 class Array2D(ctypes.Structure):
     """
@@ -13,13 +14,10 @@ class Array2D(ctypes.Structure):
     Fields
     ------
     **rows**: c_size_t
-
         The amount of rows for the array.
     **cols**: c_size_t
-
         The amount of columns for the array.
     **data**: POINTER(POINTER(c_double))
-
         The data of the array.
     """
     _fields_ = [
@@ -58,10 +56,12 @@ def core_diamond_square(size: int, roughness: float) -> list[list[float]]:
         The height map generated using the Diamond Square Algorithm.
     """
     c_heights = _mod.core_diamond_square(size, roughness)
+
     heights = [
-        [c_heights.data[y][x] for x in range(size)]
-        for y in range(size)
+        [c_heights.data[y][x] for x in range(c_heights.cols)]
+        for y in range(c_heights.rows)
     ]
+
     if c_heights.data:
         _mod.free_array2d(c_heights)
 
@@ -84,10 +84,12 @@ def custom_diamond_square(size: int, roughness: float, topleft: float, topright:
         The height map generated using the Diamond Square Algorithm.
     """
     c_heights = _mod.custom_diamond_square(size, roughness, topleft, topright, bottomleft, bottomright)
+
     heights = [
-        [c_heights.data[y][x] for x in range(size)]
-        for y in range(size)
+        [c_heights.data[y][x] for x in range(c_heights.cols)]
+        for y in range(c_heights.rows)
     ]
+    
     if c_heights.data:
         _mod.free_array2d(c_heights)
 

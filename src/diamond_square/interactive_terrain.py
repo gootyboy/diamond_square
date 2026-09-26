@@ -1,3 +1,9 @@
+"""
+### interactive_terrain.py
+
+Contains PGZeroInteractive and PyGameInteractive classes.
+"""
+
 from .biomes import *
 from .core_algorithm import core_diamond_square
 from .terrain import *

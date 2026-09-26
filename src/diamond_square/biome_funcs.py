@@ -1,4 +1,6 @@
 """
+### biome_funcs.py
+
 The in-built biome htc (height to color) and ht3d (height to 3d) functions.
 """
 

@@ -158,11 +158,11 @@ If **any one** of these is missing, the interactive mode will:
 
 ## Versions
 
-**(Latest) Version 1.2.3**: Added dynamic sizes instead of just `2**n+1`.
+**(Latest) Version 1.2.4:**: Updated Documentation.
+
+Version 1.2.3: Added dynamic sizes instead of just `2**n+1`.
 
 Version 1.2.2: Update Panda3DInteractive.
-
-Version 1.2.1: Bug Fixes.
 
 *To view previous versions, go to [versions.txt](https://github.com/gootyboy/diamond_square/blob/main/versions.txt)*
 
