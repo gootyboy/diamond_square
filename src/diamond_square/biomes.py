@@ -1,7 +1,17 @@
 """
 ### biomes.py
 
-This file has the Biome class, add_biome and remove_biome function, and in-built biomes.
+This file has:
+- ADDED_BIOMES
+- Biome
+- DEFAULT_BIOME
+- DESERT_BIOME
+- TUNDRA_BIOME
+- TROPICAL_BIOME
+- VOLCANIC_BIOME
+- SWAMP_BIOME
+- OCEAN_BIOME
+- MARS_BIOME
 """
 
 from typing import Callable
@@ -86,7 +96,7 @@ class Biome:
             nums = [-1]
             for name in ADDED_BIOMES.names():
                 if name.startswith("Biome #"):
-                    current_num = name.removeprefix("Biome #")
+                    current_num = name.replace("Biome #", "")
                     if current_num.isdigit():
                         current_num = int(current_num)
                         nums.append(current_num)

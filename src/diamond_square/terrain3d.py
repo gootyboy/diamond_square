@@ -1,3 +1,9 @@
+"""
+### terrain3d.py
+
+
+"""
+
 from .core_algorithm import core_diamond_square
 from direct.showbase.ShowBase import ShowBase
 from panda3d.core import Vec3, MouseButton, NodePath
@@ -8,7 +14,13 @@ import math
 
 def draw_panda3d_box(obj: Panda3DBase, width: float = 1, height: float = 1, depth: float = 1, pos: tuple[float, float, float] = (0, 0, 0), color: tuple[int, int, int] = (0, 0, 0)) -> NodePath:
     """
-    Draws a 3D Rectangular Prism in Panda3D"""
+    Draws a 3D Rectangular Prism in Panda3D
+
+    Returns
+    -------
+    NodePath
+        The rectangle (box) that was drawn
+    """
     rectangle = obj.loader.loadModel("models/box")
     rectangle.reparentTo(obj.render)
 

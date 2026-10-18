@@ -69,7 +69,7 @@ def core_diamond_square(size: int, roughness: float) -> list[list[float]]:
 
 def custom_diamond_square(size: int, roughness: float, topleft: float, topright: float, bottomleft: float, bottomright: float) -> list[list[float]]:
     """
-    Returns a height map using the Diamond Square Algorithm.
+    Returns a height map using the Diamond Square Algorithm. This function allows you to customize the corners of the height map.
 
     Parameters
     ----------

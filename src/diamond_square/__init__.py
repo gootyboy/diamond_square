@@ -177,8 +177,8 @@ Version 1.3.0: Add Save as Image option in 2D Interactive Mode.
 """
 
 from .biome_funcs import *
-from .biomes import *
-from .core_algorithm import core_diamond_square
+from .biomes import ADDED_BIOMES, Biome, DEFAULT_BIOME, DESERT_BIOME, TUNDRA_BIOME, TROPICAL_BIOME, VOLCANIC_BIOME, SWAMP_BIOME, OCEAN_BIOME, MARS_BIOME
+from .core_algorithm import core_diamond_square, custom_diamond_square
 from .filter_funcs import *
 from .interactive_terrain import PGZeroInteractive, PyGameInteractive
 from .terrain import Terrain

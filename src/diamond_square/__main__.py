@@ -5,6 +5,9 @@ Outputs links to all of the sample code files.
 """
 
 def main():
+    """
+    A function which outputs links to all of the sample code files.
+    """
     print("Welcome to diamond-square:")
     print("A package which can draw terrains and interactive terrains using the Diamond Square Algorithm in pgzero and pygame.")
     print("Also include 3d terrains in panda3d. Uses C for fast rendering.")

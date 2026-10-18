@@ -17,6 +17,12 @@ def default_biome_htc(h: float) -> tuple[int, int, int]:
     -------
     tuple[int, int, int]
         The color based on the height and the function.
+
+    Usage
+    -----
+    To get a color (RGB) based on the height value::
+
+        default_biome_htc(0.1)
     """
     if h < 0.2:
         return (0, 0, int(100 + h * 80))
@@ -48,6 +54,12 @@ def desert_biome_htc(h: float) -> tuple[int, int, int]:
     -------
     tuple[int, int, int]
         The color based on the height and the function.
+
+    Usage
+    -----
+    To get a color (RGB) based on the height value::
+
+        desert_biome_htc(0.1)
     """
     if h < 0.3:
         return (200, 171, 133)
@@ -71,6 +83,12 @@ def tundra_biome_htc(h: float) -> tuple[int, int, int]:
     -------
     tuple[int, int, int]
         The color based on the height and the function.
+
+    Usage
+    -----
+    To get a color (RGB) based on the height value::
+
+        tundra_biome_htc(0.1)
     """
     if h < 0.05:
         return (0, 0, 120)
@@ -96,6 +114,12 @@ def tropical_biome_htc(h: float) -> tuple[int, int, int]:
     -------
     tuple[int, int, int]
         The color based on the height and the function.
+
+    Usage
+    -----
+    To get a color (RGB) based on the height value::
+
+        tropical_biome_htc(0.1)
     """
     if h < 0.3:
         return (0, 30, 150)
@@ -121,6 +145,12 @@ def volcanic_biome_htc(h: float) -> tuple[int, int, int]:
     -------
     tuple[int, int, int]
         The color based on the height and the function.
+
+    Usage
+    -----
+    To get a color (RGB) based on the height value::
+
+        volcanic_biome_htc(0.1)
     """
     if h < 0.2:
         return (20, 20, 20)
@@ -146,6 +176,12 @@ def swamp_biome_htc(h: float) -> tuple[int, int, int]:
     -------
     tuple[int, int, int]
         The color based on the height and the function.
+
+    Usage
+    -----
+    To get a color (RGB) based on the height value::
+
+        swamp_biome_htc(0.1)
     """
     if h < 0.2:
         return (20, 40, 20)
@@ -171,6 +207,12 @@ def ocean_biome_htc(h: float) -> tuple[int, int, int]:
     -------
     tuple[int, int, int]
         The color based on the height and the function.
+
+    Usage
+    -----
+    To get a color (RGB) based on the height value::
+
+        ocean_biome_htc(0.1)
     """
     if h < 0.2:
         return (0, 10, 40)
@@ -198,6 +240,12 @@ def mars_biome_htc(h: float) -> tuple[int, int, int]:
     -------
     Color: tuple[int, int, int]
         The color based on the height and the function.
+
+    Usage
+    -----
+    To get a color (RGB) based on the height value::
+
+        mars_biome_htc(0.1)
     """
     if h < 0.2:
         return (60, 30, 20)
@@ -228,6 +276,12 @@ def default_biome_ht3d(h: float) -> float:
     -------
     float
         The 3d height of the rectangular prism (pixel).
+
+    Usage
+    -----
+    To calculate the 3D Height of a pixel based on the height value::
+
+        default_biome_ht3d(0.1)
     """
     return (h * 10) ** (1.5)
 
@@ -246,6 +300,12 @@ def desert_biome_ht3d(h: float) -> float:
     -------
     float
         The 3d height of the rectangular prism (pixel).
+
+    Usage
+    -----
+    To calculate the 3D Height of a pixel based on the height value::
+
+        desert_biome_ht3d(0.1)
     """
     return (h * 10) ** 1.2
 
@@ -264,6 +324,12 @@ def tundra_biome_ht3d(h: float) -> float:
     -------
     float
         The 3d height of the rectangular prism (pixel).
+
+    Usage
+    -----
+    To calculate the 3D Height of a pixel based on the height value::
+
+        tundra_biome_ht3d(0.1)
     """
     return (h * 10) ** 1.7
 
@@ -282,6 +348,12 @@ def tropical_biome_ht3d(h: float) -> float:
     -------
     float
         The 3d height of the rectangular prism (pixel).
+
+    Usage
+    -----
+    To calculate the 3D Height of a pixel based on the height value::
+
+        tropical_biome_ht3d(0.1)
     """
     return (h * 10) ** 1.35
 
@@ -300,6 +372,12 @@ def volcanic_biome_ht3d(h: float) -> float:
     -------
     float
         The 3d height of the rectangular prism (pixel).
+
+    Usage
+    -----
+    To calculate the 3D Height of a pixel based on the height value::
+
+        volcanic_biome_ht3d(0.1)
     """
     return ((1 - h) * 10) ** (1 + 0.5 * ((1 - h)**2))
 
@@ -318,6 +396,12 @@ def swamp_biome_ht3d(h: float) -> float:
     -------
     float
         The 3d height of the rectangular prism (pixel).
+
+    Usage
+    -----
+    To calculate the 3D Height of a pixel based on the height value::
+
+        swamp_biome_ht3d(0.1)
     """
     return (h * 10) ** 1.1
 
@@ -336,6 +420,12 @@ def ocean_biome_ht3d(h: float) -> float:
     -------
     float
         The 3d height of the rectangular prism (pixel).
+
+    Usage
+    -----
+    To calculate the 3D Height of a pixel based on the height value::
+
+        ocean_biome_ht3d(0.1)
     """
     return (h * 10) ** 1.1
 
@@ -354,5 +444,11 @@ def mars_biome_ht3d(h: float) -> float:
     -------
     float
         The 3d height of the rectangular prism (pixel).
+
+    Usage
+    -----
+    To calculate the 3D Height of a pixel based on the height value::
+
+        mars_biome_ht3d(0.1)
     """
     return (h * 10) ** 1.15
